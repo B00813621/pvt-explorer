@@ -34,15 +34,8 @@ async function blobGet(pathname) {
   if (!blobs.length) return null;
   blobs.sort((a, b) => new Date(b.uploadedAt) - new Date(a.uploadedAt));
   const blobUrl = blobs[0].url;
-  // Use Vercel Blob head API to get a signed downloadUrl
-  const headR = await fetch(`${BLOB_BASE}?url=${encodeURIComponent(blobUrl)}`, {
-    headers: { Authorization: `Bearer ${tk}` }
-  });
-  if (!headR.ok) return null;
-  const meta = await headR.json();
-  const downloadUrl = meta.downloadUrl || meta.url;
-  if (!downloadUrl) return null;
-  const cr = await fetch(downloadUrl);
+  // Private blobs: use x-vercel-blob-token header (SDK-style access)
+  const cr = await fetch(blobUrl, { headers: { 'x-vercel-blob-token': tk } });
   if (!cr.ok) return null;
   return cr.text();
 }
