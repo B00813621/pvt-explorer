@@ -3,31 +3,23 @@ set -e
 
 echo "=== Build starting, CWD: $(pwd) ==="
 
-VERCEL_OUT=/vercel/output
+# Remove pre-existing builds.json so config.json v3 takes effect
+rm -f /vercel/output/builds.json
 
-# Remove pre-existing builds.json (Vercel v2 format) so config.json (v3) takes effect
-rm -f "$VERCEL_OUT/builds.json"
+# Create output in BOTH locations to cover which one Vercel uses
+for VERCEL_OUT in "/vercel/output" "$PWD/.vercel/output"; do
+  mkdir -p "$VERCEL_OUT/static"
+  mkdir -p "$VERCEL_OUT/functions/api/[...path].func"
+  mkdir -p "$VERCEL_OUT/functions/api/go.func"
 
-echo "=== Creating output at $VERCEL_OUT ==="
+  cp -r public/* "$VERCEL_OUT/static/"
+  cp "api/[...path].js" "$VERCEL_OUT/functions/api/[...path].func/index.js"
+  cp "api/go.js" "$VERCEL_OUT/functions/api/go.func/index.js"
 
-mkdir -p "$VERCEL_OUT/static"
-mkdir -p "$VERCEL_OUT/functions/api/[...path].func"
-mkdir -p "$VERCEL_OUT/functions/api/go.func"
+  echo '{"runtime":"nodejs22.x","handler":"index.js","launcherType":"Nodejs"}' > "$VERCEL_OUT/functions/api/[...path].func/.vc-config.json"
+  echo '{"runtime":"nodejs22.x","handler":"index.js","launcherType":"Nodejs"}' > "$VERCEL_OUT/functions/api/go.func/.vc-config.json"
 
-# Static files
-cp -r public/* "$VERCEL_OUT/static/"
-echo "=== Static files: $(ls $VERCEL_OUT/static/) ==="
-
-# API functions
-cp "api/[...path].js" "$VERCEL_OUT/functions/api/[...path].func/index.js"
-cp "api/go.js" "$VERCEL_OUT/functions/api/go.func/index.js"
-
-# Function configs
-echo '{"runtime":"nodejs22.x","handler":"index.js","launcherType":"Nodejs"}' > "$VERCEL_OUT/functions/api/[...path].func/.vc-config.json"
-echo '{"runtime":"nodejs22.x","handler":"index.js","launcherType":"Nodejs"}' > "$VERCEL_OUT/functions/api/go.func/.vc-config.json"
-
-# Deployment config
-cat > "$VERCEL_OUT/config.json" << 'CONF'
+  cat > "$VERCEL_OUT/config.json" << 'CONF'
 {
   "version": 3,
   "routes": [
@@ -39,5 +31,7 @@ cat > "$VERCEL_OUT/config.json" << 'CONF'
 }
 CONF
 
-echo "=== Output structure: $(find $VERCEL_OUT -type f) ==="
+  echo "=== Created in $VERCEL_OUT: $(ls $VERCEL_OUT/static/) ==="
+done
+
 echo "=== Build complete ==="
