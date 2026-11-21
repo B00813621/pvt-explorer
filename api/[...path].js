@@ -24,12 +24,20 @@ function blobToken() { return process.env.BLOB_READ_WRITE_TOKEN || ''; }
 async function blobGet(pathname) {
   const tk = blobToken();
   if (!tk) return null;
-  // For private stores, fetch the blob content via the API endpoint directly
-  const r = await fetch(`${BLOB_BASE}/${pathname}`, {
+  // List to get downloadUrl (pre-signed, works without additional auth for private stores)
+  const r = await fetch(`${BLOB_BASE}?prefix=${encodeURIComponent(pathname)}&limit=1&mode=folded`, {
     headers: { Authorization: `Bearer ${tk}` }
   });
   if (!r.ok) return null;
-  return r.text();
+  const body = await r.json();
+  const blobs = body.blobs || [];
+  if (!blobs.length) return null;
+  // downloadUrl is a presigned URL — fetch without additional auth
+  const downloadUrl = blobs[0].downloadUrl;
+  if (!downloadUrl) return null;
+  const cr = await fetch(downloadUrl);
+  if (!cr.ok) return null;
+  return cr.text();
 }
 
 async function blobPut(pathname, body, contentType = 'application/json', pub = false) {
