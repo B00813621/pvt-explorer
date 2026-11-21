@@ -1,12 +1,12 @@
 #!/bin/bash
 set -e
 
-echo "=== Build starting, CWD: $(pwd) ==="
-
-# Remove pre-existing builds.json so config.json v3 takes effect
+# Vercel Build Output API v3
+# Vercel pre-creates /vercel/output/builds.json (v2 format) before the build command runs.
+# We delete it so our config.json (v3 format) takes effect.
+# We also create the output in $PWD/.vercel/output as a fallback.
 rm -f /vercel/output/builds.json
 
-# Create output in BOTH locations to cover which one Vercel uses
 for VERCEL_OUT in "/vercel/output" "$PWD/.vercel/output"; do
   mkdir -p "$VERCEL_OUT/static"
   mkdir -p "$VERCEL_OUT/functions/api/[...path].func"
@@ -30,8 +30,4 @@ for VERCEL_OUT in "/vercel/output" "$PWD/.vercel/output"; do
   ]
 }
 CONF
-
-  echo "=== Created in $VERCEL_OUT: $(ls $VERCEL_OUT/static/) ==="
 done
-
-echo "=== Build complete ==="
