@@ -34,8 +34,10 @@ async function blobGet(pathname) {
     const matches = blobs.filter(b => b.pathname === pathname);
     if (!matches.length) return null;
     matches.sort((a, b) => new Date(b.uploadedAt) - new Date(a.uploadedAt));
-    // downloadUrl is a presigned URL that works without auth for private blobs
-    const r = await fetch(matches[0].downloadUrl);
+    // For private blobs, must pass token as Bearer auth header
+    const r = await fetch(matches[0].url, {
+      headers: { authorization: `Bearer ${tk}` },
+    });
     if (!r.ok) return null;
     return r.text();
   } catch { return null; }
