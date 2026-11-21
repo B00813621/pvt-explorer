@@ -31,7 +31,8 @@ async function blobGet(pathname) {
   const { blobs } = await r.json();
   if (!blobs || !blobs.length) return null;
   const url = blobs[0].downloadUrl || blobs[0].url;
-  const cr = await fetch(url.includes('?') ? url : `${url}?token=${tk}`);
+  // Private blobs need the token in the Authorization header
+  const cr = await fetch(url, { headers: { Authorization: `Bearer ${tk}` } });
   if (!cr.ok) return null;
   return cr.text();
 }
