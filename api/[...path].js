@@ -184,7 +184,10 @@ function readBody(req, max = 12000) {
 module.exports = async function handler(req, res) {
   const { method } = req;
   const url = new URL(req.url, `https://${req.headers.host || 'localhost'}`);
-  const p = url.pathname;
+  // When routed via config.json rewrite (/api/(.*) → /api/catchall?__p=$1),
+  // the original sub-path is passed as the __p query param.
+  const rawP = url.searchParams.get('__p');
+  const p = rawP ? '/api/' + rawP : url.pathname;
 
   try {
     // GET /api/config
