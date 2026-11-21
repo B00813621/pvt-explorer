@@ -14,8 +14,8 @@ cp "api/[...path].js" ".vercel/output/functions/api/[...path].func/index.js"
 cp "api/go.js" ".vercel/output/functions/api/go.func/index.js"
 
 # Function configs
-echo '{"runtime":"nodejs20.x","handler":"index.js","launcherType":"Nodejs"}' > ".vercel/output/functions/api/[...path].func/.vc-config.json"
-echo '{"runtime":"nodejs20.x","handler":"index.js","launcherType":"Nodejs"}' > ".vercel/output/functions/api/go.func/.vc-config.json"
+echo '{"runtime":"nodejs22.x","handler":"index.js","launcherType":"Nodejs"}' > ".vercel/output/functions/api/[...path].func/.vc-config.json"
+echo '{"runtime":"nodejs22.x","handler":"index.js","launcherType":"Nodejs"}' > ".vercel/output/functions/api/go.func/.vc-config.json"
 
 # Deployment config with routing
 cat > .vercel/output/config.json << 'CONF'
