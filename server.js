@@ -7,7 +7,7 @@ const crypto = require('node:crypto');
 const { URL } = require('node:url');
 
 const ROOT = __dirname;
-const DATA_DIR = path.join(ROOT, 'data');
+const DATA_DIR = process.env.VERCEL ? '/tmp/pvt-data' : path.join(ROOT, 'data');
 const DB_FILE = path.join(DATA_DIR, 'db.json');
 const PORT = Number(process.env.PORT || 3000);
 const API_KEY = process.env.OPENAI_API_KEY || '';
