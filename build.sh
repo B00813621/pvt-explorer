@@ -14,6 +14,8 @@ for VERCEL_OUT in "/vercel/output" "$PWD/.vercel/output"; do
 
   cp -r public/* "$VERCEL_OUT/static/"
   cp "api/[...path].js" "$VERCEL_OUT/functions/api/catchall.func/index.js"
+  cp "api/package.json" "$VERCEL_OUT/functions/api/catchall.func/package.json"
+  npm --prefix "$VERCEL_OUT/functions/api/catchall.func" install --production --silent
   cp "api/go.js" "$VERCEL_OUT/functions/api/go.func/index.js"
 
   echo '{"runtime":"nodejs22.x","handler":"index.js","launcherType":"Nodejs"}' > "$VERCEL_OUT/functions/api/catchall.func/.vc-config.json"

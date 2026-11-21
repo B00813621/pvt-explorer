@@ -18,62 +18,54 @@ try {
 const rate = new Map();
 
 // ---- Blob helpers ----
-const BLOB_BASE = 'https://blob.vercel-storage.com';
 function blobToken() { return process.env.BLOB_READ_WRITE_TOKEN || ''; }
+
+let _vercelBlob;
+function blob() {
+  if (!_vercelBlob) _vercelBlob = require('@vercel/blob');
+  return _vercelBlob;
+}
 
 async function blobGet(pathname) {
   const tk = blobToken();
   if (!tk) return null;
-  // List all blobs with this prefix, pick the most recent one
-  const r = await fetch(`${BLOB_BASE}?prefix=${encodeURIComponent(pathname)}&limit=100`, {
-    headers: { Authorization: `Bearer ${tk}` }
-  });
-  if (!r.ok) return null;
-  const body = await r.json();
-  const blobs = (body.blobs || []).filter(b => b.pathname === pathname);
-  if (!blobs.length) return null;
-  blobs.sort((a, b) => new Date(b.uploadedAt) - new Date(a.uploadedAt));
-  const blobUrl = blobs[0].url;
-  // Private blobs: use x-vercel-blob-token header (SDK-style access)
-  const cr = await fetch(blobUrl, { headers: { 'x-vercel-blob-token': tk } });
-  if (!cr.ok) return null;
-  return cr.text();
+  try {
+    const { blobs } = await blob().list({ prefix: pathname, token: tk, limit: 100 });
+    const matches = blobs.filter(b => b.pathname === pathname);
+    if (!matches.length) return null;
+    matches.sort((a, b) => new Date(b.uploadedAt) - new Date(a.uploadedAt));
+    const r = await fetch(matches[0].downloadUrl);
+    if (!r.ok) return null;
+    return r.text();
+  } catch { return null; }
 }
 
 async function blobPut(pathname, body, contentType = 'application/json', pub = false) {
   const tk = blobToken();
   if (!tk) throw new Error('BLOB_READ_WRITE_TOKEN manquant');
-  const headers = {
-    Authorization: `Bearer ${tk}`,
-    'x-content-type': contentType,
-    'x-vercel-blob-add-random-suffix': '0',
-    'x-vercel-blob-access': pub ? 'public' : 'private',
-  };
-  const r = await fetch(`${BLOB_BASE}/${pathname}`, { method: 'PUT', headers, body });
-  const d = await r.json();
-  if (!r.ok) throw new Error(typeof d.error === 'string' ? d.error : JSON.stringify(d) || `Blob PUT échoué (${r.status})`);
-  return d;
+  await blob().put(pathname, body, {
+    access: pub ? 'public' : 'private',
+    contentType,
+    addRandomSuffix: false,
+    token: tk
+  });
 }
 
 async function blobList(prefix) {
   const tk = blobToken();
   if (!tk) return [];
-  const r = await fetch(`${BLOB_BASE}?prefix=${encodeURIComponent(prefix)}&limit=200`, {
-    headers: { Authorization: `Bearer ${tk}` }
-  });
-  if (!r.ok) return [];
-  const d = await r.json();
-  return d.blobs || [];
+  try {
+    const { blobs } = await blob().list({ prefix, token: tk, limit: 200 });
+    return blobs;
+  } catch { return []; }
 }
 
 async function blobDelete(urls) {
   const tk = blobToken();
   if (!tk) return;
-  await fetch(`${BLOB_BASE}/delete`, {
-    method: 'POST',
-    headers: { Authorization: `Bearer ${tk}`, 'Content-Type': 'application/json' },
-    body: JSON.stringify({ urls: Array.isArray(urls) ? urls : [urls] })
-  });
+  try {
+    await blob().del(Array.isArray(urls) ? urls : [urls], { token: tk });
+  } catch {}
 }
 
 // ---- JWT helpers ----
@@ -422,19 +414,12 @@ module.exports = async function handler(req, res) {
       try {
         const buf = Buffer.from(data, 'base64');
         const safe = filename.replace(/[^a-z0-9._\-]/gi, '_');
-        const tk = blobToken();
-        const r = await fetch(`${BLOB_BASE}/images/${safe}`, {
-          method: 'PUT',
-          headers: {
-            Authorization: `Bearer ${tk}`,
-            'x-content-type': contentType,
-            'x-vercel-blob-add-random-suffix': '1',
-            'x-vercel-blob-access': 'public',
-          },
-          body: buf
+        const d = await blob().put(`images/${safe}`, buf, {
+          access: 'public',
+          contentType,
+          addRandomSuffix: true,
+          token: blobToken()
         });
-        const d = await r.json();
-        if (!r.ok) throw new Error(d.error || `Upload échoué (${r.status})`);
         return json(res, 200, { url: d.url, ok: true });
       } catch(e) { return json(res, 500, { error: e.message }); }
     }
