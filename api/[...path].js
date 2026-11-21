@@ -24,18 +24,19 @@ function blobToken() { return process.env.BLOB_READ_WRITE_TOKEN || ''; }
 async function blobGet(pathname) {
   const tk = blobToken();
   if (!tk) return null;
-  // List to get downloadUrl (pre-signed, works without additional auth for private stores)
-  const r = await fetch(`${BLOB_BASE}?prefix=${encodeURIComponent(pathname)}&limit=1&mode=folded`, {
+  // List all blobs with this prefix, pick the most recent one
+  const r = await fetch(`${BLOB_BASE}?prefix=${encodeURIComponent(pathname)}&limit=100`, {
     headers: { Authorization: `Bearer ${tk}` }
   });
   if (!r.ok) return null;
   const body = await r.json();
-  const blobs = body.blobs || [];
+  const blobs = (body.blobs || []).filter(b => b.pathname === pathname);
   if (!blobs.length) return null;
-  // downloadUrl is a presigned URL — fetch without additional auth
-  const downloadUrl = blobs[0].downloadUrl;
-  if (!downloadUrl) return null;
-  const cr = await fetch(downloadUrl);
+  // Sort by uploadedAt descending, take most recent
+  blobs.sort((a, b) => new Date(b.uploadedAt) - new Date(a.uploadedAt));
+  const blobUrl = blobs[0].url;
+  // Private blobs: fetch with Authorization header
+  const cr = await fetch(blobUrl, { headers: { Authorization: `Bearer ${tk}` } });
   if (!cr.ok) return null;
   return cr.text();
 }
@@ -372,16 +373,6 @@ module.exports = async function handler(req, res) {
         return json(res, 401, { error: 'Identifiant ou mot de passe incorrect.' });
       }
       return json(res, 200, { token: createToken(ADMIN_USER) });
-    }
-
-    // GET /api/admin/blob-debug (temp)
-    if (method === 'GET' && p === '/api/admin/blob-debug') {
-      if (!verifyToken(adminToken(req))) return json(res, 401, { error: 'Non autorisé.' });
-      const tk = blobToken();
-      if (!tk) return json(res, 200, { error: 'no token' });
-      const r = await fetch(`${BLOB_BASE}?limit=20`, { headers: { Authorization: `Bearer ${tk}` } });
-      const raw = await r.text();
-      return json(res, r.status, { status: r.status, body: raw.substring(0, 2000) });
     }
 
     // GET /api/admin/affiliates
