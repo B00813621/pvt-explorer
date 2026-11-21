@@ -34,6 +34,7 @@ async function blobGet(pathname) {
     const matches = blobs.filter(b => b.pathname === pathname);
     if (!matches.length) return null;
     matches.sort((a, b) => new Date(b.uploadedAt) - new Date(a.uploadedAt));
+    // downloadUrl is a presigned URL that works without auth for private blobs
     const r = await fetch(matches[0].downloadUrl);
     if (!r.ok) return null;
     return r.text();
@@ -43,12 +44,23 @@ async function blobGet(pathname) {
 async function blobPut(pathname, body, contentType = 'application/json') {
   const tk = blobToken();
   if (!tk) throw new Error('BLOB_READ_WRITE_TOKEN manquant');
-  await blob().put(pathname, body, {
-    access: 'public',
-    contentType,
-    addRandomSuffix: false,
-    token: tk
+  // Bypass @vercel/blob SDK which hard-codes access:'public' and rejects private stores.
+  // Use raw fetch to blob.vercel-storage.com matching the SDK's internal request format.
+  const bodyStr = typeof body === 'string' ? body : JSON.stringify(body);
+  const r = await fetch(`https://blob.vercel-storage.com/${pathname}`, {
+    method: 'PUT',
+    headers: {
+      'authorization': `Bearer ${tk}`,
+      'x-add-random-suffix': '0',
+      'x-content-type': contentType,
+      'content-type': contentType,
+    },
+    body: bodyStr,
   });
+  if (!r.ok) {
+    const text = await r.text();
+    throw new Error(text);
+  }
 }
 
 async function blobList(prefix) {
