@@ -44,23 +44,13 @@ async function blobGet(pathname) {
 async function blobPut(pathname, body, contentType = 'application/json') {
   const tk = blobToken();
   if (!tk) throw new Error('BLOB_READ_WRITE_TOKEN manquant');
-  // Bypass @vercel/blob SDK which hard-codes access:'public' and rejects private stores.
-  // Use raw fetch to blob.vercel-storage.com matching the SDK's internal request format.
   const bodyStr = typeof body === 'string' ? body : JSON.stringify(body);
-  const r = await fetch(`https://blob.vercel-storage.com/${pathname}`, {
-    method: 'PUT',
-    headers: {
-      'authorization': `Bearer ${tk}`,
-      'x-add-random-suffix': '0',
-      'x-content-type': contentType,
-      'content-type': contentType,
-    },
-    body: bodyStr,
+  await blob().put(pathname, bodyStr, {
+    access: 'private',
+    contentType,
+    addRandomSuffix: false,
+    token: tk,
   });
-  if (!r.ok) {
-    const text = await r.text();
-    throw new Error(text);
-  }
 }
 
 async function blobList(prefix) {
