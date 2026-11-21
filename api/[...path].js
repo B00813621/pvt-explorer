@@ -43,8 +43,8 @@ async function blobPut(pathname, body, contentType = 'application/json', pub = f
     Authorization: `Bearer ${tk}`,
     'x-content-type': contentType,
     'x-vercel-blob-add-random-suffix': '0',
+    'x-vercel-blob-access': pub ? 'public' : 'private',
   };
-  if (pub) headers['x-vercel-blob-access'] = 'public';
   const r = await fetch(`${BLOB_BASE}/${pathname}`, { method: 'PUT', headers, body });
   const d = await r.json();
   if (!r.ok) throw new Error(typeof d.error === 'string' ? d.error : JSON.stringify(d) || `Blob PUT échoué (${r.status})`);
