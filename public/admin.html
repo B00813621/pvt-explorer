@@ -168,6 +168,8 @@ tr:hover td{background:#f8fafc}
       <div class="nav-item" data-tab="images">🖼️ <span>Images</span></div>
       <div class="nav-section">Communauté</div>
       <div class="nav-item" data-tab="forum">💬 <span>Forum</span> <span class="nav-badge" id="forum-badge"></span></div>
+      <div class="nav-section">SEO</div>
+      <div class="nav-item" data-tab="blog">📝 <span>Blog / Astuces</span></div>
     </div>
     <div class="sid-footer">
       <button class="btn btn-ghost btn-full btn-sm" id="logout-btn">🚪 Déconnexion</button>
@@ -225,6 +227,37 @@ tr:hover td{background:#f8fafc}
         </div>
       </div>
 
+      <!-- BLOG TAB -->
+      <div id="tab-blog" hidden>
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Articles du blog</span>
+            <button class="btn btn-primary btn-sm" id="add-blog-btn">+ Nouvel article</button>
+          </div>
+          <div class="search-row">
+            <input type="text" id="blog-search" placeholder="🔍 Rechercher...">
+            <select id="blog-cat-filter">
+              <option value="">Toutes catégories</option>
+              <option value="vols">✈️ Vols</option><option value="hébergement">🏠 Hébergement</option>
+              <option value="assurance">🛡️ Assurance</option><option value="budget">💰 Budget</option>
+              <option value="visa">🛂 Visa</option><option value="travail">💼 Travail</option>
+              <option value="vie-pratique">🏙️ Vie pratique</option><option value="activités">🎯 Activités</option>
+            </select>
+            <select id="blog-status-filter">
+              <option value="">Tous les statuts</option>
+              <option value="published">✅ Publiés</option>
+              <option value="draft">📝 Brouillons</option>
+            </select>
+          </div>
+          <div class="tbl-wrap">
+            <table>
+              <thead><tr><th>Titre</th><th>Catégorie</th><th>Pays</th><th>Statut</th><th>Date</th><th>Actions</th></tr></thead>
+              <tbody id="blog-tbody"><tr><td colspan="6" class="loading-txt">Chargement...</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
       <!-- FORUM TAB -->
       <div id="tab-forum" hidden>
         <div class="card">
@@ -266,6 +299,41 @@ tr:hover td{background:#f8fafc}
     <div class="form-actions">
       <button class="btn btn-ghost" id="aff-cancel">Annuler</button>
       <button class="btn btn-primary" id="aff-save">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Blog form -->
+<div class="overlay" id="blog-overlay">
+  <div class="modal" style="max-width:640px">
+    <div class="modal-head">
+      <h3 id="blog-modal-title">Nouvel article</h3>
+      <button class="close-btn" id="blog-close">×</button>
+    </div>
+    <div class="field"><label>Titre *</label><input type="text" id="blog-title" placeholder="10 conseils pour trouver des vols pas chers"></div>
+    <div class="field"><label>Slug URL *</label><input type="text" id="blog-slug" placeholder="10-conseils-vols-pas-chers"></div>
+    <div class="field"><label>Description SEO (max 160 car.)</label><input type="text" id="blog-desc" maxlength="160" placeholder="Meta description affichée dans les résultats Google..."></div>
+    <div class="field">
+      <label>Catégorie</label>
+      <select id="blog-cat">
+        <option value="vols">✈️ Vols</option><option value="hébergement">🏠 Hébergement</option>
+        <option value="assurance">🛡️ Assurance</option><option value="budget">💰 Budget</option>
+        <option value="visa">🛂 Visa</option><option value="travail">💼 Travail</option>
+        <option value="vie-pratique">🏙️ Vie pratique</option><option value="activités">🎯 Activités</option>
+      </select>
+    </div>
+    <div class="field"><label>Pays (séparés par virgule)</label><input type="text" id="blog-countries" placeholder="australie, canada, nouvelle-zélande"></div>
+    <div class="field"><label>Image (URL complète)</label><input type="url" id="blog-image" placeholder="https://... (utilise l'onglet Images pour uploader)"></div>
+    <div class="field"><label>Contenu HTML</label><textarea id="blog-content" style="min-height:180px;font-family:monospace;font-size:.82rem" placeholder="<p>Contenu de l'article en HTML...</p>&#10;<h2>Sous-titre</h2>&#10;<p>Suite...</p>"></textarea></div>
+    <div class="field"><label>Temps de lecture (minutes)</label><input type="number" id="blog-reading-time" min="1" max="60" value="5"></div>
+    <div class="field" style="display:flex;align-items:center;gap:.7rem;padding:.4rem 0">
+      <input type="checkbox" id="blog-published" style="width:auto;accent-color:var(--accent)">
+      <label for="blog-published" style="margin:0;cursor:pointer">✅ Publier l'article</label>
+    </div>
+    <input type="hidden" id="blog-edit-id">
+    <div class="form-actions">
+      <button class="btn btn-ghost" id="blog-cancel">Annuler</button>
+      <button class="btn btn-primary" id="blog-save">Enregistrer</button>
     </div>
   </div>
 </div>
@@ -338,13 +406,14 @@ async function doLogin() {
 // ---- TABS ----
 function switchTab(tab) {
   document.querySelectorAll('.nav-item').forEach(el => el.classList.toggle('active', el.dataset.tab === tab));
-  ['affiliates','images','forum'].forEach(t => document.getElementById('tab-'+t).hidden = t !== tab);
-  const titles = { affiliates:'Liens affiliés', images:'Images', forum:'Forum' };
-  document.getElementById('page-title').textContent = titles[tab];
+  ['affiliates','images','forum','blog'].forEach(t => document.getElementById('tab-'+t).hidden = t !== tab);
+  const titles = { affiliates:'Liens affiliés', images:'Images', forum:'Forum', blog:'Blog / Astuces' };
+  document.getElementById('page-title').textContent = titles[tab] || tab;
   document.getElementById('topbar-info').textContent = '';
   if (tab === 'affiliates') loadAffiliates();
   if (tab === 'images') loadImages();
   if (tab === 'forum') loadForum();
+  if (tab === 'blog') loadBlog();
 }
 
 // ---- API HELPER ----
@@ -586,6 +655,150 @@ async function moderate(questionId, id, type, action) {
     await api('POST', '/api/admin/moderate', { questionId, id, type, action });
     toast(action === 'approve' ? '✓ Approuvé' : '✕ Rejeté', action === 'approve' ? 'ok' : 'err');
     loadForum();
+  } catch(e) { toast(e.message, 'err'); }
+}
+
+// ==============================
+// BLOG
+// ==============================
+let blogPosts = [];
+
+const catIcons = { vols:'✈️', hébergement:'🏠', assurance:'🛡️', budget:'💰', visa:'🛂', travail:'💼', 'vie-pratique':'🏙️', activités:'🎯' };
+
+function slugify(s) {
+  return s.toLowerCase().trim()
+    .replace(/[àáâãäå]/g,'a').replace(/[èéêë]/g,'e').replace(/[ìíîï]/g,'i')
+    .replace(/[òóôõö]/g,'o').replace(/[ùúûü]/g,'u').replace(/[ç]/g,'c').replace(/[ñ]/g,'n')
+    .replace(/[^a-z0-9\s-]/g,'').replace(/\s+/g,'-').replace(/-+/g,'-').slice(0,80);
+}
+
+async function loadBlog() {
+  try {
+    const d = await api('GET', '/api/admin/blog');
+    blogPosts = d.posts || [];
+    renderBlogList();
+    document.getElementById('topbar-info').textContent = `${blogPosts.length} article${blogPosts.length>1?'s':''}`;
+  } catch(e) {
+    document.getElementById('blog-tbody').innerHTML = `<tr><td colspan="6" class="empty">⚠️ ${esc(e.message)}</td></tr>`;
+  }
+}
+
+function renderBlogList() {
+  const q = document.getElementById('blog-search').value.toLowerCase();
+  const cat = document.getElementById('blog-cat-filter').value;
+  const status = document.getElementById('blog-status-filter').value;
+  const list = blogPosts.filter(p =>
+    (!q || p.title.toLowerCase().includes(q) || (p.description||'').toLowerCase().includes(q)) &&
+    (!cat || p.category === cat) &&
+    (!status || (status === 'published' ? p.published : !p.published))
+  );
+  const tbody = document.getElementById('blog-tbody');
+  if (!list.length) { tbody.innerHTML = `<tr><td colspan="6" class="empty">Aucun article</td></tr>`; return; }
+  tbody.innerHTML = list.map(p => `
+    <tr>
+      <td><strong>${esc(p.title)}</strong></td>
+      <td><span class="badge b-${esc(p.category)}">${catIcons[p.category]||''} ${esc(p.category||'—')}</span></td>
+      <td style="font-size:.78rem;color:var(--muted)">${esc((p.countries||[]).join(', ')||'—')}</td>
+      <td><span class="badge" style="background:${p.published?'#dcfce7':'#fef9c3'};color:${p.published?'#15803d':'#854d0e'}">${p.published?'✅ Publié':'📝 Brouillon'}</span></td>
+      <td style="font-size:.78rem;color:var(--muted)">${p.publishedAt ? new Date(p.publishedAt).toLocaleDateString('fr-FR') : '—'}</td>
+      <td><div style="display:flex;gap:.35rem;flex-wrap:wrap">
+        ${p.published ? `<a href="/blog/${esc(p.slug)}" target="_blank" class="btn btn-ghost btn-sm" title="Voir l'article">👁️</a>` : ''}
+        <button class="btn btn-ghost btn-sm" onclick="openBlogModal('${esc(p.id)}')">✏️</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteBlog('${esc(p.id)}')">🗑️</button>
+      </div></td>
+    </tr>`).join('');
+}
+
+document.getElementById('blog-search').oninput = renderBlogList;
+document.getElementById('blog-cat-filter').onchange = renderBlogList;
+document.getElementById('blog-status-filter').onchange = renderBlogList;
+
+document.getElementById('add-blog-btn').onclick = () => openBlogModal(null);
+document.getElementById('blog-close').onclick = closeBlogModal;
+document.getElementById('blog-cancel').onclick = closeBlogModal;
+document.getElementById('blog-save').onclick = saveBlog;
+
+document.getElementById('blog-title').addEventListener('input', function() {
+  const slugEl = document.getElementById('blog-slug');
+  if (!document.getElementById('blog-edit-id').value) {
+    slugEl.value = slugify(this.value);
+  }
+});
+
+function openBlogModal(id) {
+  document.getElementById('blog-modal-title').textContent = id ? 'Modifier l\'article' : 'Nouvel article';
+  if (id) {
+    const p = blogPosts.find(x => x.id === id);
+    if (!p) return;
+    document.getElementById('blog-title').value = p.title || '';
+    document.getElementById('blog-slug').value = p.slug || '';
+    document.getElementById('blog-desc').value = p.description || '';
+    document.getElementById('blog-cat').value = p.category || 'vols';
+    document.getElementById('blog-countries').value = (p.countries||[]).join(', ');
+    document.getElementById('blog-image').value = p.image || '';
+    document.getElementById('blog-content').value = p.content || '';
+    document.getElementById('blog-reading-time').value = p.readingTime || 5;
+    document.getElementById('blog-published').checked = !!p.published;
+    document.getElementById('blog-edit-id').value = id;
+  } else {
+    ['blog-title','blog-slug','blog-desc','blog-countries','blog-image','blog-content'].forEach(i => document.getElementById(i).value = '');
+    document.getElementById('blog-cat').value = 'vols';
+    document.getElementById('blog-reading-time').value = 5;
+    document.getElementById('blog-published').checked = false;
+    document.getElementById('blog-edit-id').value = '';
+  }
+  document.getElementById('blog-overlay').classList.add('open');
+  document.getElementById('blog-title').focus();
+}
+
+function closeBlogModal() { document.getElementById('blog-overlay').classList.remove('open'); }
+
+async function saveBlog() {
+  const title = document.getElementById('blog-title').value.trim();
+  const slug  = document.getElementById('blog-slug').value.trim();
+  if (!title || !slug) { toast('Titre et slug requis', 'err'); return; }
+  const eid = document.getElementById('blog-edit-id').value;
+  const countries = document.getElementById('blog-countries').value.split(',').map(s => s.trim()).filter(Boolean);
+  const post = {
+    id: eid || (Date.now().toString(36) + Math.random().toString(36).slice(2,5)),
+    title, slug,
+    description: document.getElementById('blog-desc').value.trim(),
+    category: document.getElementById('blog-cat').value,
+    countries,
+    image: document.getElementById('blog-image').value.trim(),
+    content: document.getElementById('blog-content').value,
+    readingTime: parseInt(document.getElementById('blog-reading-time').value) || 5,
+    published: document.getElementById('blog-published').checked,
+    author: 'PVT Explorer',
+    publishedAt: eid ? (blogPosts.find(x=>x.id===eid)?.publishedAt || new Date().toISOString().slice(0,10)) : new Date().toISOString().slice(0,10),
+    updatedAt: new Date().toISOString().slice(0,10)
+  };
+  if (eid) {
+    const i = blogPosts.findIndex(x => x.id === eid);
+    blogPosts[i] = post;
+  } else {
+    blogPosts.unshift(post);
+  }
+  try {
+    await api('POST', '/api/admin/blog', { posts: blogPosts });
+    closeBlogModal();
+    renderBlogList();
+    document.getElementById('topbar-info').textContent = `${blogPosts.length} article${blogPosts.length>1?'s':''}`;
+    toast(eid ? 'Article modifié ✓' : 'Article créé ✓');
+  } catch(e) {
+    if (eid) { const i = blogPosts.findIndex(x => x.id === eid); blogPosts[i] = blogPosts.find(x=>x.id===eid); }
+    else blogPosts.shift();
+    toast(e.message, 'err');
+  }
+}
+
+async function deleteBlog(id) {
+  if (!confirm('Supprimer cet article ?')) return;
+  blogPosts = blogPosts.filter(p => p.id !== id);
+  try {
+    await api('POST', '/api/admin/blog', { posts: blogPosts });
+    renderBlogList();
+    toast('Article supprimé');
   } catch(e) { toast(e.message, 'err'); }
 }
 </script>

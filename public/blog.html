@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Nos astuces PVT — Guides & conseils | PVT Explorer</title>
+<meta name="description" content="Guides pratiques, conseils de préparation et astuces pour réussir ton PVT : vols, hébergement, visa, budget, travail et bien plus.">
+<meta property="og:title" content="Nos astuces — PVT Explorer">
+<meta property="og:description" content="Guides et conseils pour préparer ton départ en PVT.">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#102b36;--muted:#60737a;--teal:#087e79;--mint:#dff4ed;--cream:#f7f8f4;--line:#e4eae6;--white:#fff;--shadow:0 8px 28px #183a3510}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,sans-serif;color:var(--ink);background:var(--cream);line-height:1.6}
+a{color:inherit;text-decoration:none;cursor:pointer}
+.wrap{width:min(1160px,calc(100% - 40px));margin:auto}
+.top{background:#0d3038;color:#d9eee8;font-size:12px;padding:9px 0}
+.top .wrap{display:flex;justify-content:space-between;gap:12px}
+.nav{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:20}
+.navin{height:76px;display:flex;align-items:center;justify-content:space-between;gap:24px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:850;font-size:20px;letter-spacing:-.7px}
+.logo{width:37px;height:37px;border-radius:12px;background:var(--teal);display:grid;place-items:center;color:white;font-size:20px}
+.brand span em{color:var(--teal);font-style:normal}
+.links{display:flex;gap:26px;font-size:14px;color:#53676d;font-weight:650}
+.links a:hover,.links a.active{color:var(--teal)}
+.btn{border:0;border-radius:999px;padding:12px 19px;font-weight:750;background:var(--teal);color:white;transition:.2s;cursor:pointer}
+.btn:hover{transform:translateY(-1px);background:#066b67}
+.hero-blog{padding:56px 0 40px;background:linear-gradient(135deg,#e8f5ef,#f7f8f4)}
+.kicker{color:var(--teal);font-weight:800;font-size:12px;text-transform:uppercase;letter-spacing:1px}
+.hero-blog h1{font-size:clamp(32px,4.5vw,52px);line-height:1.1;letter-spacing:-1.8px;margin:10px 0 10px}
+.hero-blog h1 span{color:var(--teal)}
+.hero-blog p{font-size:1.05rem;color:var(--muted);max-width:580px;line-height:1.65}
+.filter-bar{background:#fff;border:1px solid var(--line);border-radius:14px;padding:.9rem 1.1rem;margin:1.75rem 0;display:flex;gap:.65rem;flex-wrap:wrap;align-items:center;box-shadow:0 2px 10px #183a3508}
+.filter-bar input{flex:1;min-width:180px;border:1.5px solid var(--line);border-radius:8px;padding:.6rem .9rem;font-size:.9rem;font-family:inherit;outline:none;transition:border-color .2s}
+.filter-bar input:focus{border-color:var(--teal)}
+.filter-bar select{border:1.5px solid var(--line);border-radius:8px;padding:.6rem .9rem;font-size:.85rem;font-family:inherit;outline:none;background:#fff;cursor:pointer;transition:border-color .2s}
+.filter-bar select:focus{border-color:var(--teal)}
+.filter-count{font-size:.8rem;color:var(--muted);white-space:nowrap;margin-left:auto}
+.blog-section{padding:0 0 72px}
+.blog-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+.blog-card{background:#fff;border:1px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:0 4px 16px #183a3507;transition:.2s;display:flex;flex-direction:column}
+.blog-card:hover{transform:translateY(-3px);box-shadow:var(--shadow)}
+.card-img{height:185px;background:linear-gradient(135deg,#d9eee5,#b8d9d0);position:relative;overflow:hidden;flex-shrink:0}
+.card-img img{width:100%;height:100%;object-fit:cover;display:block}
+.card-img-ph{display:flex;align-items:center;justify-content:center;height:100%;font-size:3rem;color:#087e7955}
+.cat-badge{position:absolute;top:12px;left:12px;background:rgba(255,255,255,.92);color:var(--teal);border-radius:999px;padding:.25rem .75rem;font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.04em}
+.card-body{padding:1.1rem 1.25rem 1.25rem;display:flex;flex-direction:column;flex:1}
+.card-countries{display:flex;flex-wrap:wrap;gap:.35rem;margin-bottom:.6rem}
+.country-pill{background:var(--mint);color:var(--teal);border-radius:999px;padding:.2rem .6rem;font-size:.68rem;font-weight:600}
+.card-title{font-size:.98rem;font-weight:700;line-height:1.35;margin-bottom:.5rem;color:var(--ink)}
+.card-desc{font-size:.82rem;color:var(--muted);line-height:1.55;margin-bottom:auto;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.card-footer{display:flex;justify-content:space-between;align-items:center;margin-top:1rem;padding-top:.75rem;border-top:1px solid var(--line)}
+.card-meta{font-size:.7rem;color:#94a3b8}
+.card-link{font-size:.8rem;font-weight:800;color:var(--teal)}
+.card-link:hover{text-decoration:underline}
+.empty-state{text-align:center;padding:4rem 1rem;color:var(--muted);grid-column:1/-1}
+.empty-state .e-icon{font-size:2.5rem;margin-bottom:1rem;display:block}
+.skel{animation:pulse 1.4s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.skel-card{background:#fff;border:1px solid var(--line);border-radius:18px;overflow:hidden}
+.skel-img{height:185px;background:#e2e8f0}
+.skel-body{padding:1.1rem 1.25rem 1.25rem}
+.skel-line{height:13px;background:#e2e8f0;border-radius:6px;margin-bottom:10px}
+.skel-line.w80{width:80%}.skel-line.w60{width:60%}.skel-line.w40{width:40%}
+.footer{background:#0d3038;color:#d6e8e2;padding:36px 0 20px;margin-top:0}
+.footer .wrap{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px}
+.footer a{color:#a9c2bb;font-size:12px}.footer a:hover{color:#fff}
+@media(max-width:900px){.blog-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:600px){
+  .wrap{width:min(100% - 24px,1160px)}.links{display:none}.navin{height:62px}
+  .hero-blog{padding:36px 0 24px}.blog-grid{grid-template-columns:1fr}
+  .filter-bar{gap:.5rem}.filter-count{margin-left:0;width:100%}
+}
+</style>
+</head>
+<body>
+<div class="top"><div class="wrap"><span>🌍 Le guide indépendant du PVT pour les Français</span><span>Guides & conseils de préparation</span></div></div>
+<nav class="nav">
+  <div class="wrap navin">
+    <a class="brand" href="/"><span class="logo">✈</span><span>PVT <em>Explorer</em></span></a>
+    <div class="links">
+      <a href="/#destinations">Destinations</a>
+      <a href="/#comparateur">Comparateur</a>
+      <a href="/#communaute">Communauté</a>
+      <a href="/#assistant">Assistant IA</a>
+      <a href="/#boutique">Boutique</a>
+      <a href="/nos-astuces" class="active">Nos astuces</a>
+    </div>
+    <a class="btn" href="/#destinations">Trouver mon PVT ↗</a>
+  </div>
+</nav>
+
+<section class="hero-blog">
+  <div class="wrap">
+    <div class="kicker">✦ Guides & conseils</div>
+    <h1>Nos astuces pour<br><span>bien préparer ton PVT</span></h1>
+    <p>Des guides pratiques pour t'aider à choisir ta destination, préparer ton départ et profiter de ton expérience à l'étranger.</p>
+  </div>
+</section>
+
+<div class="wrap">
+  <div class="filter-bar">
+    <input type="text" id="search-input" placeholder="🔍 Rechercher un article...">
+    <select id="country-filter">
+      <option value="">Tous les pays</option>
+      <option value="australie">🇦🇺 Australie</option>
+      <option value="canada">🇨🇦 Canada</option>
+      <option value="nouvelle-zélande">🇳🇿 Nouvelle-Zélande</option>
+      <option value="japon">🇯🇵 Japon</option>
+      <option value="corée-du-sud">🇰🇷 Corée du Sud</option>
+      <option value="argentine">🇦🇷 Argentine</option>
+      <option value="brésil">🇧🇷 Brésil</option>
+      <option value="chili">🇨🇱 Chili</option>
+      <option value="colombie">🇨🇴 Colombie</option>
+      <option value="hong-kong">🇭🇰 Hong Kong</option>
+      <option value="mexique">🇲🇽 Mexique</option>
+      <option value="taïwan">🇹🇼 Taïwan</option>
+      <option value="uruguay">🇺🇾 Uruguay</option>
+    </select>
+    <select id="category-filter">
+      <option value="">Toutes catégories</option>
+      <option value="vols">✈️ Vols</option>
+      <option value="hébergement">🏠 Hébergement</option>
+      <option value="assurance">🛡️ Assurance</option>
+      <option value="budget">💰 Budget</option>
+      <option value="visa">🛂 Visa</option>
+      <option value="travail">💼 Travail</option>
+      <option value="vie-pratique">🏙️ Vie pratique</option>
+      <option value="activités">🎯 Activités</option>
+    </select>
+    <span class="filter-count" id="result-count"></span>
+  </div>
+</div>
+
+<section class="blog-section">
+  <div class="wrap">
+    <div class="blog-grid" id="blog-grid">
+      <div class="skel-card skel"><div class="skel-img"></div><div class="skel-body"><div class="skel-line w40"></div><div class="skel-line w80"></div><div class="skel-line w60"></div></div></div>
+      <div class="skel-card skel"><div class="skel-img"></div><div class="skel-body"><div class="skel-line w40"></div><div class="skel-line w80"></div><div class="skel-line w60"></div></div></div>
+      <div class="skel-card skel"><div class="skel-img"></div><div class="skel-body"><div class="skel-line w40"></div><div class="skel-line w80"></div><div class="skel-line w60"></div></div></div>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="wrap">
+    <a class="brand" href="/"><span class="logo">✈</span><span style="color:white">PVT <em>Explorer</em></span></a>
+    <div style="display:flex;gap:20px"><a href="/">Accueil</a><a href="/#destinations">Destinations</a><a href="/#communaute">Communauté</a></div>
+  </div>
+</footer>
+
+<script>
+let allPosts = [];
+const catIcons = { vols:'✈️', hébergement:'🏠', assurance:'🛡️', budget:'💰', visa:'🛂', travail:'💼', 'vie-pratique':'🏙️', activités:'🎯' };
+
+function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+function fmtDate(d) {
+  if (!d) return '';
+  return new Date(d).toLocaleDateString('fr-FR', { year:'numeric', month:'short', day:'numeric' });
+}
+
+function renderPosts(posts) {
+  const grid = document.getElementById('blog-grid');
+  document.getElementById('result-count').textContent = posts.length + ' article' + (posts.length > 1 ? 's' : '');
+  if (!posts.length) {
+    grid.innerHTML = `<div class="empty-state"><span class="e-icon">📭</span><p>Aucun article trouvé avec ces filtres.</p><p style="font-size:.8rem;margin-top:.5rem">Essaie d'autres critères ou reviens bientôt pour de nouveaux contenus.</p></div>`;
+    return;
+  }
+  grid.innerHTML = posts.map(p => {
+    const imgHtml = p.image
+      ? `<img src="${esc(p.image)}" alt="${esc(p.title)}" loading="lazy">`
+      : `<div class="card-img-ph">${catIcons[p.category] || '📝'}</div>`;
+    const countriesPills = (p.countries || []).map(c => `<span class="country-pill">${esc(c)}</span>`).join('');
+    const meta = [p.readingTime ? p.readingTime + ' min' : '', fmtDate(p.publishedAt)].filter(Boolean).join(' · ');
+    return `<article class="blog-card">
+      <div class="card-img">
+        ${imgHtml}
+        ${p.category ? `<span class="cat-badge">${catIcons[p.category]||''} ${esc(p.category)}</span>` : ''}
+      </div>
+      <div class="card-body">
+        ${countriesPills ? `<div class="card-countries">${countriesPills}</div>` : ''}
+        <h2 class="card-title">${esc(p.title)}</h2>
+        <p class="card-desc">${esc(p.description || '')}</p>
+        <div class="card-footer">
+          <span class="card-meta">${esc(meta)}</span>
+          <a href="/blog/${esc(p.slug)}" class="card-link">Lire l'article →</a>
+        </div>
+      </div>
+    </article>`;
+  }).join('');
+}
+
+function applyFilters() {
+  const q = document.getElementById('search-input').value.toLowerCase();
+  const country = document.getElementById('country-filter').value;
+  const category = document.getElementById('category-filter').value;
+  renderPosts(allPosts.filter(p => {
+    if (country && !(p.countries || []).includes(country)) return false;
+    if (category && p.category !== category) return false;
+    if (q && !p.title.toLowerCase().includes(q) && !(p.description||'').toLowerCase().includes(q)) return false;
+    return true;
+  }));
+}
+
+async function loadPosts() {
+  try {
+    const r = await fetch('/api/blog');
+    const data = await r.json();
+    allPosts = data.posts || [];
+    applyFilters();
+  } catch {
+    document.getElementById('blog-grid').innerHTML = `<div class="empty-state"><span class="e-icon">⚠️</span><p>Impossible de charger les articles pour l'instant.</p></div>`;
+    document.getElementById('result-count').textContent = '';
+  }
+}
+
+document.getElementById('search-input').addEventListener('input', applyFilters);
+document.getElementById('country-filter').addEventListener('change', applyFilters);
+document.getElementById('category-filter').addEventListener('change', applyFilters);
+
+loadPosts();
+</script>
+</body>
+</html>

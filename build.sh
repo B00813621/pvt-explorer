@@ -27,6 +27,8 @@ for VERCEL_OUT in "/vercel/output" "$PWD/.vercel/output"; do
   "routes": [
     { "src": "/go/(?<slug>[^/]*)", "dest": "/api/go?slug=$slug" },
     { "src": "/admin$", "dest": "/admin.html" },
+    { "src": "/nos-astuces$", "dest": "/blog.html" },
+    { "src": "/blog/([^/]+)", "dest": "/api/catchall?__p=blog/$1" },
     { "src": "/api/(.*)", "dest": "/api/catchall?__p=$1" },
     { "handle": "filesystem" }
   ]

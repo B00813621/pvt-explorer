@@ -182,6 +182,76 @@ function readBody(req, max = 12000) {
   });
 }
 
+function htmlEsc(s) {
+  return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+function renderBlogPost(post) {
+  const title = htmlEsc(post.title || '');
+  const desc = htmlEsc(post.description || '');
+  const pubDate = post.publishedAt ? new Date(post.publishedAt).toLocaleDateString('fr-FR', { year: 'numeric', month: 'long', day: 'numeric' }) : '';
+  const countries = (post.countries || []).map(c => `<span class="tag-pill">${htmlEsc(c)}</span>`).join(' ');
+  const catIcons = { vols:'✈️', hébergement:'🏠', assurance:'🛡️', budget:'💰', visa:'🛂', travail:'💼', 'vie-pratique':'🏙️', activités:'🎯' };
+  const catIcon = catIcons[post.category] || '📝';
+  const readTime = post.readingTime ? `${post.readingTime} min · ` : '';
+  const imgHtml = post.image ? `<img src="${htmlEsc(post.image)}" alt="${title}" class="hero-img" loading="eager">` : '';
+  const jsonLd = JSON.stringify({
+    '@context': 'https://schema.org', '@type': 'Article',
+    headline: post.title, description: post.description,
+    ...(post.image ? { image: post.image } : {}),
+    datePublished: post.publishedAt,
+    dateModified: post.updatedAt || post.publishedAt,
+    author: { '@type': 'Organization', name: 'PVT Explorer' },
+    publisher: { '@type': 'Organization', name: 'PVT Explorer' }
+  });
+  return `<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>${title} | PVT Explorer</title>
+<meta name="description" content="${desc}">
+<meta property="og:title" content="${title}">
+<meta property="og:description" content="${desc}">
+${post.image ? `<meta property="og:image" content="${htmlEsc(post.image)}">` : ''}
+<meta property="og:type" content="article">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://pvt-explorer.vercel.app/blog/${htmlEsc(post.slug)}">
+<script type="application/ld+json">${jsonLd}<\/script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#102b36;--muted:#60737a;--teal:#087e79;--mint:#dff4ed;--cream:#f7f8f4;--line:#e4eae6}
+*{box-sizing:border-box;margin:0;padding:0}body{font-family:Inter,ui-sans-serif,system-ui,sans-serif;color:var(--ink);background:var(--cream);line-height:1.6}a{color:inherit;text-decoration:none}
+.wrap{width:min(760px,calc(100% - 40px));margin:auto}.nav{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:20}.navin{height:72px;display:flex;align-items:center;justify-content:space-between;gap:24px}.brand{display:flex;align-items:center;gap:10px;font-weight:850;font-size:19px;letter-spacing:-.6px}.logo{width:34px;height:34px;border-radius:10px;background:var(--teal);display:grid;place-items:center;color:white;font-size:18px}.brand em{color:var(--teal);font-style:normal}.back-link{font-size:13px;color:var(--teal);font-weight:700}.back-link:hover{text-decoration:underline}
+.article-wrap{padding:48px 0 80px}.breadcrumb{font-size:12px;color:var(--muted);margin-bottom:1.5rem}.breadcrumb a{color:var(--teal);font-weight:600}.article-meta{display:flex;flex-wrap:wrap;align-items:center;gap:.5rem;margin-bottom:1rem;font-size:.8rem;color:var(--muted)}.cat-badge{background:var(--mint);color:var(--teal);border-radius:999px;padding:.25rem .75rem;font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.04em}.tag-pill{background:#f1f5f9;color:#475569;border-radius:999px;padding:.2rem .6rem;font-size:.72rem;font-weight:600}
+h1.article-title{font-size:clamp(28px,5vw,42px);line-height:1.15;letter-spacing:-1.5px;margin-bottom:1rem}.article-desc{font-size:1.05rem;color:var(--muted);line-height:1.7;margin-bottom:1.75rem;border-left:3px solid var(--teal);padding-left:1rem}.hero-img{width:100%;border-radius:16px;margin-bottom:2rem;max-height:420px;object-fit:cover}
+.article-content{font-size:1rem;line-height:1.85;color:#1e3a44}.article-content h2{font-size:1.4rem;margin:2rem 0 .75rem;letter-spacing:-.5px}.article-content h3{font-size:1.15rem;margin:1.5rem 0 .6rem}.article-content p{margin-bottom:1.1rem}.article-content ul,.article-content ol{margin:.75rem 0 1.1rem 1.5rem}.article-content li{margin-bottom:.4rem}.article-content a{color:var(--teal);text-decoration:underline}.article-content blockquote{border-left:3px solid var(--teal);padding:.75rem 1rem;background:var(--mint);border-radius:0 10px 10px 0;margin:1.25rem 0;font-style:italic;color:#2a5a52}.article-content img{max-width:100%;border-radius:10px;margin:1rem 0}
+.divider{border:0;border-top:1px solid var(--line);margin:2.5rem 0}.back-block{padding:1.5rem;background:var(--mint);border-radius:14px;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap}.back-block p{font-size:.9rem;color:#2a5a52}.back-block a{background:var(--teal);color:#fff;border-radius:999px;padding:.65rem 1.25rem;font-size:.85rem;font-weight:700;white-space:nowrap}.back-block a:hover{background:#066b67}
+.footer{background:#0d3038;color:#d6e8e2;padding:28px 0}.footer .wrap{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}.footer a{color:#a9c2bb;font-size:12px}.footer a:hover{color:#fff}
+@media(max-width:600px){.wrap{width:min(100% - 24px,760px)}.navin{height:60px}.article-wrap{padding:32px 0 60px}}
+</style>
+</head>
+<body>
+<nav class="nav"><div class="wrap navin"><a class="brand" href="/"><span class="logo">✈</span><span>PVT <em>Explorer</em></span></a><a class="back-link" href="/nos-astuces">← Nos astuces</a></div></nav>
+<main class="article-wrap"><div class="wrap">
+<nav class="breadcrumb"><a href="/">Accueil</a> › <a href="/nos-astuces">Nos astuces</a> › ${title}</nav>
+<div class="article-meta">
+  ${post.category ? `<span class="cat-badge">${catIcon} ${htmlEsc(post.category)}</span>` : ''}
+  ${countries}
+  <span>${readTime}${pubDate}</span>
+</div>
+<h1 class="article-title">${title}</h1>
+${post.description ? `<p class="article-desc">${desc}</p>` : ''}
+${imgHtml}
+<div class="article-content">${post.content || '<p>Contenu à venir.</p>'}</div>
+<hr class="divider">
+<div class="back-block"><p>D'autres questions sur ton PVT ?</p><a href="/nos-astuces">Voir tous nos articles →</a></div>
+</div></main>
+<footer class="footer"><div class="wrap"><a class="brand" href="/"><span class="logo">✈</span><span style="color:white">PVT <em>Explorer</em></span></a><div style="display:flex;gap:16px"><a href="/">Accueil</a><a href="/nos-astuces">Nos astuces</a></div></div></footer>
+</body></html>`;
+}
+
 module.exports = async function handler(req, res) {
   const { method } = req;
   const url = new URL(req.url, `https://${req.headers.host || 'localhost'}`);
@@ -436,6 +506,77 @@ module.exports = async function handler(req, res) {
       if (!b.url) return json(res, 400, { error: 'URL requis.' });
       try { await blobDelete(b.url); return json(res, 200, { ok: true }); }
       catch(e) { return json(res, 500, { error: e.message }); }
+    }
+
+    // GET /api/blog — public list of published posts
+    if (method === 'GET' && p === '/api/blog') {
+      try {
+        const raw = blobToken() ? await blobGet('data/blog-posts.json') : null;
+        const data = raw ? JSON.parse(raw) : { posts: [] };
+        const country = url.searchParams.get('country') || '';
+        const category = url.searchParams.get('category') || '';
+        const q = (url.searchParams.get('q') || '').toLowerCase();
+        let posts = (data.posts || []).filter(post => post.published);
+        if (country) posts = posts.filter(post => (post.countries || []).includes(country));
+        if (category) posts = posts.filter(post => post.category === category);
+        if (q) posts = posts.filter(post =>
+          post.title.toLowerCase().includes(q) ||
+          (post.description || '').toLowerCase().includes(q) ||
+          (post.tags || []).some(t => t.toLowerCase().includes(q))
+        );
+        posts.sort((a, b) => new Date(b.publishedAt) - new Date(a.publishedAt));
+        return json(res, 200, {
+          posts: posts.map(post => ({
+            id: post.id, slug: post.slug, title: post.title,
+            description: post.description, countries: post.countries,
+            category: post.category, tags: post.tags, image: post.image,
+            publishedAt: post.publishedAt, author: post.author, readingTime: post.readingTime
+          }))
+        });
+      } catch (e) { return json(res, 500, { error: e.message }); }
+    }
+
+    // GET /api/blog/:slug — SSR HTML for browsers, JSON for API calls
+    const blogSlugMatch = p.match(/^\/api\/blog\/([^/]+)$/);
+    if (method === 'GET' && blogSlugMatch) {
+      const slug = blogSlugMatch[1];
+      try {
+        const raw = blobToken() ? await blobGet('data/blog-posts.json') : null;
+        const data = raw ? JSON.parse(raw) : { posts: [] };
+        const post = (data.posts || []).find(post => post.slug === slug && post.published);
+        const accept = req.headers.accept || '';
+        if (!post) {
+          if (accept.includes('text/html')) {
+            res.writeHead(404, { 'Content-Type': 'text/html; charset=utf-8' });
+            return res.end(`<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><title>Article introuvable | PVT Explorer</title><style>body{font-family:sans-serif;display:flex;align-items:center;justify-content:center;min-height:100vh;background:#f7f8f4;color:#102b36;text-align:center}</style></head><body><div><p style="font-size:3rem">📭</p><h1>Article introuvable</h1><p style="margin:1rem 0;color:#60737a">Cet article n'existe pas ou n'est plus disponible.</p><a href="/nos-astuces" style="color:#087e79;font-weight:700">← Voir tous les articles</a></div></body></html>`);
+          }
+          return json(res, 404, { error: 'Article introuvable.' });
+        }
+        if (accept.includes('text/html')) {
+          res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'public, max-age=3600' });
+          return res.end(renderBlogPost(post));
+        }
+        return json(res, 200, post);
+      } catch (e) { return json(res, 500, { error: e.message }); }
+    }
+
+    // GET /api/admin/blog — all posts including drafts
+    if (method === 'GET' && p === '/api/admin/blog') {
+      if (!verifyToken(adminToken(req))) return json(res, 401, { error: 'Non autorisé.' });
+      try {
+        const raw = blobToken() ? await blobGet('data/blog-posts.json') : null;
+        return json(res, 200, raw ? JSON.parse(raw) : { posts: [] });
+      } catch (e) { return json(res, 500, { error: e.message }); }
+    }
+
+    // POST /api/admin/blog — save posts array
+    if (method === 'POST' && p === '/api/admin/blog') {
+      if (!verifyToken(adminToken(req))) return json(res, 401, { error: 'Non autorisé.' });
+      const b = await readBody(req, 500000);
+      try {
+        if (blobToken()) await blobPut('data/blog-posts.json', JSON.stringify(b));
+        return json(res, 200, { ok: true });
+      } catch (e) { return json(res, 500, { error: e.message }); }
     }
 
     return json(res, 404, { error: 'Route introuvable.' });
