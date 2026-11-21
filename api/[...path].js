@@ -374,8 +374,13 @@ module.exports = async function handler(req, res) {
     if (method === 'GET' && p === '/api/admin/affiliates') {
       if (!verifyToken(adminToken(req))) return json(res, 401, { error: 'Non autorisé.' });
       try {
-        const raw = await blobGet('data/affiliates.json');
-        return json(res, 200, raw ? JSON.parse(raw) : { affiliates: [] });
+        if (blobToken()) {
+          const raw = await blobGet('data/affiliates.json');
+          return json(res, 200, raw ? JSON.parse(raw) : { affiliates: [] });
+        }
+        const affFile = path.join(DATA_DIR, 'affiliates.json');
+        if (fs.existsSync(affFile)) return json(res, 200, JSON.parse(fs.readFileSync(affFile, 'utf8')));
+        return json(res, 200, { affiliates: [] });
       } catch(e) { return json(res, 500, { error: e.message }); }
     }
 
@@ -384,7 +389,11 @@ module.exports = async function handler(req, res) {
       if (!verifyToken(adminToken(req))) return json(res, 401, { error: 'Non autorisé.' });
       const b = await readBody(req, 100000);
       try {
-        await blobPut('data/affiliates.json', JSON.stringify(b));
+        if (blobToken()) {
+          await blobPut('data/affiliates.json', JSON.stringify(b));
+        } else {
+          fs.writeFileSync(path.join(DATA_DIR, 'affiliates.json'), JSON.stringify(b));
+        }
         return json(res, 200, { ok: true });
       } catch(e) { return json(res, 500, { error: e.message }); }
     }
