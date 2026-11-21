@@ -32,11 +32,17 @@ async function blobGet(pathname) {
   const body = await r.json();
   const blobs = (body.blobs || []).filter(b => b.pathname === pathname);
   if (!blobs.length) return null;
-  // Sort by uploadedAt descending, take most recent
   blobs.sort((a, b) => new Date(b.uploadedAt) - new Date(a.uploadedAt));
   const blobUrl = blobs[0].url;
-  // Private blobs: fetch with Authorization header
-  const cr = await fetch(blobUrl, { headers: { Authorization: `Bearer ${tk}` } });
+  // Use Vercel Blob head API to get a signed downloadUrl
+  const headR = await fetch(`${BLOB_BASE}?url=${encodeURIComponent(blobUrl)}`, {
+    headers: { Authorization: `Bearer ${tk}` }
+  });
+  if (!headR.ok) return null;
+  const meta = await headR.json();
+  const downloadUrl = meta.downloadUrl || meta.url;
+  if (!downloadUrl) return null;
+  const cr = await fetch(downloadUrl);
   if (!cr.ok) return null;
   return cr.text();
 }
