@@ -1,5 +1,9 @@
 {
   "rewrites": [
     { "source": "/go/:slug", "destination": "/api/go?slug=:slug" }
-  ]
+  ],
+  "functions": {
+    "api/[...path].js": { "runtime": "nodejs20.x" },
+    "api/go.js": { "runtime": "nodejs20.x" }
+  }
 }
