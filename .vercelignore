@@ -1,4 +1,6 @@
+server.js
 Dockerfile
 docker-compose.yml
 data/
 README.txt
+package.json
