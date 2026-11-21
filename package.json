@@ -1,0 +1,13 @@
+{
+  "name": "pvt-explorer",
+  "version": "3.0.0",
+  "private": true,
+  "description": "Plateforme de préparation PVT avec forum modéré et assistant IA",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
