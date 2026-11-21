@@ -1,7 +1,11 @@
 {
-  "outputDirectory": "public",
-  "rewrites": [
-    { "source": "/go/:slug", "destination": "/api/go?slug=:slug" },
-    { "source": "/admin", "destination": "/admin.html" }
+  "builds": [
+    { "src": "public/**", "use": "@vercel/static" },
+    { "src": "api/**/*.js", "use": "@vercel/node" }
+  ],
+  "routes": [
+    { "src": "/go/(?<slug>[^/]*)", "dest": "/api/go?slug=$slug" },
+    { "src": "/admin", "dest": "/public/admin.html" },
+    { "src": "/(.*)", "dest": "/public/$1" }
   ]
 }
