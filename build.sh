@@ -2,10 +2,12 @@
 set -e
 
 echo "=== Build starting, CWD: $(pwd) ==="
-echo "=== Contents of /vercel: $(ls /vercel/ 2>/dev/null || echo 'not found') ==="
 
-# Try to understand the right path
 VERCEL_OUT=/vercel/output
+
+# Remove pre-existing builds.json (Vercel v2 format) so config.json (v3) takes effect
+rm -f "$VERCEL_OUT/builds.json"
+
 echo "=== Creating output at $VERCEL_OUT ==="
 
 mkdir -p "$VERCEL_OUT/static"
