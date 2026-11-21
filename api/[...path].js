@@ -379,7 +379,7 @@ module.exports = async function handler(req, res) {
       if (!verifyToken(adminToken(req))) return json(res, 401, { error: 'Non autorisé.' });
       const tk = blobToken();
       if (!tk) return json(res, 200, { error: 'no token' });
-      const r = await fetch(`${BLOB_BASE}?prefix=data%2Faffiliates.json&limit=5`, { headers: { Authorization: `Bearer ${tk}` } });
+      const r = await fetch(`${BLOB_BASE}?limit=20`, { headers: { Authorization: `Bearer ${tk}` } });
       const raw = await r.text();
       return json(res, r.status, { status: r.status, body: raw.substring(0, 2000) });
     }
