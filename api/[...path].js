@@ -40,11 +40,11 @@ async function blobGet(pathname) {
   } catch { return null; }
 }
 
-async function blobPut(pathname, body, contentType = 'application/json', pub = false) {
+async function blobPut(pathname, body, contentType = 'application/json') {
   const tk = blobToken();
   if (!tk) throw new Error('BLOB_READ_WRITE_TOKEN manquant');
   await blob().put(pathname, body, {
-    access: pub ? 'public' : 'private',
+    access: 'public',
     contentType,
     addRandomSuffix: false,
     token: tk
