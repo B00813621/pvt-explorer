@@ -1,8 +1,593 @@
-<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Administration — PVT Explorer</title><style>body{font-family:system-ui,sans-serif;background:#f5f7f4;color:#17343b;margin:0;padding:24px}.wrap{max-width:900px;margin:auto}.panel{background:white;border:1px solid #dfe8e2;border-radius:16px;padding:20px;margin:16px 0}.row{display:flex;gap:10px;flex-wrap:wrap}input{padding:12px;border:1px solid #ccd8d1;border-radius:9px;min-width:0;flex:1}button{border:0;border-radius:9px;padding:11px 15px;background:#087e79;color:white;font-weight:700;cursor:pointer}.reject{background:#8c3f38}.item{border-top:1px solid #e5ece7;padding:16px 0}.muted{color:#60737a;font-size:13px}.error{color:#9d332b}</style></head><body><main class="wrap"><h1>Administration PVT Explorer</h1><p class="muted">Modération des questions et réponses publiées sur le forum. Le token reste dans cette session de navigateur.</p><section class="panel"><h2>Connexion administrateur</h2><div class="row"><input id="token" type="password" placeholder="ADMIN_TOKEN" autocomplete="current-password"><button id="save">Se connecter</button></div><p id="status" class="muted"></p></section><section class="panel"><div class="row" style="justify-content:space-between;align-items:center"><h2>Contenus à modérer</h2><button id="refresh">Actualiser</button></div><div id="items" class="muted">Connecte-toi pour charger la file de modération.</div></section><section class="panel"><h2>Statistiques simples</h2><div id="stats" class="muted">Disponibles après connexion.</div></section></main><script>
-let token=sessionStorage.getItem('pvtAdminToken')||'';const $=id=>document.getElementById(id);$('token').value=token;
-async function api(path,body){const r=await fetch(path,{method:body?'POST':'GET',headers:{'Authorization':'Bearer '+token,'Content-Type':'application/json'},body:body?JSON.stringify(body):undefined});const d=await r.json();if(!r.ok)throw new Error(d.error||'Erreur serveur');return d;}
-async function load(){if(!token){$('status').textContent='Saisis ton token administrateur.';return;}try{const d=await api('/api/admin/pending');$('status').textContent='Connecté.';$('items').innerHTML=d.items.length?d.items.map(x=>`<article class="item"><b>${x.type==='question'?'Question':'Réponse'} — ${esc(x.title||'')}</b><p>${esc(x.body||'')}</p><p class="muted">${esc(x.author||'')} · ${esc(x.country||'')} · ${new Date(x.createdAt).toLocaleString('fr-FR')}</p><div class="row"><button onclick="moderate('${x.type}','${x.questionId}','${x.id}','approve')">Publier</button><button class="reject" onclick="moderate('${x.type}','${x.questionId}','${x.id}','reject')">Refuser</button></div></article>`).join(''):'Aucun contenu en attente.';const st=await api('/api/admin/stats');$('stats').textContent=`Questions : ${st.questions} · Publiées : ${st.approved} · En attente : ${st.pending} · Clics sortants : `+Object.entries(st.clicks||{}).map(([k,v])=>k+' '+v).join(' · ');}catch(e){$('status').innerHTML='<span class="error">'+esc(e.message)+'</span>';}}
-function esc(v){return String(v||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
-window.moderate=async(type,questionId,id,action)=>{try{await api('/api/admin/moderate',{type,questionId,id,action});await load();}catch(e){alert(e.message)}};
-$('save').onclick=()=>{token=$('token').value.trim();sessionStorage.setItem('pvtAdminToken',token);load()};$('refresh').onclick=load;if(token)load();
-</script></body></html>
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PVT Explorer — Admin</title>
+<meta name="robots" content="noindex, nofollow">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f1f5f9;--sidebar:#0f172a;--sid-hover:#1e293b;--sid-active:#2563eb;
+  --card:#fff;--border:#e2e8f0;--text:#0f172a;--muted:#64748b;
+  --accent:#3b82f6;--accent-d:#2563eb;--danger:#ef4444;--success:#16a34a;
+}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+
+/* LOGIN */
+#login-screen{display:flex;align-items:center;justify-content:center;min-height:100vh;background:linear-gradient(135deg,#0f172a,#1e3a5f)}
+.login-box{background:#fff;border-radius:16px;padding:2.5rem;width:100%;max-width:380px;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.login-logo{text-align:center;margin-bottom:2rem}
+.login-logo .emoji{font-size:2.5rem;display:block;margin-bottom:.5rem}
+.login-logo h1{font-size:1.3rem;font-weight:700}
+.login-logo p{color:var(--muted);font-size:.85rem;margin-top:.2rem}
+.fld{margin-bottom:1rem}
+.fld label{display:block;font-size:.85rem;font-weight:500;margin-bottom:.35rem}
+.fld input{width:100%;padding:.7rem 1rem;border:1.5px solid var(--border);border-radius:8px;font-size:.95rem;outline:none;transition:border-color .2s}
+.fld input:focus{border-color:var(--accent)}
+.err{background:#fee2e2;color:#991b1b;padding:.7rem 1rem;border-radius:8px;font-size:.85rem;margin-bottom:1rem;display:none}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:.4rem;padding:.65rem 1.1rem;border:none;border-radius:8px;font-size:.85rem;font-weight:600;cursor:pointer;transition:all .15s;text-decoration:none;white-space:nowrap}
+.btn-primary{background:var(--accent);color:#fff}.btn-primary:hover{background:var(--accent-d)}
+.btn-danger{background:var(--danger);color:#fff}.btn-danger:hover{background:#dc2626}
+.btn-ghost{background:var(--border);color:var(--text)}.btn-ghost:hover{background:#cbd5e1}
+.btn-sm{padding:.35rem .75rem;font-size:.78rem}
+.btn-full{width:100%;justify-content:center}
+
+/* LAYOUT */
+#dashboard{display:flex;min-height:100vh}
+#sidebar{width:230px;background:var(--sidebar);color:#fff;display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;z-index:100}
+.sid-header{padding:1.4rem 1.2rem;border-bottom:1px solid rgba(255,255,255,.1)}
+.sid-header h1{font-size:1rem;font-weight:700}
+.sid-header p{font-size:.72rem;color:#94a3b8;margin-top:.15rem}
+.sid-nav{flex:1;padding:.8rem .6rem}
+.nav-section{font-size:.62rem;text-transform:uppercase;letter-spacing:.1em;color:#475569;padding:.4rem .6rem;margin-top:.8rem}
+.nav-item{display:flex;align-items:center;gap:.7rem;padding:.6rem .8rem;border-radius:8px;cursor:pointer;transition:background .15s;font-size:.85rem;color:#94a3b8;margin-bottom:.2rem;position:relative}
+.nav-item:hover{background:var(--sid-hover);color:#fff}
+.nav-item.active{background:var(--sid-active);color:#fff}
+.nav-badge{background:#ef4444;color:#fff;border-radius:999px;padding:.05rem .45rem;font-size:.65rem;margin-left:auto;display:none}
+.sid-footer{padding:.8rem .6rem;border-top:1px solid rgba(255,255,255,.1)}
+
+#main{margin-left:230px;flex:1;display:flex;flex-direction:column}
+.topbar{background:#fff;border-bottom:1px solid var(--border);padding:.9rem 1.75rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50}
+.topbar h2{font-size:1rem;font-weight:600}
+.content{padding:1.75rem}
+
+/* CARDS */
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.5rem;margin-bottom:1.5rem}
+.card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.2rem}
+.card-title{font-size:.95rem;font-weight:600}
+
+/* TABLE */
+.tbl-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:.85rem}
+th{text-align:left;padding:.65rem 1rem;background:var(--bg);font-weight:600;color:var(--muted);font-size:.72rem;text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid var(--border)}
+td{padding:.7rem 1rem;border-bottom:1px solid var(--border);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#f8fafc}
+
+/* BADGES */
+.badge{display:inline-block;padding:.15rem .55rem;border-radius:999px;font-size:.68rem;font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+.b-vols{background:#dbeafe;color:#1d4ed8}
+.b-hébergement{background:#dcfce7;color:#15803d}
+.b-assurance{background:#fef9c3;color:#854d0e}
+.b-esim{background:#fce7f3;color:#9d174d}
+.b-activités{background:#ede9fe;color:#6d28d9}
+.b-amazon{background:#fff7ed;color:#c2410c}
+.b-autre{background:#f1f5f9;color:#475569}
+
+/* SEARCH */
+.search-row{display:flex;gap:.6rem;margin-bottom:1rem;flex-wrap:wrap}
+.search-row input,.search-row select{padding:.6rem .9rem;border:1.5px solid var(--border);border-radius:8px;font-size:.85rem;outline:none;font-family:inherit}
+.search-row input{flex:1;min-width:160px}
+.search-row input:focus,.search-row select:focus{border-color:var(--accent)}
+
+/* DROP ZONE */
+#drop-zone{border:2px dashed var(--border);border-radius:12px;padding:2.5rem;text-align:center;cursor:pointer;transition:all .2s;margin-bottom:1.5rem}
+#drop-zone:hover,#drop-zone.over{border-color:var(--accent);background:#eff6ff}
+#drop-zone .dz-icon{font-size:2rem;margin-bottom:.6rem}
+#drop-zone p{color:var(--muted);font-size:.85rem}
+#drop-zone strong{color:var(--accent)}
+
+/* IMAGE GALLERY */
+.img-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:.9rem}
+.img-card{border:1px solid var(--border);border-radius:8px;overflow:hidden;background:#fff}
+.img-thumb{width:100%;height:100px;object-fit:cover;display:block;background:#f1f5f9}
+.img-info{padding:.5rem}
+.img-name{font-size:.7rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:.35rem}
+.img-row{display:flex;gap:.35rem}
+
+/* MODAL */
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;align-items:center;justify-content:center;padding:1rem}
+.overlay.open{display:flex}
+.modal{background:#fff;border-radius:16px;padding:1.75rem;width:100%;max-width:480px;max-height:90vh;overflow-y:auto}
+.modal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.4rem}
+.modal-head h3{font-size:1rem;font-weight:600}
+.close-btn{background:none;border:none;font-size:1.4rem;cursor:pointer;color:var(--muted);line-height:1}
+.field{margin-bottom:.9rem}
+.field label{display:block;font-size:.85rem;font-weight:500;margin-bottom:.35rem}
+.field input,.field select,.field textarea{width:100%;padding:.6rem .85rem;border:1.5px solid var(--border);border-radius:8px;font-size:.9rem;outline:none;transition:border-color .2s;font-family:inherit}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--accent)}
+.field textarea{resize:vertical;min-height:75px}
+.form-actions{display:flex;gap:.6rem;justify-content:flex-end;margin-top:1.2rem}
+
+/* FORUM */
+.f-item{border:1px solid var(--border);border-radius:8px;padding:1rem;margin-bottom:.75rem}
+.f-meta{font-size:.75rem;color:var(--muted);margin-bottom:.4rem}
+.f-title{font-weight:600;margin-bottom:.35rem;font-size:.9rem}
+.f-body{font-size:.85rem;color:var(--muted);margin-bottom:.75rem;line-height:1.5}
+.f-actions{display:flex;gap:.4rem}
+
+/* TOAST */
+#toast{position:fixed;bottom:1.5rem;right:1.5rem;background:#1e293b;color:#fff;padding:.8rem 1.2rem;border-radius:10px;font-size:.85rem;font-weight:500;transform:translateY(80px);opacity:0;transition:all .3s;z-index:999}
+#toast.show{transform:translateY(0);opacity:1}
+#toast.ok{background:#15803d}
+#toast.err{background:#dc2626}
+
+.empty{text-align:center;padding:2.5rem;color:var(--muted);font-size:.9rem}
+.loading-txt{text-align:center;padding:2rem;color:var(--muted)}
+
+@media(max-width:700px){
+  #sidebar{position:static;width:100%;height:auto;flex-direction:row}
+  #main{margin-left:0}
+  .sid-nav{display:flex;flex-direction:row;overflow-x:auto;gap:.2rem;padding:.4rem}
+  .nav-section{display:none}
+  .sid-footer,.sid-header p{display:none}
+  .content{padding:1rem}
+}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-logo">
+      <span class="emoji">✈️</span>
+      <h1>PVT Explorer Admin</h1>
+      <p>Interface réservée aux administrateurs</p>
+    </div>
+    <div class="err" id="login-err"></div>
+    <div class="fld"><label>Identifiant</label><input type="text" id="u" autocomplete="username" placeholder="admin"></div>
+    <div class="fld"><label>Mot de passe</label><input type="password" id="p" autocomplete="current-password" placeholder="••••••••"></div>
+    <button class="btn btn-primary btn-full" id="login-btn">Se connecter</button>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div id="dashboard" hidden>
+  <nav id="sidebar">
+    <div class="sid-header">
+      <h1>✈️ PVT Admin</h1>
+      <p id="sid-user">chargement...</p>
+    </div>
+    <div class="sid-nav">
+      <div class="nav-section">Contenu</div>
+      <div class="nav-item active" data-tab="affiliates">🔗 <span>Liens affiliés</span></div>
+      <div class="nav-item" data-tab="images">🖼️ <span>Images</span></div>
+      <div class="nav-section">Communauté</div>
+      <div class="nav-item" data-tab="forum">💬 <span>Forum</span> <span class="nav-badge" id="forum-badge"></span></div>
+    </div>
+    <div class="sid-footer">
+      <button class="btn btn-ghost btn-full btn-sm" id="logout-btn">🚪 Déconnexion</button>
+    </div>
+  </nav>
+
+  <div id="main">
+    <div class="topbar">
+      <h2 id="page-title">Liens affiliés</h2>
+      <span id="topbar-info" style="font-size:.8rem;color:var(--muted)"></span>
+    </div>
+    <div class="content">
+
+      <!-- AFFILIATES TAB -->
+      <div id="tab-affiliates">
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Tous les liens</span>
+            <button class="btn btn-primary btn-sm" id="add-aff-btn">+ Ajouter</button>
+          </div>
+          <div class="search-row">
+            <input type="text" id="aff-search" placeholder="🔍 Rechercher...">
+            <select id="aff-cat-filter">
+              <option value="">Toutes catégories</option>
+              <option>vols</option><option>hébergement</option><option>assurance</option>
+              <option>esim</option><option>activités</option><option>amazon</option><option>autre</option>
+            </select>
+          </div>
+          <div class="tbl-wrap">
+            <table>
+              <thead><tr><th>Nom</th><th>Catégorie</th><th>URL</th><th>Notes</th><th>Actions</th></tr></thead>
+              <tbody id="aff-tbody"><tr><td colspan="5" class="loading-txt">Chargement...</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- IMAGES TAB -->
+      <div id="tab-images" hidden>
+        <div class="card">
+          <div class="card-title" style="margin-bottom:1rem">Uploader une image</div>
+          <div id="drop-zone">
+            <div class="dz-icon">🖼️</div>
+            <p><strong>Clique ou glisse</strong> une image ici</p>
+            <p style="margin-top:.4rem;font-size:.75rem">JPG · PNG · WebP — max 3 Mo</p>
+          </div>
+          <input type="file" id="file-input" accept="image/*" style="display:none" multiple>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Mes images</span>
+            <span id="img-count" style="font-size:.8rem;color:var(--muted)"></span>
+          </div>
+          <div id="img-gallery" class="img-grid"><div class="loading-txt">Chargement...</div></div>
+        </div>
+      </div>
+
+      <!-- FORUM TAB -->
+      <div id="tab-forum" hidden>
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">En attente de modération</span>
+            <button class="btn btn-ghost btn-sm" onclick="loadForum()">↻ Rafraîchir</button>
+          </div>
+          <div id="forum-list"><div class="loading-txt">Chargement...</div></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Affiliate form -->
+<div class="overlay" id="aff-overlay">
+  <div class="modal">
+    <div class="modal-head">
+      <h3 id="aff-modal-title">Ajouter un lien</h3>
+      <button class="close-btn" id="aff-close">×</button>
+    </div>
+    <div class="field"><label>Nom *</label><input type="text" id="aff-name" placeholder="ex: AXA PVT Australie"></div>
+    <div class="field"><label>URL *</label><input type="url" id="aff-url" placeholder="https://..."></div>
+    <div class="field">
+      <label>Catégorie</label>
+      <select id="aff-cat">
+        <option value="vols">✈️ Vols</option>
+        <option value="hébergement">🏠 Hébergement</option>
+        <option value="assurance">🛡️ Assurance</option>
+        <option value="esim">📱 eSIM</option>
+        <option value="activités">🎯 Activités</option>
+        <option value="amazon">📦 Amazon</option>
+        <option value="autre">🔗 Autre</option>
+      </select>
+    </div>
+    <div class="field"><label>Notes (commission, conditions...)</label><textarea id="aff-notes" placeholder="ex: 5% de commission, cookie 30j"></textarea></div>
+    <input type="hidden" id="aff-edit-id">
+    <div class="form-actions">
+      <button class="btn btn-ghost" id="aff-cancel">Annuler</button>
+      <button class="btn btn-primary" id="aff-save">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast"></div>
+
+<script>
+// ---- STATE ----
+let token = localStorage.getItem('pvt_admin_token');
+let affiliates = [];
+
+// ---- INIT ----
+if (token) showDashboard(); else showLogin();
+
+function showLogin() {
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('dashboard').hidden = true;
+}
+function showDashboard() {
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('dashboard').hidden = false;
+  // Tabs
+  document.querySelectorAll('.nav-item').forEach(el => {
+    el.onclick = () => switchTab(el.dataset.tab);
+  });
+  document.getElementById('logout-btn').onclick = logout;
+  // Decode user from token
+  try {
+    const pay = JSON.parse(atob(token.split('.')[0].replace(/-/g,'+').replace(/_/g,'/')));
+    document.getElementById('sid-user').textContent = pay.user || '';
+  } catch {}
+  switchTab('affiliates');
+}
+function logout() {
+  localStorage.removeItem('pvt_admin_token');
+  token = null;
+  showLogin();
+}
+
+// ---- LOGIN ----
+document.getElementById('login-btn').onclick = doLogin;
+document.getElementById('p').onkeydown = e => { if (e.key === 'Enter') doLogin(); };
+
+async function doLogin() {
+  const user = document.getElementById('u').value.trim();
+  const pass = document.getElementById('p').value;
+  const errEl = document.getElementById('login-err');
+  errEl.style.display = 'none';
+  document.getElementById('login-btn').textContent = '...';
+  try {
+    const r = await fetch('/api/admin/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ user, pass })
+    });
+    const d = await r.json();
+    if (!r.ok) throw new Error(d.error || 'Erreur');
+    token = d.token;
+    localStorage.setItem('pvt_admin_token', token);
+    showDashboard();
+  } catch(e) {
+    errEl.textContent = e.message;
+    errEl.style.display = 'block';
+  } finally {
+    document.getElementById('login-btn').textContent = 'Se connecter';
+  }
+}
+
+// ---- TABS ----
+function switchTab(tab) {
+  document.querySelectorAll('.nav-item').forEach(el => el.classList.toggle('active', el.dataset.tab === tab));
+  ['affiliates','images','forum'].forEach(t => document.getElementById('tab-'+t).hidden = t !== tab);
+  const titles = { affiliates:'Liens affiliés', images:'Images', forum:'Forum' };
+  document.getElementById('page-title').textContent = titles[tab];
+  document.getElementById('topbar-info').textContent = '';
+  if (tab === 'affiliates') loadAffiliates();
+  if (tab === 'images') loadImages();
+  if (tab === 'forum') loadForum();
+}
+
+// ---- API HELPER ----
+async function api(method, path, body) {
+  const opts = { method, headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` } };
+  if (body !== undefined) opts.body = JSON.stringify(body);
+  const r = await fetch(path, opts);
+  if (r.status === 401) { logout(); return {}; }
+  const d = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error(d.error || 'Erreur serveur');
+  return d;
+}
+
+// ---- TOAST ----
+function toast(msg, type = 'ok') {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = `show ${type}`;
+  clearTimeout(el._t);
+  el._t = setTimeout(() => el.className = '', 3000);
+}
+
+// ---- UTILS ----
+function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function copyText(t) { navigator.clipboard.writeText(t).then(() => toast('Copié ✓')); }
+
+// ==============================
+// AFFILIATES
+// ==============================
+async function loadAffiliates() {
+  try {
+    const d = await api('GET', '/api/admin/affiliates');
+    affiliates = d.affiliates || [];
+    renderAffiliates();
+    document.getElementById('topbar-info').textContent = `${affiliates.length} lien${affiliates.length>1?'s':''}`;
+  } catch(e) {
+    document.getElementById('aff-tbody').innerHTML = `<tr><td colspan="5" class="empty">⚠️ ${esc(e.message)}</td></tr>`;
+  }
+}
+
+function renderAffiliates() {
+  const q = document.getElementById('aff-search').value.toLowerCase();
+  const cat = document.getElementById('aff-cat-filter').value;
+  const list = affiliates.filter(a =>
+    (!q || a.name.toLowerCase().includes(q) || (a.notes||'').toLowerCase().includes(q)) &&
+    (!cat || a.category === cat)
+  );
+  const tbody = document.getElementById('aff-tbody');
+  if (!list.length) { tbody.innerHTML = `<tr><td colspan="5" class="empty">Aucun lien</td></tr>`; return; }
+  tbody.innerHTML = list.map(a => `
+    <tr>
+      <td><strong>${esc(a.name)}</strong></td>
+      <td><span class="badge b-${esc(a.category)}">${esc(a.category)}</span></td>
+      <td><a href="${esc(a.url)}" target="_blank" style="color:var(--accent);font-size:.8rem;text-decoration:none;display:block;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${esc(a.url)}">${esc(a.url)}</a></td>
+      <td style="font-size:.8rem;color:var(--muted);max-width:160px">${esc(a.notes||'—')}</td>
+      <td><div style="display:flex;gap:.35rem">
+        <button class="btn btn-ghost btn-sm" onclick="copyText('${esc(a.url)}')" title="Copier l'URL">📋</button>
+        <button class="btn btn-ghost btn-sm" onclick="openAffModal('${esc(a.id)}')">✏️</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteAff('${esc(a.id)}')">🗑️</button>
+      </div></td>
+    </tr>`).join('');
+}
+
+document.getElementById('aff-search').oninput = renderAffiliates;
+document.getElementById('aff-cat-filter').onchange = renderAffiliates;
+
+// Modal
+document.getElementById('add-aff-btn').onclick = () => openAffModal(null);
+document.getElementById('aff-close').onclick = closeAffModal;
+document.getElementById('aff-cancel').onclick = closeAffModal;
+document.getElementById('aff-save').onclick = saveAff;
+
+function openAffModal(id) {
+  document.getElementById('aff-modal-title').textContent = id ? 'Modifier le lien' : 'Ajouter un lien';
+  if (id) {
+    const a = affiliates.find(x => x.id === id);
+    if (!a) return;
+    document.getElementById('aff-name').value = a.name;
+    document.getElementById('aff-url').value = a.url;
+    document.getElementById('aff-cat').value = a.category;
+    document.getElementById('aff-notes').value = a.notes || '';
+    document.getElementById('aff-edit-id').value = id;
+  } else {
+    ['aff-name','aff-url','aff-notes'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('aff-cat').value = 'vols';
+    document.getElementById('aff-edit-id').value = '';
+  }
+  document.getElementById('aff-overlay').classList.add('open');
+  document.getElementById('aff-name').focus();
+}
+function closeAffModal() { document.getElementById('aff-overlay').classList.remove('open'); }
+
+async function saveAff() {
+  const name = document.getElementById('aff-name').value.trim();
+  const url  = document.getElementById('aff-url').value.trim();
+  const cat  = document.getElementById('aff-cat').value;
+  const notes= document.getElementById('aff-notes').value.trim();
+  const eid  = document.getElementById('aff-edit-id').value;
+  if (!name || !url) { toast('Nom et URL requis', 'err'); return; }
+  if (eid) {
+    const i = affiliates.findIndex(x => x.id === eid);
+    affiliates[i] = { ...affiliates[i], name, url, category:cat, notes };
+  } else {
+    affiliates.unshift({ id: Date.now().toString(36)+Math.random().toString(36).slice(2,5), name, url, category:cat, notes, createdAt:new Date().toISOString() });
+  }
+  try {
+    await api('POST', '/api/admin/affiliates', { affiliates });
+    closeAffModal();
+    renderAffiliates();
+    document.getElementById('topbar-info').textContent = `${affiliates.length} lien${affiliates.length>1?'s':''}`;
+    toast(eid ? 'Lien modifié ✓' : 'Lien ajouté ✓');
+  } catch(e) { toast(e.message, 'err'); }
+}
+
+async function deleteAff(id) {
+  if (!confirm('Supprimer ce lien ?')) return;
+  affiliates = affiliates.filter(a => a.id !== id);
+  try {
+    await api('POST', '/api/admin/affiliates', { affiliates });
+    renderAffiliates();
+    toast('Lien supprimé');
+  } catch(e) { toast(e.message, 'err'); }
+}
+
+// ==============================
+// IMAGES
+// ==============================
+async function loadImages() {
+  try {
+    const d = await api('GET', '/api/admin/images');
+    renderImages(d.images || []);
+  } catch(e) {
+    document.getElementById('img-gallery').innerHTML = `<div class="empty">⚠️ ${esc(e.message)}</div>`;
+  }
+}
+
+function renderImages(imgs) {
+  const count = imgs.length;
+  document.getElementById('img-count').textContent = `${count} image${count>1?'s':''}`;
+  if (!count) {
+    document.getElementById('img-gallery').innerHTML = `<div class="empty" style="grid-column:1/-1">Aucune image — upload ta première image ci-dessus.</div>`;
+    return;
+  }
+  document.getElementById('img-gallery').innerHTML = imgs.map(img => `
+    <div class="img-card">
+      <img class="img-thumb" src="${esc(img.url)}" loading="lazy" alt="" onerror="this.style.background='#f1f5f9'">
+      <div class="img-info">
+        <div class="img-name" title="${esc(img.pathname)}">${esc(img.pathname.split('/').pop())}</div>
+        <div class="img-row">
+          <button class="btn btn-ghost btn-sm" style="flex:1" onclick="copyText('${esc(img.url)}')">📋 Copier</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteImg('${esc(img.url)}')">🗑️</button>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+// Drop zone
+const dz = document.getElementById('drop-zone');
+const fi = document.getElementById('file-input');
+dz.onclick = () => fi.click();
+dz.ondragover = e => { e.preventDefault(); dz.classList.add('over'); };
+dz.ondragleave = () => dz.classList.remove('over');
+dz.ondrop = e => { e.preventDefault(); dz.classList.remove('over'); handleFiles(e.dataTransfer.files); };
+fi.onchange = e => handleFiles(e.target.files);
+
+async function handleFiles(files) {
+  for (const f of files) {
+    if (!f.type.startsWith('image/')) { toast(`${f.name}: pas une image`, 'err'); continue; }
+    if (f.size > 3.5*1024*1024) { toast(`${f.name}: trop lourd (max 3 Mo)`, 'err'); continue; }
+    await uploadImg(f);
+  }
+  loadImages();
+}
+
+async function uploadImg(file) {
+  return new Promise(resolve => {
+    const reader = new FileReader();
+    reader.onload = async e => {
+      const b64 = e.target.result.split(',')[1];
+      dz.querySelector('p').innerHTML = `Upload de <strong>${esc(file.name)}</strong>...`;
+      try {
+        await api('POST', '/api/admin/upload', { filename: file.name, contentType: file.type, data: b64 });
+        toast(`${file.name} uploadé ✓`);
+      } catch(err) {
+        toast(`Erreur: ${err.message}`, 'err');
+      } finally {
+        dz.querySelector('p').innerHTML = '<strong>Clique ou glisse</strong> une image ici';
+        fi.value = '';
+        resolve();
+      }
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+async function deleteImg(url) {
+  if (!confirm('Supprimer cette image ?')) return;
+  try {
+    await api('POST', '/api/admin/delete-image', { url });
+    toast('Image supprimée');
+    loadImages();
+  } catch(e) { toast(e.message, 'err'); }
+}
+
+// ==============================
+// FORUM
+// ==============================
+async function loadForum() {
+  const list = document.getElementById('forum-list');
+  list.innerHTML = '<div class="loading-txt">Chargement...</div>';
+  try {
+    const d = await api('GET', '/api/admin/pending');
+    const items = d.items || [];
+    const badge = document.getElementById('forum-badge');
+    if (items.length) { badge.textContent = items.length; badge.style.display = 'inline'; }
+    else badge.style.display = 'none';
+    document.getElementById('topbar-info').textContent = items.length ? `${items.length} en attente` : '';
+    if (!items.length) { list.innerHTML = `<div class="empty">✅ Aucun élément en attente — tout est à jour.</div>`; return; }
+    list.innerHTML = items.map(item => `
+      <div class="f-item">
+        <div class="f-meta">
+          ${item.type === 'reply' ? '↩️ Réponse' : '❓ Question'} · <strong>${esc(item.author)}</strong> · ${new Date(item.createdAt).toLocaleDateString('fr-FR')}
+          ${item.type === 'reply' ? `<br><span style="font-size:.72rem;color:#94a3b8">Dans : "${esc(item.title)}"</span>` : ''}
+        </div>
+        ${item.type === 'question' ? `<div class="f-title">${esc(item.title)}</div>` : ''}
+        <div class="f-body">${esc(item.body)}</div>
+        <div class="f-actions">
+          <button class="btn btn-primary btn-sm" onclick="moderate('${item.questionId}','${item.id}','${item.type}','approve')">✓ Approuver</button>
+          <button class="btn btn-danger btn-sm" onclick="moderate('${item.questionId}','${item.id}','${item.type}','reject')">✕ Rejeter</button>
+        </div>
+      </div>`).join('');
+  } catch(e) {
+    list.innerHTML = `<div class="empty">⚠️ ${esc(e.message)}</div>`;
+  }
+}
+
+async function moderate(questionId, id, type, action) {
+  try {
+    await api('POST', '/api/admin/moderate', { questionId, id, type, action });
+    toast(action === 'approve' ? '✓ Approuvé' : '✕ Rejeté', action === 'approve' ? 'ok' : 'err');
+    loadForum();
+  } catch(e) { toast(e.message, 'err'); }
+}
+</script>
+</body>
+</html>

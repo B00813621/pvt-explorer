@@ -17,6 +17,90 @@ try {
 
 const rate = new Map();
 
+// ---- Blob helpers ----
+const BLOB_BASE = 'https://blob.vercel-storage.com';
+function blobToken() { return process.env.BLOB_READ_WRITE_TOKEN || ''; }
+
+async function blobGet(pathname) {
+  const tk = blobToken();
+  if (!tk) return null;
+  const r = await fetch(`${BLOB_BASE}?prefix=${encodeURIComponent(pathname)}&limit=1`, {
+    headers: { Authorization: `Bearer ${tk}` }
+  });
+  if (!r.ok) return null;
+  const { blobs } = await r.json();
+  if (!blobs || !blobs.length) return null;
+  const url = blobs[0].downloadUrl || blobs[0].url;
+  const cr = await fetch(url.includes('?') ? url : `${url}?token=${tk}`);
+  if (!cr.ok) return null;
+  return cr.text();
+}
+
+async function blobPut(pathname, body, contentType = 'application/json', pub = false) {
+  const tk = blobToken();
+  if (!tk) throw new Error('BLOB_READ_WRITE_TOKEN manquant');
+  const headers = {
+    Authorization: `Bearer ${tk}`,
+    'x-content-type': contentType,
+    'x-vercel-blob-add-random-suffix': '0',
+  };
+  if (pub) headers['x-vercel-blob-access'] = 'public';
+  const r = await fetch(`${BLOB_BASE}/${pathname}`, { method: 'PUT', headers, body });
+  const d = await r.json();
+  if (!r.ok) throw new Error(d.error || `Blob PUT échoué (${r.status})`);
+  return d;
+}
+
+async function blobList(prefix) {
+  const tk = blobToken();
+  if (!tk) return [];
+  const r = await fetch(`${BLOB_BASE}?prefix=${encodeURIComponent(prefix)}&limit=200`, {
+    headers: { Authorization: `Bearer ${tk}` }
+  });
+  if (!r.ok) return [];
+  const d = await r.json();
+  return d.blobs || [];
+}
+
+async function blobDelete(urls) {
+  const tk = blobToken();
+  if (!tk) return;
+  await fetch(`${BLOB_BASE}/delete`, {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${tk}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ urls: Array.isArray(urls) ? urls : [urls] })
+  });
+}
+
+// ---- JWT helpers ----
+function createToken(user) {
+  const payload = Buffer.from(JSON.stringify({ user, exp: Date.now() + 86400000 })).toString('base64url');
+  const secret = process.env.ADMIN_PASS || 'dev';
+  const sig = crypto.createHmac('sha256', secret).update(payload).digest('hex');
+  return `${payload}.${sig}`;
+}
+
+function verifyToken(tok) {
+  if (!tok) return null;
+  const dot = tok.lastIndexOf('.');
+  if (dot < 0) return null;
+  const payload = tok.slice(0, dot);
+  const sig = tok.slice(dot + 1);
+  const secret = process.env.ADMIN_PASS || 'dev';
+  const expected = crypto.createHmac('sha256', secret).update(payload).digest('hex');
+  try {
+    if (sig.length !== expected.length) return null;
+    if (!crypto.timingSafeEqual(Buffer.from(sig, 'hex'), Buffer.from(expected, 'hex'))) return null;
+    const d = JSON.parse(Buffer.from(payload, 'base64url').toString());
+    if (d.exp < Date.now()) return null;
+    return d;
+  } catch { return null; }
+}
+
+function adminToken(req) {
+  return (req.headers.authorization || '').replace(/^Bearer /, '');
+}
+
 function dbRead() {
   try { return JSON.parse(fs.readFileSync(DB_FILE, 'utf8')); }
   catch { return { questions: [], clicks: {}, newsletter: [] }; }
@@ -61,12 +145,15 @@ function limited(req, key, max = 8, windowMs = 60000) {
 }
 
 function isAdmin(req) {
+  const tok = adminToken(req);
+  // Accept new JWT session token
+  if (verifyToken(tok)) return true;
+  // Accept legacy ADMIN_TOKEN
   const TOKEN = process.env.ADMIN_TOKEN || '';
-  if (!TOKEN) return false;
-  const h = req.headers.authorization || '';
-  const token = h.startsWith('Bearer ') ? h.slice(7) : '';
-  if (token.length !== TOKEN.length) return false;
-  return crypto.timingSafeEqual(Buffer.from(token), Buffer.from(TOKEN));
+  if (TOKEN && tok.length === TOKEN.length) {
+    try { return crypto.timingSafeEqual(Buffer.from(tok), Buffer.from(TOKEN)); } catch { return false; }
+  }
+  return false;
 }
 
 function publicQuestion(q) {
@@ -265,6 +352,84 @@ module.exports = async function handler(req, res) {
         return json(res, 502, { error: err.message || 'Brevo n\'a pas pu envoyer la confirmation.' });
       }
       return json(res, 200, { ok: true, message: 'Un e-mail de confirmation vient de t\'être envoyé. Confirme ton inscription pour rejoindre la newsletter.' });
+    }
+
+    // POST /api/admin/login
+    if (method === 'POST' && p === '/api/admin/login') {
+      if (!limited(req, 'login', 5)) return json(res, 429, { error: 'Trop de tentatives. Réessaie dans 1 minute.' });
+      const b = await readBody(req, 1000);
+      const ADMIN_USER = process.env.ADMIN_USER || 'admin';
+      const ADMIN_PASS = process.env.ADMIN_PASS || '';
+      if (!ADMIN_PASS) return json(res, 503, { error: 'ADMIN_PASS non configuré dans les variables Vercel.' });
+      if ((b.user || '').trim() !== ADMIN_USER || b.pass !== ADMIN_PASS) {
+        return json(res, 401, { error: 'Identifiant ou mot de passe incorrect.' });
+      }
+      return json(res, 200, { token: createToken(ADMIN_USER) });
+    }
+
+    // GET /api/admin/affiliates
+    if (method === 'GET' && p === '/api/admin/affiliates') {
+      if (!verifyToken(adminToken(req))) return json(res, 401, { error: 'Non autorisé.' });
+      try {
+        const raw = await blobGet('data/affiliates.json');
+        return json(res, 200, raw ? JSON.parse(raw) : { affiliates: [] });
+      } catch(e) { return json(res, 500, { error: e.message }); }
+    }
+
+    // POST /api/admin/affiliates
+    if (method === 'POST' && p === '/api/admin/affiliates') {
+      if (!verifyToken(adminToken(req))) return json(res, 401, { error: 'Non autorisé.' });
+      const b = await readBody(req, 100000);
+      try {
+        await blobPut('data/affiliates.json', JSON.stringify(b));
+        return json(res, 200, { ok: true });
+      } catch(e) { return json(res, 500, { error: e.message }); }
+    }
+
+    // GET /api/admin/images
+    if (method === 'GET' && p === '/api/admin/images') {
+      if (!verifyToken(adminToken(req))) return json(res, 401, { error: 'Non autorisé.' });
+      try {
+        const blobs = await blobList('images/');
+        return json(res, 200, { images: blobs.map(b => ({ url: b.url, pathname: b.pathname, size: b.size, uploadedAt: b.uploadedAt })) });
+      } catch(e) { return json(res, 500, { error: e.message }); }
+    }
+
+    // POST /api/admin/upload
+    if (method === 'POST' && p === '/api/admin/upload') {
+      if (!verifyToken(adminToken(req))) return json(res, 401, { error: 'Non autorisé.' });
+      const b = await readBody(req, 5 * 1024 * 1024);
+      const { filename, contentType, data } = b;
+      if (!filename || !contentType || !data) return json(res, 400, { error: 'filename, contentType et data requis.' });
+      const allowed = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+      if (!allowed.includes(contentType)) return json(res, 400, { error: 'Type de fichier non autorisé.' });
+      try {
+        const buf = Buffer.from(data, 'base64');
+        const safe = filename.replace(/[^a-z0-9._\-]/gi, '_');
+        const tk = blobToken();
+        const r = await fetch(`${BLOB_BASE}/images/${safe}`, {
+          method: 'PUT',
+          headers: {
+            Authorization: `Bearer ${tk}`,
+            'x-content-type': contentType,
+            'x-vercel-blob-add-random-suffix': '1',
+            'x-vercel-blob-access': 'public',
+          },
+          body: buf
+        });
+        const d = await r.json();
+        if (!r.ok) throw new Error(d.error || `Upload échoué (${r.status})`);
+        return json(res, 200, { url: d.url, ok: true });
+      } catch(e) { return json(res, 500, { error: e.message }); }
+    }
+
+    // POST /api/admin/delete-image
+    if (method === 'POST' && p === '/api/admin/delete-image') {
+      if (!verifyToken(adminToken(req))) return json(res, 401, { error: 'Non autorisé.' });
+      const b = await readBody(req, 2000);
+      if (!b.url) return json(res, 400, { error: 'URL requis.' });
+      try { await blobDelete(b.url); return json(res, 200, { ok: true }); }
+      catch(e) { return json(res, 500, { error: e.message }); }
     }
 
     return json(res, 404, { error: 'Route introuvable.' });
