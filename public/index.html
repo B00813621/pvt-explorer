@@ -144,6 +144,83 @@
   .country{animation:none;opacity:1}
   .heroPhoto,.floatCard,.btn,.country,.partner,.productCard,.testimonialGrid>div{transition-duration:.01ms!important}
 }
+
+/* ——— Impeccable pass — cohérence typo + micro-interactions manquantes ——— */
+
+/* DM Serif sur tous les titres de card secondaires */
+.partner h3,.productCard h3{font-family:var(--display);font-weight:400;letter-spacing:-.3px}
+.footer h4{font-family:var(--display);font-weight:400;font-size:16px;letter-spacing:-.3px}
+
+/* Image zoom inside country cards — parallaxe subtile */
+.countryTop img{transition:transform 500ms var(--ease-out);will-change:transform}
+@media(hover:hover) and (pointer:fine){
+  .country:hover .countryTop img{transform:scale(1.06)}
+}
+
+/* Focus states cohérents — ring teal sur tous les inputs */
+.cField input,.cField textarea,.newsletter input,.searchbox input{
+  transition:border-color 160ms ease,box-shadow 160ms ease
+}
+.cField input:focus,.cField textarea:focus,.newsletter input:focus{
+  border-color:var(--teal);
+  box-shadow:0 0 0 3px #087e7920;
+  outline:none
+}
+.searchbox:focus-within{
+  box-shadow:0 0 0 3px #087e7920,0 14px 40px #183a3510
+}
+
+/* Close button — micro-rotation donne du caractère */
+.close{transition:transform 160ms var(--ease-out),background 160ms ease}
+@media(hover:hover) and (pointer:fine){
+  .close:hover{transform:rotate(12deg) scale(1.08);background:#f0f4f0}
+}
+.close:active{transform:scale(0.9)!important}
+
+/* Liens texte — couleur + opacity feedback */
+.textlink{transition:color 150ms ease,opacity 150ms ease}
+.partner a,.productCard a{transition:color 150ms ease}
+.footer a{transition:color 150ms ease}
+.navAstuces{transition:color 150ms ease}
+@media(hover:hover) and (pointer:fine){
+  .textlink:hover{color:#055a56}
+  .partner a:hover,.productCard a:hover{color:#055a56}
+  .footer a:hover{color:#9be0c4}
+}
+.textlink:active,.partner a:active,.productCard a:active{opacity:.6}
+
+/* Community panels — hover lift */
+.panel{transition:transform 220ms var(--ease-out),box-shadow 220ms ease}
+@media(hover:hover) and (pointer:fine){
+  .panel:hover{transform:translateY(-3px);box-shadow:0 18px 44px #183a3514}
+}
+
+/* Compare table — row hover pour scanabilité */
+.compare tbody tr{transition:background 120ms ease}
+@media(hover:hover) and (pointer:fine){
+  .compare tbody tr:hover td{background:#1b4a52}
+}
+
+/* Chips — :active feedback (scale down) */
+.chip:active{transform:scale(0.94)}
+
+/* FAQ — question active passe teal, flèche avec easing custom */
+.faqQ .arrow{transition:transform 240ms var(--ease-out)}
+.faqItem.open .faqQ{color:var(--teal)}
+
+/* Question forum — boutons action */
+.questionActions button{transition:background 140ms ease,border-color 140ms ease}
+@media(hover:hover) and (pointer:fine){
+  .questionActions button:hover{background:#e8f4ee;border-color:#b7ddd0;color:var(--teal)}
+}
+
+/* Carte PVT — survol avec easing custom au lieu du builtin */
+.pvtLand{transition:fill 200ms var(--ease-out)}
+
+/* Prefers-reduced-motion additions */
+@media(prefers-reduced-motion:reduce){
+  .panel,.countryTop img,.close,.textlink,.partner a,.productCard a,.footer a{transition-duration:.01ms!important}
+}
 </style>
 </head>
 <body>
