@@ -32,15 +32,18 @@ async function blobGet(pathname) {
   try {
     const { blobs } = await blob().list({ prefix: pathname, token: tk, limit: 100 });
     const matches = blobs.filter(b => b.pathname === pathname);
-    if (!matches.length) return null;
+    if (!matches.length) return null; // file genuinely doesn't exist
     matches.sort((a, b) => new Date(b.uploadedAt) - new Date(a.uploadedAt));
-    // For private blobs, must pass token as Bearer auth header
     const r = await fetch(matches[0].url, {
       headers: { authorization: `Bearer ${tk}` },
     });
-    if (!r.ok) return null;
+    if (!r.ok) throw new Error(`Lecture blob impossible (HTTP ${r.status})`);
     return r.text();
-  } catch { return null; }
+  } catch(e) {
+    // Re-throw real fetch errors so callers return 500 instead of empty data
+    if (e.message && e.message.startsWith('Lecture blob')) throw e;
+    return null;
+  }
 }
 
 async function blobPut(pathname, body, contentType = 'application/json') {
@@ -186,7 +189,9 @@ function htmlEsc(s) {
   return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 
-function renderBlogPost(post) {
+function renderBlogPost(post, host = 'pvt-explorer.vercel.app') {
+  const baseUrl = `https://${host}`;
+  const postUrl = `${baseUrl}/blog/${post.slug}`;
   const title = htmlEsc(post.title || '');
   const desc = htmlEsc(post.description || '');
   const pubDate = post.publishedAt ? new Date(post.publishedAt).toLocaleDateString('fr-FR', { year: 'numeric', month: 'long', day: 'numeric' }) : '';
@@ -196,13 +201,27 @@ function renderBlogPost(post) {
   const readTime = post.readingTime ? `${post.readingTime} min · ` : '';
   const imgHtml = post.image ? `<img src="${htmlEsc(post.image)}" alt="${title}" class="hero-img" loading="eager">` : '';
   const jsonLd = JSON.stringify({
-    '@context': 'https://schema.org', '@type': 'Article',
-    headline: post.title, description: post.description,
-    ...(post.image ? { image: post.image } : {}),
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    '@id': postUrl,
+    headline: post.title,
+    description: post.description,
+    url: postUrl,
+    inLanguage: 'fr-FR',
+    ...(post.image ? { image: { '@type': 'ImageObject', url: post.image } } : {}),
     datePublished: post.publishedAt,
     dateModified: post.updatedAt || post.publishedAt,
-    author: { '@type': 'Organization', name: 'PVT Explorer' },
-    publisher: { '@type': 'Organization', name: 'PVT Explorer' }
+    author: { '@type': 'Organization', name: 'PVT Explorer', url: baseUrl },
+    publisher: { '@type': 'Organization', name: 'PVT Explorer', url: baseUrl },
+    mainEntityOfPage: { '@type': 'WebPage', '@id': postUrl },
+    breadcrumb: {
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Accueil', item: baseUrl + '/' },
+        { '@type': 'ListItem', position: 2, name: 'Nos astuces', item: baseUrl + '/nos-astuces' },
+        { '@type': 'ListItem', position: 3, name: post.title, item: postUrl }
+      ]
+    }
   });
   return `<!DOCTYPE html>
 <html lang="fr">
@@ -210,12 +229,18 @@ function renderBlogPost(post) {
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>${title} | PVT Explorer</title>
 <meta name="description" content="${desc}">
+<link rel="canonical" href="${htmlEsc(postUrl)}">
+<link rel="sitemap" type="application/xml" href="/sitemap.xml">
 <meta property="og:title" content="${title}">
 <meta property="og:description" content="${desc}">
-${post.image ? `<meta property="og:image" content="${htmlEsc(post.image)}">` : ''}
 <meta property="og:type" content="article">
+<meta property="og:url" content="${htmlEsc(postUrl)}">
+<meta property="og:site_name" content="PVT Explorer">
+<meta property="og:locale" content="fr_FR">
+${post.image ? `<meta property="og:image" content="${htmlEsc(post.image)}">` : ''}
 <meta name="twitter:card" content="summary_large_image">
-<link rel="canonical" href="https://pvt-explorer.vercel.app/blog/${htmlEsc(post.slug)}">
+<meta name="twitter:title" content="${title}">
+<meta name="twitter:description" content="${desc}">
 <script type="application/ld+json">${jsonLd}<\/script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -226,7 +251,7 @@ ${post.image ? `<meta property="og:image" content="${htmlEsc(post.image)}">` : '
 .wrap{width:min(760px,calc(100% - 40px));margin:auto}.nav{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:20}.navin{height:72px;display:flex;align-items:center;justify-content:space-between;gap:24px}.brand{display:flex;align-items:center;gap:10px;font-weight:850;font-size:19px;letter-spacing:-.6px}.logo{width:34px;height:34px;border-radius:10px;background:var(--teal);display:grid;place-items:center;color:white;font-size:18px}.brand em{color:var(--teal);font-style:normal}.back-link{font-size:13px;color:var(--teal);font-weight:700}.back-link:hover{text-decoration:underline}
 .article-wrap{padding:48px 0 80px}.breadcrumb{font-size:12px;color:var(--muted);margin-bottom:1.5rem}.breadcrumb a{color:var(--teal);font-weight:600}.article-meta{display:flex;flex-wrap:wrap;align-items:center;gap:.5rem;margin-bottom:1rem;font-size:.8rem;color:var(--muted)}.cat-badge{background:var(--mint);color:var(--teal);border-radius:999px;padding:.25rem .75rem;font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.04em}.tag-pill{background:#f1f5f9;color:#475569;border-radius:999px;padding:.2rem .6rem;font-size:.72rem;font-weight:600}
 h1.article-title{font-size:clamp(28px,5vw,42px);line-height:1.15;letter-spacing:-1.5px;margin-bottom:1rem}.article-desc{font-size:1.05rem;color:var(--muted);line-height:1.7;margin-bottom:1.75rem;border-left:3px solid var(--teal);padding-left:1rem}.hero-img{width:100%;border-radius:16px;margin-bottom:2rem;max-height:420px;object-fit:cover}
-.article-content{font-size:1rem;line-height:1.85;color:#1e3a44}.article-content h2{font-size:1.4rem;margin:2rem 0 .75rem;letter-spacing:-.5px}.article-content h3{font-size:1.15rem;margin:1.5rem 0 .6rem}.article-content p{margin-bottom:1.1rem}.article-content ul,.article-content ol{margin:.75rem 0 1.1rem 1.5rem}.article-content li{margin-bottom:.4rem}.article-content a{color:var(--teal);text-decoration:underline}.article-content blockquote{border-left:3px solid var(--teal);padding:.75rem 1rem;background:var(--mint);border-radius:0 10px 10px 0;margin:1.25rem 0;font-style:italic;color:#2a5a52}.article-content img{max-width:100%;border-radius:10px;margin:1rem 0}
+.article-content{font-size:1rem;line-height:1.85;color:#1e3a44}.article-content h2{font-size:1.4rem;margin:2rem 0 .75rem;letter-spacing:-.5px}.article-content h3{font-size:1.15rem;margin:1.5rem 0 .6rem}.article-content p{margin-bottom:1.1rem}.article-content ul,.article-content ol{margin:.75rem 0 1.1rem 1.5rem}.article-content li{margin-bottom:.4rem}.article-content a{color:var(--teal);text-decoration:underline}.article-content blockquote{border-left:3px solid var(--teal);padding:.75rem 1rem;background:var(--mint);border-radius:0 10px 10px 0;margin:1.25rem 0;font-style:italic;color:#2a5a52}.article-content blockquote[data-callout]{border-left-width:4px;border-radius:10px;font-style:normal;padding:.85rem 1.1rem .85rem 1.3rem;margin:1.25rem 0}.article-content blockquote[data-callout="tip"]{background:#f0fdf4;border-left-color:#22c55e;color:#166534}.article-content blockquote[data-callout="warning"]{background:#fff7ed;border-left-color:#f97316;color:#9a3412}.article-content blockquote[data-callout="danger"]{background:#fef2f2;border-left-color:#ef4444;color:#991b1b}.article-content blockquote[data-callout="info"]{background:#eff6ff;border-left-color:#3b82f6;color:#1e40af}.article-content table{width:100%;border-collapse:collapse;margin:1.25rem 0;font-size:.88rem}.article-content th{background:#f1f5f9;text-align:left;padding:.6rem .9rem;border:1px solid #e2e8f0;font-weight:600}.article-content td{padding:.6rem .9rem;border:1px solid #e2e8f0;vertical-align:top}.article-content tr:nth-child(even) td{background:#f8fafc}.article-content img{max-width:100%;border-radius:10px;margin:1rem 0}
 .divider{border:0;border-top:1px solid var(--line);margin:2.5rem 0}.back-block{padding:1.5rem;background:var(--mint);border-radius:14px;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap}.back-block p{font-size:.9rem;color:#2a5a52}.back-block a{background:var(--teal);color:#fff;border-radius:999px;padding:.65rem 1.25rem;font-size:.85rem;font-weight:700;white-space:nowrap}.back-block a:hover{background:#066b67}
 .footer{background:#0d3038;color:#d6e8e2;padding:28px 0}.footer .wrap{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}.footer a{color:#a9c2bb;font-size:12px}.footer a:hover{color:#fff}
 @media(max-width:600px){.wrap{width:min(100% - 24px,760px)}.navin{height:60px}.article-wrap{padding:32px 0 60px}}
@@ -264,7 +289,7 @@ module.exports = async function handler(req, res) {
     // GET /api/config
     if (method === 'GET' && p === '/api/config') {
       return json(res, 200, {
-        assistantEnabled: !!process.env.OPENAI_API_KEY,
+        assistantEnabled: !!process.env.ANTHROPIC_API_KEY,
         amazonConfigured: !!process.env.AMAZON_PARTNER_TAG,
         newsletterConfigured: !!(process.env.BREVO_API_KEY && process.env.BREVO_LIST_ID && process.env.BREVO_DOI_TEMPLATE_ID && process.env.BREVO_REDIRECT_URL),
         adsConfigured: false,
@@ -379,24 +404,29 @@ module.exports = async function handler(req, res) {
     // POST /api/ask
     if (method === 'POST' && p === '/api/ask') {
       if (!limited(req, 'ask', 10)) return json(res, 429, { error: 'Trop de questions en peu de temps. Réessaie dans une minute.' });
-      const API_KEY = process.env.OPENAI_API_KEY || '';
-      if (!API_KEY) return json(res, 503, { error: 'Assistant IA non configuré : ajoute OPENAI_API_KEY dans les variables Vercel.' });
+      const API_KEY = process.env.ANTHROPIC_API_KEY || '';
+      if (!API_KEY) return json(res, 503, { error: 'Assistant IA non configuré : ajoute ANTHROPIC_API_KEY dans les variables Vercel.' });
       const b = await readBody(req, 6000);
       const question = clean(b.question, 1500), country = clean(b.country, 80) || 'non précisée';
       if (question.length < 4) return json(res, 400, { error: 'La question est trop courte.' });
-      const MODEL = process.env.OPENAI_MODEL || 'gpt-4.1-mini';
-      const instructions = `Tu es l'assistant de préparation PVT de PVT Explorer, destiné aux Français. Réponds en français, clairement et concrètement. Destination : ${country}. N'invente jamais les conditions de visa, quotas, prix, salaires, droits au travail ou URL officielles. Pour toute information administrative évolutive, demande de vérifier le site officiel de l'immigration du pays et précise que tu ne consultes pas les données en temps réel. Ne fournis pas de conseil médical, juridique ou financier personnalisé.`;
-      const r = await fetch('https://api.openai.com/v1/responses', {
+      const systemPrompt = `Tu es l'assistant de préparation PVT de PVT Explorer, destiné aux Français. Réponds en français, clairement et concrètement, en 3 à 5 paragraphes maximum. Destination mentionnée : ${country}. N'invente jamais les conditions de visa, quotas, prix, salaires, droits au travail ou URL officielles. Pour toute information administrative évolutive, invite à vérifier le site officiel de l'immigration du pays. Ne fournis pas de conseil médical, juridique ou financier personnalisé.`;
+      const r = await fetch('https://api.anthropic.com/v1/messages', {
         method: 'POST',
-        headers: { Authorization: `Bearer ${API_KEY}`, 'Content-Type': 'application/json' },
-        body: JSON.stringify({ model: MODEL, instructions, input: question, max_output_tokens: 800 })
+        headers: {
+          'x-api-key': API_KEY,
+          'anthropic-version': '2023-06-01',
+          'content-type': 'application/json'
+        },
+        body: JSON.stringify({
+          model: 'claude-haiku-5-5',
+          max_tokens: 800,
+          system: systemPrompt,
+          messages: [{ role: 'user', content: question }]
+        })
       });
       const data = await r.json();
       if (!r.ok) return json(res, 502, { error: data.error?.message || 'Erreur du fournisseur IA.' });
-      let answer = data.output_text;
-      if (!answer && Array.isArray(data.output)) {
-        answer = data.output.flatMap(o => o.content || []).filter(c => c.type === 'output_text').map(c => c.text).join('\n');
-      }
+      const answer = (data.content || []).filter(c => c.type === 'text').map(c => c.text).join('\n');
       return json(res, 200, { answer: answer || 'Je ne peux pas répondre pour le moment.' });
     }
 
@@ -424,6 +454,21 @@ module.exports = async function handler(req, res) {
       if (!br.ok) {
         const err = await br.json().catch(() => ({}));
         return json(res, 502, { error: err.message || 'Brevo n\'a pas pu envoyer la confirmation.' });
+      }
+      // Fire-and-forget admin notification via Resend
+      const RESEND_KEY = process.env.RESEND_API_KEY || '';
+      const ADMIN_EMAIL = process.env.ADMIN_EMAIL || '';
+      if (RESEND_KEY && ADMIN_EMAIL) {
+        fetch('https://api.resend.com/emails', {
+          method: 'POST',
+          headers: { Authorization: `Bearer ${RESEND_KEY}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            from: 'PVT Explorer <onboarding@resend.dev>',
+            to: [ADMIN_EMAIL],
+            subject: '🎉 Nouvel abonné newsletter PVT Explorer',
+            html: `<p>Un nouvel utilisateur s'est inscrit à la newsletter :</p><p><strong>${email}</strong></p><p>Date : ${new Date().toLocaleString('fr-FR', { timeZone: 'Europe/Paris' })}</p>`
+          })
+        }).catch(() => {});
       }
       return json(res, 200, { ok: true, message: 'Un e-mail de confirmation vient de t\'être envoyé. Confirme ton inscription pour rejoindre la newsletter.' });
     }
@@ -554,7 +599,8 @@ module.exports = async function handler(req, res) {
         }
         if (accept.includes('text/html')) {
           res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'public, max-age=3600' });
-          return res.end(renderBlogPost(post));
+          const host = req.headers.host || 'pvt-explorer.vercel.app';
+          return res.end(renderBlogPost(post, host));
         }
         return json(res, 200, post);
       } catch (e) { return json(res, 500, { error: e.message }); }
@@ -576,6 +622,45 @@ module.exports = async function handler(req, res) {
       try {
         if (blobToken()) await blobPut('data/blog-posts.json', JSON.stringify(b));
         return json(res, 200, { ok: true });
+      } catch (e) { return json(res, 500, { error: e.message }); }
+    }
+
+    // GET /sitemap.xml (via rewrite) or /api/sitemap.xml
+    if (method === 'GET' && (p === '/api/sitemap.xml' || p === '/sitemap.xml')) {
+      try {
+        const host = `https://${req.headers.host || 'pvt-explorer.vercel.app'}`;
+        const today = new Date().toISOString().split('T')[0];
+        const staticUrls = [
+          { loc: `${host}/`, changefreq: 'weekly', priority: '1.0', lastmod: today },
+          { loc: `${host}/nos-astuces`, changefreq: 'weekly', priority: '0.8', lastmod: today },
+        ];
+        let blogUrls = [];
+        if (blobToken()) {
+          try {
+            const raw = await blobGet('data/blog-posts.json');
+            if (raw) {
+              const bdata = JSON.parse(raw);
+              blogUrls = (bdata.posts || [])
+                .filter(post => post.published && post.slug)
+                .map(post => ({
+                  loc: `${host}/blog/${encodeURIComponent(post.slug)}`,
+                  changefreq: 'monthly',
+                  priority: '0.7',
+                  lastmod: (post.updatedAt || post.publishedAt || today).split('T')[0]
+                }));
+            }
+          } catch {}
+        }
+        const allUrls = [...staticUrls, ...blogUrls];
+        const urlsXml = allUrls.map(u => `  <url>
+    <loc>${u.loc}</loc>
+    <lastmod>${u.lastmod}</lastmod>
+    <changefreq>${u.changefreq}</changefreq>
+    <priority>${u.priority}</priority>
+  </url>`).join('\n');
+        const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urlsXml}\n</urlset>`;
+        res.writeHead(200, { 'Content-Type': 'application/xml; charset=utf-8', 'Cache-Control': 'public, max-age=3600' });
+        return res.end(xml);
       } catch (e) { return json(res, 500, { error: e.message }); }
     }
 

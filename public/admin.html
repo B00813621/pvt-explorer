@@ -136,7 +136,24 @@ tr:hover td{background:#f8fafc}
   .sid-footer,.sid-header p{display:none}
   .content{padding:1rem}
 }
+
+/* QUILL BLOG EDITOR */
+#blog-editor-wrap{border:1.5px solid var(--border);border-radius:8px;overflow:hidden;background:#fff;margin-top:.35rem}
+#blog-editor-wrap .ql-toolbar.ql-snow{border:0;border-bottom:1px solid var(--border);padding:.5rem .6rem;background:#f8fafc}
+#blog-editor-wrap .ql-container.ql-snow{border:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:.9rem}
+#blog-editor-wrap .ql-editor{min-height:220px;line-height:1.75;padding:.75rem 1rem}
+#blog-editor-wrap .ql-editor blockquote[data-callout]{border-left:4px solid;border-radius:10px;font-style:normal;padding:.7rem 1rem .7rem 1.1rem;margin:.5rem 0}
+#blog-editor-wrap .ql-editor blockquote[data-callout="tip"]{background:#f0fdf4;border-left-color:#22c55e;color:#166534}
+#blog-editor-wrap .ql-editor blockquote[data-callout="warning"]{background:#fff7ed;border-left-color:#f97316;color:#9a3412}
+#blog-editor-wrap .ql-editor blockquote[data-callout="danger"]{background:#fef2f2;border-left-color:#ef4444;color:#991b1b}
+#blog-editor-wrap .ql-editor blockquote[data-callout="info"]{background:#eff6ff;border-left-color:#3b82f6;color:#1e40af}
+#blog-custom-bar{border-top:1px solid var(--border);padding:.5rem .65rem;display:flex;gap:.35rem;flex-wrap:wrap;align-items:center;background:#f8fafc}
+#blog-custom-bar .ins-label{font-size:.7rem;color:#94a3b8;line-height:2;padding-right:.2rem;white-space:nowrap}
+.ins-btn{border:1px solid var(--border);background:#fff;border-radius:5px;padding:.28rem .5rem;font-size:.78rem;cursor:pointer;transition:.15s;line-height:1.3;font-family:inherit}
+.ins-btn:hover{background:#f1f5f9;border-color:var(--accent)}
+#img-picker-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:.65rem;max-height:400px;overflow-y:auto;padding:.25rem}
 </style>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css">
 </head>
 <body>
 
@@ -305,7 +322,7 @@ tr:hover td{background:#f8fafc}
 
 <!-- MODAL: Blog form -->
 <div class="overlay" id="blog-overlay">
-  <div class="modal" style="max-width:640px">
+  <div class="modal" style="max-width:740px">
     <div class="modal-head">
       <h3 id="blog-modal-title">Nouvel article</h3>
       <button class="close-btn" id="blog-close">×</button>
@@ -324,7 +341,21 @@ tr:hover td{background:#f8fafc}
     </div>
     <div class="field"><label>Pays (séparés par virgule)</label><input type="text" id="blog-countries" placeholder="australie, canada, nouvelle-zélande"></div>
     <div class="field"><label>Image (URL complète)</label><input type="url" id="blog-image" placeholder="https://... (utilise l'onglet Images pour uploader)"></div>
-    <div class="field"><label>Contenu HTML</label><textarea id="blog-content" style="min-height:180px;font-family:monospace;font-size:.82rem" placeholder="<p>Contenu de l'article en HTML...</p>&#10;<h2>Sous-titre</h2>&#10;<p>Suite...</p>"></textarea></div>
+    <div class="field">
+      <label>Contenu de l'article</label>
+      <div id="blog-editor-wrap">
+        <div id="blog-quill-editor"></div>
+        <div id="blog-custom-bar">
+          <span class="ins-label">Insérer :</span>
+          <button type="button" class="ins-btn" id="btn-ins-gallery">🖼️ Photo</button>
+          <button type="button" class="ins-btn" id="btn-ins-table">📊 Tableau</button>
+          <button type="button" class="ins-btn btn-callout" data-type="tip">💡 Astuce</button>
+          <button type="button" class="ins-btn btn-callout" data-type="warning">⚠️ Attention</button>
+          <button type="button" class="ins-btn btn-callout" data-type="danger">❌ À éviter</button>
+          <button type="button" class="ins-btn btn-callout" data-type="info">ℹ️ Info</button>
+        </div>
+      </div>
+    </div>
     <div class="field"><label>Temps de lecture (minutes)</label><input type="number" id="blog-reading-time" min="1" max="60" value="5"></div>
     <div class="field" style="display:flex;align-items:center;gap:.7rem;padding:.4rem 0">
       <input type="checkbox" id="blog-published" style="width:auto;accent-color:var(--accent)">
@@ -338,9 +369,22 @@ tr:hover td{background:#f8fafc}
   </div>
 </div>
 
+<!-- MODAL: Image picker for blog editor -->
+<div class="overlay" id="img-picker-overlay">
+  <div class="modal" style="max-width:700px">
+    <div class="modal-head">
+      <h3>Galerie d'images</h3>
+      <button class="close-btn" id="img-picker-close">×</button>
+    </div>
+    <p style="font-size:.82rem;color:var(--muted);margin-bottom:1rem">Clique sur une image pour l'insérer dans l'article.</p>
+    <div id="img-picker-grid"><div class="loading-txt">Chargement...</div></div>
+  </div>
+</div>
+
 <!-- TOAST -->
 <div id="toast"></div>
 
+<script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
 <script>
 // ---- STATE ----
 let token = localStorage.getItem('pvt_admin_token');
@@ -662,6 +706,8 @@ async function moderate(questionId, id, type, action) {
 // BLOG
 // ==============================
 let blogPosts = [];
+let quill = null;
+let imgPickerRange = null;
 
 const catIcons = { vols:'✈️', hébergement:'🏠', assurance:'🛡️', budget:'💰', visa:'🛂', travail:'💼', 'vie-pratique':'🏙️', activités:'🎯' };
 
@@ -671,6 +717,120 @@ function slugify(s) {
     .replace(/[òóôõö]/g,'o').replace(/[ùúûü]/g,'u').replace(/[ç]/g,'c').replace(/[ñ]/g,'n')
     .replace(/[^a-z0-9\s-]/g,'').replace(/\s+/g,'-').replace(/-+/g,'-').slice(0,80);
 }
+
+function ensureQuill() {
+  if (quill) return;
+  // Register callout blot (uses <blockquote data-callout="type">)
+  try {
+    const Block = Quill.import('blots/block');
+    class CalloutBlot extends Block {
+      static create(value) {
+        const node = super.create();
+        if (value) node.setAttribute('data-callout', value);
+        return node;
+      }
+      static formats(domNode) {
+        return domNode.getAttribute('data-callout') || undefined;
+      }
+      format(name, value) {
+        if (name === 'callout') {
+          if (value) this.domNode.setAttribute('data-callout', value);
+          else this.domNode.removeAttribute('data-callout');
+        } else {
+          super.format(name, value);
+        }
+      }
+    }
+    CalloutBlot.blotName = 'callout';
+    CalloutBlot.tagName = 'blockquote';
+    Quill.register({'formats/callout': CalloutBlot}, true);
+  } catch(e) {}
+
+  quill = new Quill('#blog-quill-editor', {
+    theme: 'snow',
+    modules: {
+      toolbar: [
+        [{ header: [2, 3, false] }],
+        ['bold', 'italic', 'underline', 'strike'],
+        [{ list: 'ordered' }, { list: 'bullet' }],
+        ['link', 'code-block'],
+        ['clean']
+      ]
+    },
+    placeholder: 'Commence à écrire ton article...'
+  });
+
+  // Callout buttons
+  document.querySelectorAll('.btn-callout').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const type = btn.dataset.type;
+      const range = quill.getSelection(true);
+      if (!range) return;
+      const formats = quill.getFormat(range);
+      quill.format('callout', formats.callout === type ? false : type, 'user');
+    });
+  });
+
+  // Table insert
+  document.getElementById('btn-ins-table').addEventListener('click', () => {
+    const rows = parseInt(prompt('Nombre de lignes (sans en-tête) ?', '2')) || 2;
+    const cols = parseInt(prompt('Nombre de colonnes ?', '3')) || 3;
+    let html = '<table><thead><tr>';
+    for (let c = 0; c < cols; c++) html += `<th>Colonne ${c+1}</th>`;
+    html += '</tr></thead><tbody>';
+    for (let r = 0; r < rows; r++) {
+      html += '<tr>';
+      for (let c = 0; c < cols; c++) html += '<td>Texte</td>';
+      html += '</tr>';
+    }
+    html += '</tbody></table><p></p>';
+    const range = quill.getSelection(true);
+    quill.clipboard.dangerouslyPasteHTML(range ? range.index : quill.getLength(), html);
+  });
+
+  // Gallery button
+  document.getElementById('btn-ins-gallery').addEventListener('click', openImgPicker);
+}
+
+// IMAGE PICKER
+async function openImgPicker() {
+  if (quill) imgPickerRange = quill.getSelection(true);
+  document.getElementById('img-picker-overlay').classList.add('open');
+  const grid = document.getElementById('img-picker-grid');
+  grid.innerHTML = '<div class="loading-txt">Chargement...</div>';
+  try {
+    const d = await api('GET', '/api/admin/images');
+    const imgs = d.images || [];
+    if (!imgs.length) {
+      grid.innerHTML = '<div class="empty" style="grid-column:1/-1">Aucune image — uploadez d\'abord des images dans l\'onglet Images.</div>';
+      return;
+    }
+    grid.innerHTML = imgs.map(img => `
+      <div class="img-card" style="cursor:pointer" onclick="pickImage('${esc(img.url)}')">
+        <img class="img-thumb" src="${esc(img.url)}" loading="lazy" alt="" onerror="this.style.background='#f1f5f9'">
+        <div class="img-info">
+          <div class="img-name" title="${esc(img.pathname)}">${esc(img.pathname.split('/').pop())}</div>
+          <div style="font-size:.7rem;color:var(--accent);font-weight:600;margin-top:.2rem">↑ Insérer</div>
+        </div>
+      </div>`).join('');
+  } catch(e) {
+    grid.innerHTML = `<div class="empty" style="grid-column:1/-1">⚠️ ${esc(e.message)}</div>`;
+  }
+}
+
+function pickImage(url) {
+  if (quill) {
+    const range = imgPickerRange || quill.getSelection(true);
+    const index = range ? range.index : quill.getLength() - 1;
+    quill.insertEmbed(index, 'image', url, 'user');
+    quill.setSelection(index + 1, 0);
+  }
+  document.getElementById('img-picker-overlay').classList.remove('open');
+}
+
+document.getElementById('img-picker-close').onclick = () => {
+  document.getElementById('img-picker-overlay').classList.remove('open');
+};
 
 async function loadBlog() {
   try {
@@ -726,6 +886,7 @@ document.getElementById('blog-title').addEventListener('input', function() {
 });
 
 function openBlogModal(id) {
+  ensureQuill();
   document.getElementById('blog-modal-title').textContent = id ? 'Modifier l\'article' : 'Nouvel article';
   if (id) {
     const p = blogPosts.find(x => x.id === id);
@@ -736,16 +897,17 @@ function openBlogModal(id) {
     document.getElementById('blog-cat').value = p.category || 'vols';
     document.getElementById('blog-countries').value = (p.countries||[]).join(', ');
     document.getElementById('blog-image').value = p.image || '';
-    document.getElementById('blog-content').value = p.content || '';
     document.getElementById('blog-reading-time').value = p.readingTime || 5;
     document.getElementById('blog-published').checked = !!p.published;
     document.getElementById('blog-edit-id').value = id;
+    quill.clipboard.dangerouslyPasteHTML(0, p.content || '');
   } else {
-    ['blog-title','blog-slug','blog-desc','blog-countries','blog-image','blog-content'].forEach(i => document.getElementById(i).value = '');
+    ['blog-title','blog-slug','blog-desc','blog-countries','blog-image'].forEach(i => document.getElementById(i).value = '');
     document.getElementById('blog-cat').value = 'vols';
     document.getElementById('blog-reading-time').value = 5;
     document.getElementById('blog-published').checked = false;
     document.getElementById('blog-edit-id').value = '';
+    quill.setContents([]);
   }
   document.getElementById('blog-overlay').classList.add('open');
   document.getElementById('blog-title').focus();
@@ -759,6 +921,7 @@ async function saveBlog() {
   if (!title || !slug) { toast('Titre et slug requis', 'err'); return; }
   const eid = document.getElementById('blog-edit-id').value;
   const countries = document.getElementById('blog-countries').value.split(',').map(s => s.trim()).filter(Boolean);
+  const content = quill ? quill.root.innerHTML : '';
   const post = {
     id: eid || (Date.now().toString(36) + Math.random().toString(36).slice(2,5)),
     title, slug,
@@ -766,7 +929,7 @@ async function saveBlog() {
     category: document.getElementById('blog-cat').value,
     countries,
     image: document.getElementById('blog-image').value.trim(),
-    content: document.getElementById('blog-content').value,
+    content,
     readingTime: parseInt(document.getElementById('blog-reading-time').value) || 5,
     published: document.getElementById('blog-published').checked,
     author: 'PVT Explorer',
