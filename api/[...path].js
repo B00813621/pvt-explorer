@@ -189,7 +189,7 @@ function htmlEsc(s) {
   return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 
-function renderBlogPost(post, host = 'pvt-explorer.vercel.app') {
+function renderBlogPost(post, host = 'pvt-explorer.fr') {
   const baseUrl = `https://${host}`;
   const postUrl = `${baseUrl}/blog/${post.slug}`;
   const title = htmlEsc(post.title || '');

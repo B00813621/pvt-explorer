@@ -8,15 +8,15 @@
 <meta property="og:title" content="Nos astuces PVT — Guides & conseils pour préparer ton départ">
 <meta property="og:description" content="Guides pratiques, conseils de préparation et astuces pour réussir ton PVT : vols, hébergement, visa, budget, travail et bien plus.">
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://pvt-explorer.vercel.app/nos-astuces">
+<meta property="og:url" content="https://pvt-explorer.fr/nos-astuces">
 <meta property="og:site_name" content="PVT Explorer">
 <meta property="og:locale" content="fr_FR">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Nos astuces PVT — Guides & conseils pour préparer ton départ">
 <meta name="twitter:description" content="Guides pratiques, conseils de préparation et astuces pour réussir ton PVT : vols, hébergement, visa, budget, travail et bien plus.">
-<link rel="canonical" href="https://pvt-explorer.vercel.app/nos-astuces">
+<link rel="canonical" href="https://pvt-explorer.fr/nos-astuces">
 <link rel="sitemap" type="application/xml" href="/sitemap.xml">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"CollectionPage","@id":"https://pvt-explorer.vercel.app/nos-astuces","name":"Nos astuces PVT — Guides & conseils","url":"https://pvt-explorer.vercel.app/nos-astuces","description":"Guides pratiques, conseils de préparation et astuces pour réussir ton PVT : vols, hébergement, visa, budget, travail et bien plus.","inLanguage":"fr-FR","isPartOf":{"@type":"WebSite","@id":"https://pvt-explorer.vercel.app/#website","name":"PVT Explorer","url":"https://pvt-explorer.vercel.app/"},"breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Accueil","item":"https://pvt-explorer.vercel.app/"},{"@type":"ListItem","position":2,"name":"Nos astuces","item":"https://pvt-explorer.vercel.app/nos-astuces"}]}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"CollectionPage","@id":"https://pvt-explorer.fr/nos-astuces","name":"Nos astuces PVT — Guides & conseils","url":"https://pvt-explorer.fr/nos-astuces","description":"Guides pratiques, conseils de préparation et astuces pour réussir ton PVT : vols, hébergement, visa, budget, travail et bien plus.","inLanguage":"fr-FR","isPartOf":{"@type":"WebSite","@id":"https://pvt-explorer.fr/#website","name":"PVT Explorer","url":"https://pvt-explorer.fr/"},"breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Accueil","item":"https://pvt-explorer.fr/"},{"@type":"ListItem","position":2,"name":"Nos astuces","item":"https://pvt-explorer.fr/nos-astuces"}]}}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -35,7 +35,8 @@ a{color:inherit;text-decoration:none;cursor:pointer}
 .logo{width:37px;height:37px;border-radius:12px;background:var(--teal);display:grid;place-items:center;color:white;font-size:20px}
 .brand span em{color:var(--teal);font-style:normal}
 .links{display:flex;gap:26px;font-size:14px;color:#53676d;font-weight:650}
-.links a:hover,.links a.active{color:var(--teal)}
+.links a:hover,.links a.active{color:var(--teal)}.links a:last-child{color:var(--teal);font-weight:800}
+.navRight{display:flex;align-items:center;gap:12px}.navAstuces{display:none;font-size:13px;font-weight:800;color:var(--teal);white-space:nowrap}.navAstuces:hover{color:#066b67}
 .btn{border:0;border-radius:999px;padding:12px 19px;font-weight:750;background:var(--teal);color:white;transition:.2s;cursor:pointer}
 .btn:hover{transform:translateY(-1px);background:#066b67}
 .hero-blog{padding:56px 0 40px;background:linear-gradient(135deg,#e8f5ef,#f7f8f4)}
@@ -80,7 +81,7 @@ a{color:inherit;text-decoration:none;cursor:pointer}
 .footer a{color:#a9c2bb;font-size:12px}.footer a:hover{color:#fff}
 @media(max-width:900px){.blog-grid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:600px){
-  .wrap{width:min(100% - 24px,1160px)}.links{display:none}.navin{height:62px}
+  .wrap{width:min(100% - 24px,1160px)}.links{display:none}.navin{height:62px}.navAstuces{display:block}
   .hero-blog{padding:36px 0 24px}.blog-grid{grid-template-columns:1fr}
   .filter-bar{gap:.5rem}.filter-count{margin-left:0;width:100%}
 }
@@ -88,19 +89,7 @@ a{color:inherit;text-decoration:none;cursor:pointer}
 </head>
 <body>
 <div class="top"><div class="wrap"><span>🌍 Le guide indépendant du PVT pour les Français</span><span>Guides & conseils de préparation</span></div></div>
-<nav class="nav">
-  <div class="wrap navin">
-    <a class="brand" href="/"><span class="logo">✈</span><span>PVT <em>Explorer</em></span></a>
-    <div class="links">
-      <a href="/#destinations">Destinations</a>
-      <a href="/#comparateur">Comparateur</a>
-      <a href="/#assistant">On répond à tes questions</a>
-      <a href="/#boutique">Boutique</a>
-      <a href="/nos-astuces" class="active">Nos astuces</a>
-    </div>
-    <a class="btn" href="/#destinations">Trouver mon PVT ↗</a>
-  </div>
-</nav>
+<nav class="nav"><div class="wrap navin"><a class="brand" href="/"><span class="logo">✈</span><span>PVT <em>Explorer</em></span></a><div class="links"><a href="/#destinations">Destinations</a><a href="/#comparateur">Comparateur</a><a href="/#assistant">On répond à tes questions</a><a href="/#boutique">Boutique</a><a href="/nos-astuces" class="active">Nos astuces&nbsp;| Blog</a></div><div class="navRight"><a class="navAstuces" href="/nos-astuces">Blog</a><a class="btn" href="/#destinations">Trouver mon PVT ↗</a></div></div></nav>
 
 <section class="hero-blog">
   <div class="wrap">
