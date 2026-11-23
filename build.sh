@@ -27,6 +27,7 @@ for VERCEL_OUT in "/vercel/output" "$PWD/.vercel/output"; do
 {
   "version": 3,
   "routes": [
+    { "src": "/(.*)", "has": [{ "type": "host", "value": "www.pvt-explorer.fr" }], "status": 308, "headers": { "Location": "https://pvt-explorer.fr/$1" } },
     { "src": "/go/(?<slug>[^/]*)", "dest": "/api/go?slug=$slug" },
     { "src": "/admin$", "dest": "/admin.html" },
     { "src": "/nos-astuces$", "dest": "/blog.html" },
