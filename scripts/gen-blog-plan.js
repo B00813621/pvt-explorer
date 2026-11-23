@@ -20,6 +20,12 @@ const WRITTEN = {
        imageAlt: 'Le lac Tekapo au crépuscule sur l\'île du Sud, paysage typique d\'un PVT Nouvelle-Zélande' },
   4: { slug: 'pvt-japon', image: WIKI + '8/8e/Fushimi_Inari-taisha%2C_Kyoto%2C_20240818_1343_4411.jpg/1280px-Fushimi_Inari-taisha%2C_Kyoto%2C_20240818_1343_4411.jpg',
        imageAlt: 'Allée de torii rouges du sanctuaire Fushimi Inari à Kyoto, incontournable pendant un PVT Japon' },
+  8: { slug: 'budget-pvt-australie', image: '/images/blog/budget-pvt-australie-melbourne.webp', imageWidth: 1280, imageHeight: 602,
+       imageAlt: 'Le centre-ville de Melbourne et le Princes Bridge de nuit : estimer son budget PVT Australie selon la ville' },
+  96: { slug: 'assurance-pvt-australie', image: '/images/blog/assurance-pvt-australie-bondi-beach.webp', imageWidth: 1280, imageHeight: 853,
+       imageAlt: 'Baigneurs et surfeurs à Bondi Beach, Sydney : bien choisir son assurance PVT Australie' },
+  101: { slug: 'tuto-immiaccount-pvt-australie', image: '/images/blog/tuto-immiaccount-pvt-australie-uluru.webp', imageWidth: 1280, imageHeight: 853,
+       imageAlt: 'Uluru au cœur de l\'Australie : demander son visa 417 sur ImmiAccount pour partir en PVT' },
   5: { slug: 'pvt-coree-du-sud', image: WIKI + '8/86/Gyeongbok_Palace_%EA%B2%BD%EB%B3%B5%EA%B6%81_%283119193250%29.jpg/1280px-Gyeongbok_Palace_%EA%B2%BD%EB%B3%B5%EA%B6%81_%283119193250%29.jpg',
        imageAlt: 'Le palais Gyeongbokgung à Séoul, à visiter pendant un PVT Corée du Sud' }
 };

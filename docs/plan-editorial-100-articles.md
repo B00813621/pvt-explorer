@@ -13,7 +13,7 @@ Le cocon PVT Australie (pilier /blog/pvt-australie + 10 satellites) est décrit 
 | 5 | ✅ rédigé | visa | corée-du-sud | pvt corée du sud | PVT Corée du Sud : demande, documents et conseils pour réussir |
 | 6 | Comparatif | visa | tous | quel pays pour un pvt | Quel pays choisir pour son PVT ? Comparatif des 15 destinations |
 | 7 | Comparatif | assurance | tous | meilleure assurance pvt | Meilleure assurance PVT 2027 : comparatif Chapka, Globe PVT, AVI, April |
-| 8 | Guide complet | budget | australie | budget pvt australie | Budget PVT Australie : combien d'argent prévoir pour partir ? |
+| 8 | ✅ rédigé | budget | australie | budget pvt australie | Budget PVT Australie : combien d'argent prévoir pour partir ? |
 | 9 | Guide complet | budget | canada | budget pvt canada | Budget PVT Canada : combien d'argent prévoir en 2027 |
 | 10 | Checklist | vie-pratique | tous | checklist pvt | Checklist PVT : les 30 choses à faire avant de partir |
 | 11 | Astuces | travail | australie | trouver travail australie pvt | Trouver du travail en Australie en PVT : fermes, mines, hospitality |
@@ -101,12 +101,12 @@ Le cocon PVT Australie (pilier /blog/pvt-australie + 10 satellites) est décrit 
 | 93 | Guide complet | visa | nouvelle-zélande | prolonger pvt nouvelle zélande | Prolonger son PVT Nouvelle-Zélande : l'extension de 3 mois |
 | 94 | Astuces | vie-pratique | tous | partir seule en pvt | Partir seule en PVT : sécurité et conseils pour voyager sereinement |
 | 95 | Guide complet | vie-pratique | tous | pvt en couple | Partir en PVT en couple : visas, budget et conseils |
-| 96 | Comparatif | assurance | australie | assurance pvt australie | Quelle assurance PVT Australie choisir ? Comparatif 2027 |
+| 96 | ✅ rédigé | assurance | australie | assurance pvt australie | Quelle assurance PVT Australie choisir ? Comparatif 2027 |
 | 97 | Top / Les essentiels | activités | tous | accessoires voyage | Les 10 accessoires de voyage essentiels pour un PVT |
 | 98 | Top / Les essentiels | travail | canada | métiers qui recrutent canada | Les métiers qui recrutent au Canada en PVT |
 | 99 | Astuces | travail | tous | améliorer anglais avant pvt | Améliorer son anglais avant son PVT : 10 méthodes efficaces |
 | 100 | Astuces | budget | tous | économiser en pvt | 20 astuces pour économiser au quotidien pendant son PVT |
-| 101 | Guide complet | visa | australie | immiaccount pvt australie | ImmiAccount Australie : tuto pas à pas pour demander son visa 417 |
+| 101 | ✅ rédigé | visa | australie | immiaccount pvt australie | ImmiAccount Australie : tuto pas à pas pour demander son visa 417 |
 | 102 | Guide complet | vie-pratique | australie | tfn australie | TFN Australie (Tax File Number) : comment le demander gratuitement ? |
 | 103 | Checklist | vie-pratique | australie | checklist pvt australie | Checklist PVT Australie : toutes les démarches avant le départ et à l'arrivée |
 
