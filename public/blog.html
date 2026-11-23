@@ -220,7 +220,17 @@ document.getElementById('search-input').addEventListener('input', applyFilters);
 document.getElementById('country-filter').addEventListener('change', applyFilters);
 document.getElementById('category-filter').addEventListener('change', applyFilters);
 
+// Filtres pré-remplis depuis l'URL (ex. /nos-astuces?categorie=visa, utilisé par le fil d'Ariane des articles)
+(function () {
+  const qs = new URLSearchParams(location.search);
+  const set = (id, v) => { const el = document.getElementById(id); if (v && [...el.options].some(o => o.value === v)) el.value = v; };
+  set('category-filter', qs.get('categorie'));
+  set('country-filter', qs.get('pays'));
+})();
+
 loadPosts();
 </script>
+<script src="/app-config.js"></script>
+<script src="/analytics.js" defer></script>
 </body>
 </html>

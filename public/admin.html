@@ -147,6 +147,7 @@ tr:hover td{background:#f8fafc}
 #blog-editor-wrap .ql-editor blockquote[data-callout="warning"]{background:#fff7ed;border-left-color:#f97316;color:#9a3412}
 #blog-editor-wrap .ql-editor blockquote[data-callout="danger"]{background:#fef2f2;border-left-color:#ef4444;color:#991b1b}
 #blog-editor-wrap .ql-editor blockquote[data-callout="info"]{background:#eff6ff;border-left-color:#3b82f6;color:#1e40af}
+#blog-editor-wrap .ql-editor blockquote[data-callout="key"]{background:#f5f3ff;border-left-color:#8b5cf6;color:#4c1d95}
 #blog-custom-bar{border-top:1px solid var(--border);padding:.5rem .65rem;display:flex;gap:.35rem;flex-wrap:wrap;align-items:center;background:#f8fafc}
 #blog-custom-bar .ins-label{font-size:.7rem;color:#94a3b8;line-height:2;padding-right:.2rem;white-space:nowrap}
 .ins-btn{border:1px solid var(--border);background:#fff;border-radius:5px;padding:.28rem .5rem;font-size:.78rem;cursor:pointer;transition:.15s;line-height:1.3;font-family:inherit}
@@ -253,7 +254,7 @@ tr:hover td{background:#f8fafc}
           <div class="card-header">
             <span class="card-title">Articles du blog</span>
             <div style="display:flex;gap:.4rem;flex-wrap:wrap">
-              <button class="btn btn-ghost btn-sm" id="import-plan-btn" title="Ajoute les 100 articles du plan SEO en brouillon (sans écraser l'existant)">📋 Importer le plan (100)</button>
+              <button class="btn btn-ghost btn-sm" id="import-plan-btn" title="Ajoute les articles du plan SEO en brouillon et propose les nouvelles versions des articles rédigés">📋 Importer le plan</button>
               <button class="btn btn-primary btn-sm" id="add-blog-btn">+ Nouvel article</button>
             </div>
           </div>
@@ -387,6 +388,7 @@ tr:hover td{background:#f8fafc}
           <button type="button" class="ins-btn btn-callout" data-type="warning">⚠️ Attention</button>
           <button type="button" class="ins-btn btn-callout" data-type="danger">❌ À éviter</button>
           <button type="button" class="ins-btn btn-callout" data-type="info">ℹ️ Info</button>
+          <button type="button" class="ins-btn btn-callout" data-type="key">📊 Chiffre clé</button>
         </div>
       </div>
     </div>
@@ -788,7 +790,7 @@ function ensureQuill() {
       toolbar: [
         [{ header: [2, 3, false] }],
         ['bold', 'italic', 'underline', 'strike'],
-        [{ list: 'ordered' }, { list: 'bullet' }],
+        [{ list: 'ordered' }, { list: 'bullet' }, { list: 'check' }],
         ['link', 'code-block'],
         ['clean']
       ],
@@ -919,22 +921,34 @@ async function importBlogPlan() {
     const isPlaceholder = p => !p.published && (p.content || '').includes('Brouillon — plan SEO');
     const byId = new Map(blogPosts.map(p => [p.id, p]));
     const slugs = new Set(blogPosts.map(p => p.slug));
-    const fresh = [], upgrades = new Map();
+    const fresh = [], fills = new Map(), rewrites = new Map();
     for (const p of plan.posts || []) {
       const cur = byId.get(p.id);
-      if (cur) { if (p.written && isPlaceholder(cur)) upgrades.set(p.id, p); }
-      else if (!slugs.has(p.slug)) fresh.push(p);
+      if (!cur) { if (!slugs.has(p.slug)) fresh.push(p); continue; }
+      if (isPlaceholder(cur)) {
+        // Brouillon jamais modifié : on prend la dernière version du plan (titre, slug, contenu)
+        if (JSON.stringify({ ...cur, id: 0 }) !== JSON.stringify({ ...p, id: 0 })) fills.set(p.id, p);
+      } else if (p.written && (p.contentVersion || 1) > (cur.contentVersion || 1)) {
+        // Article réécrit dans le plan : remplacement proposé, en gardant son statut de publication
+        rewrites.set(p.id, { ...p, published: !!cur.published, publishedAt: cur.publishedAt || p.publishedAt });
+      }
     }
-    if (!fresh.length && !upgrades.size) { toast('Le plan est déjà à jour ✓'); return; }
-    const msg = [fresh.length && `ajouter ${fresh.length} brouillon(s)`, upgrades.size && `remplir ${upgrades.size} brouillon(s) encore vides avec l'article rédigé`].filter(Boolean).join(' et ');
-    if (!confirm(`Plan éditorial : ${msg} ?\nRien n'est publié, et les articles que vous avez modifiés ne sont pas touchés.`)) return;
+    if (!fresh.length && !fills.size && !rewrites.size) { toast('Le plan est déjà à jour ✓'); return; }
+    const msg = [fresh.length && `ajouter ${fresh.length} brouillon(s)`, fills.size && `mettre à jour ${fills.size} brouillon(s) encore vides`].filter(Boolean).join(' et ');
+    let doRewrite = false;
+    if (rewrites.size) {
+      const names = [...rewrites.values()].map(p => `• ${p.title}`).join('\n');
+      doRewrite = confirm(`Nouvelle version disponible pour :\n${names}\n\nRemplacer le texte actuel par la nouvelle version ? Vos modifications faites dans l'admin sur ces articles seront perdues. Leur statut (publié ou brouillon) est conservé.`);
+    }
+    if (!msg && !doRewrite) return;
+    if (msg && !confirm(`Plan éditorial : ${msg} ?\nRien n'est publié, et les articles que vous avez modifiés ne sont pas touchés.`)) { if (!doRewrite) return; fresh.length = 0; fills.clear(); }
     const before = blogPosts;
-    blogPosts = [...blogPosts.map(p => upgrades.get(p.id) || p), ...fresh];
+    blogPosts = [...blogPosts.map(p => fills.get(p.id) || (doRewrite && rewrites.get(p.id)) || p), ...fresh];
     try { await api('POST', '/api/admin/blog', { posts: blogPosts }); }
     catch (e) { blogPosts = before; throw e; }
     renderBlogList();
     document.getElementById('topbar-info').textContent = `${blogPosts.length} articles`;
-    toast(`Plan importé : ${fresh.length} ajouté(s), ${upgrades.size} rempli(s) ✓`);
+    toast(`Plan importé : ${fresh.length} ajouté(s), ${fills.size} mis à jour, ${doRewrite ? rewrites.size : 0} réécrit(s) ✓`);
   } catch (e) { toast(e.message, 'err'); }
 }
 document.getElementById('blog-close').onclick = closeBlogModal;

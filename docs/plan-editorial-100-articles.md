@@ -1,7 +1,8 @@
-# Plan éditorial — 100 articles PVT Explorer
+# Plan éditorial — 103 articles PVT Explorer
 
 Classés par priorité (volume de recherche estimé × intention × potentiel d'affiliation).
-Importables comme **brouillons** dans l'admin : onglet *Blog / Astuces* → bouton *📋 Importer le plan (100)*.
+Importables comme **brouillons** dans l'admin : onglet *Blog / Astuces* → bouton *📋 Importer le plan*.
+Le cocon PVT Australie (pilier /blog/pvt-australie + 10 satellites) est décrit dans docs/cocon-pvt-australie.md.
 
 | # | Type / état | Catégorie | Pays | Mot-clé principal | Titre (H1 / balise title) |
 |---|---|---|---|---|---|
@@ -12,11 +13,11 @@ Importables comme **brouillons** dans l'admin : onglet *Blog / Astuces* → bout
 | 5 | ✅ rédigé | visa | corée-du-sud | pvt corée du sud | PVT Corée du Sud : demande, documents et conseils pour réussir |
 | 6 | Comparatif | visa | tous | quel pays pour un pvt | Quel pays choisir pour son PVT ? Comparatif des 15 destinations |
 | 7 | Comparatif | assurance | tous | meilleure assurance pvt | Meilleure assurance PVT 2027 : comparatif Chapka, Globe PVT, AVI, April |
-| 8 | Guide complet | budget | australie | budget pvt australie | Budget PVT Australie : combien prévoir pour partir sereinement |
+| 8 | Guide complet | budget | australie | budget pvt australie | Budget PVT Australie : combien d'argent prévoir pour partir ? |
 | 9 | Guide complet | budget | canada | budget pvt canada | Budget PVT Canada : combien d'argent prévoir en 2027 |
 | 10 | Checklist | vie-pratique | tous | checklist pvt | Checklist PVT : les 30 choses à faire avant de partir |
-| 11 | Astuces | travail | australie | trouver du travail en australie | Trouver du travail en Australie en PVT : 12 méthodes qui marchent |
-| 12 | Guide complet | visa | australie | 88 jours farm australie | 2e et 3e année de PVT Australie : tout sur les 88 jours de farm |
+| 11 | Astuces | travail | australie | trouver travail australie pvt | Trouver du travail en Australie en PVT : fermes, mines, hospitality |
+| 12 | Guide complet | visa | australie | 88 jours pvt australie | Les 88 jours en Australie : comment renouveler son PVT (2e et 3e année) |
 | 13 | Astuces | travail | canada | trouver un emploi au canada pvt | Trouver un emploi au Canada en PVT : CV canadien, sites et réseau |
 | 14 | Checklist | vie-pratique | australie | arrivée en australie démarches | Arriver en Australie : les 10 démarches de la première semaine |
 | 15 | Checklist | vie-pratique | canada | arrivée au canada pvt | Arriver au Canada en PVT : NAS, banque, téléphone et logement |
@@ -28,10 +29,10 @@ Importables comme **brouillons** dans l'admin : onglet *Blog / Astuces* → bout
 | 21 | Guide complet | assurance | canada | assurance pvt canada | Assurance PVT Canada : obligatoire ? Ce que l'agent vérifie |
 | 22 | Checklist | vie-pratique | tous | valise pvt | Que mettre dans sa valise PVT : la liste complète (kit de départ) |
 | 23 | Comparatif | activités | tous | meilleur sac à dos voyage | Meilleurs sacs à dos de voyage pour un PVT : comparatif 2027 |
-| 24 | Guide complet | vie-pratique | australie | acheter un van australie | Acheter un van en Australie : guide, prix et pièges à éviter |
+| 24 | Guide complet | vie-pratique | australie | acheter van australie pvt | Acheter un van ou une voiture en Australie : le guide complet PVT |
 | 25 | Guide complet | vie-pratique | nouvelle-zélande | acheter un van nouvelle zélande | Acheter un van en Nouvelle-Zélande : self-contained, prix et conseils |
 | 26 | Guide complet | travail | australie | salaire australie pvt | Salaire en Australie en PVT : SMIC, taux horaires et impôts |
-| 27 | Guide complet | budget | australie | récupérer superannuation | Récupérer sa superannuation (DASP) après son PVT Australie |
+| 27 | Guide complet | budget | australie | superannuation australie pvt | Superannuation en Australie : comment récupérer sa retraite en partant ? |
 | 28 | Guide complet | budget | australie | tax return australie | Tax return Australie : récupérer ses impôts en PVT |
 | 29 | Comparatif | visa | canada | alternatives pvt canada | PVT Canada pas tiré ? Les 7 alternatives pour partir quand même |
 | 30 | Guide complet | visa | canada | arrivée canada point d'entrée | Activer son PVT au point d'entrée : documents et déroulé |
@@ -77,7 +78,7 @@ Importables comme **brouillons** dans l'admin : onglet *Blog / Astuces* → bout
 | 70 | Guide complet | vie-pratique | canada | échanger permis québec | Échanger son permis français au Canada (Québec et autres provinces) |
 | 71 | Checklist | vie-pratique | canada | s'équiper hiver canada | Hiver canadien : comment s'équiper sans se ruiner |
 | 72 | Guide complet | assurance | australie | se soigner australie pvt | Se soigner en Australie en PVT : médecin, urgences et remboursement |
-| 73 | Comparatif | budget | australie | banque australie pvt | Ouvrir un compte bancaire en Australie : CommBank, ANZ, Westpac, NAB |
+| 73 | Comparatif | budget | australie | compte bancaire australie pvt | Ouvrir un compte bancaire en Australie en PVT : quelle banque choisir ? |
 | 74 | Guide complet | travail | canada | travailler station ski canada | Travailler dans une station de ski au Canada : Whistler, Banff |
 | 75 | Top / Les essentiels | travail | australie | jobs mieux payés australie | Les 10 jobs les mieux payés en PVT Australie |
 | 76 | Top / Les essentiels | activités | japon | que faire au japon pvt | Que faire au Japon pendant son PVT : 20 expériences incontournables |
@@ -100,18 +101,21 @@ Importables comme **brouillons** dans l'admin : onglet *Blog / Astuces* → bout
 | 93 | Guide complet | visa | nouvelle-zélande | prolonger pvt nouvelle zélande | Prolonger son PVT Nouvelle-Zélande : l'extension de 3 mois |
 | 94 | Astuces | vie-pratique | tous | partir seule en pvt | Partir seule en PVT : sécurité et conseils pour voyager sereinement |
 | 95 | Guide complet | vie-pratique | tous | pvt en couple | Partir en PVT en couple : visas, budget et conseils |
-| 96 | Comparatif | assurance | australie | assurance pvt australie | Assurance PVT Australie : obligatoire ? Comparatif des offres |
+| 96 | Comparatif | assurance | australie | assurance pvt australie | Quelle assurance PVT Australie choisir ? Comparatif 2027 |
 | 97 | Top / Les essentiels | activités | tous | accessoires voyage | Les 10 accessoires de voyage essentiels pour un PVT |
 | 98 | Top / Les essentiels | travail | canada | métiers qui recrutent canada | Les métiers qui recrutent au Canada en PVT |
 | 99 | Astuces | travail | tous | améliorer anglais avant pvt | Améliorer son anglais avant son PVT : 10 méthodes efficaces |
 | 100 | Astuces | budget | tous | économiser en pvt | 20 astuces pour économiser au quotidien pendant son PVT |
+| 101 | Guide complet | visa | australie | immiaccount pvt australie | ImmiAccount Australie : tuto pas à pas pour demander son visa 417 |
+| 102 | Guide complet | vie-pratique | australie | tfn australie | TFN Australie (Tax File Number) : comment le demander gratuitement ? |
+| 103 | Checklist | vie-pratique | australie | checklist pvt australie | Checklist PVT Australie : toutes les démarches avant le départ et à l'arrivée |
 
 ## Répartition
 
-- **visa** : 27
+- **visa** : 28
 - **assurance** : 5
 - **budget** : 12
-- **vie-pratique** : 22
+- **vie-pratique** : 24
 - **travail** : 13
 - **vols** : 6
 - **hébergement** : 6
