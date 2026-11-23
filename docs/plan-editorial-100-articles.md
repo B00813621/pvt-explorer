@@ -16,8 +16,8 @@ Le cocon PVT Australie (pilier /blog/pvt-australie + 10 satellites) est décrit 
 | 8 | ✅ rédigé | budget | australie | budget pvt australie | Budget PVT Australie : combien d'argent prévoir pour partir ? |
 | 9 | Guide complet | budget | canada | budget pvt canada | Budget PVT Canada : combien d'argent prévoir en 2027 |
 | 10 | Checklist | vie-pratique | tous | checklist pvt | Checklist PVT : les 30 choses à faire avant de partir |
-| 11 | Astuces | travail | australie | trouver travail australie pvt | Trouver du travail en Australie en PVT : fermes, mines, hospitality |
-| 12 | Guide complet | visa | australie | 88 jours pvt australie | Les 88 jours en Australie : comment renouveler son PVT (2e et 3e année) |
+| 11 | ✅ rédigé | travail | australie | trouver travail australie pvt | Trouver du travail en Australie en PVT : fermes, mines, hospitality |
+| 12 | ✅ rédigé | visa | australie | 88 jours pvt australie | Les 88 jours en Australie : comment renouveler son PVT (2e et 3e année) |
 | 13 | Astuces | travail | canada | trouver un emploi au canada pvt | Trouver un emploi au Canada en PVT : CV canadien, sites et réseau |
 | 14 | Checklist | vie-pratique | australie | arrivée en australie démarches | Arriver en Australie : les 10 démarches de la première semaine |
 | 15 | Checklist | vie-pratique | canada | arrivée au canada pvt | Arriver au Canada en PVT : NAS, banque, téléphone et logement |
@@ -107,7 +107,7 @@ Le cocon PVT Australie (pilier /blog/pvt-australie + 10 satellites) est décrit 
 | 99 | Astuces | travail | tous | améliorer anglais avant pvt | Améliorer son anglais avant son PVT : 10 méthodes efficaces |
 | 100 | Astuces | budget | tous | économiser en pvt | 20 astuces pour économiser au quotidien pendant son PVT |
 | 101 | ✅ rédigé | visa | australie | immiaccount pvt australie | ImmiAccount Australie : tuto pas à pas pour demander son visa 417 |
-| 102 | Guide complet | vie-pratique | australie | tfn australie | TFN Australie (Tax File Number) : comment le demander gratuitement ? |
+| 102 | ✅ rédigé | vie-pratique | australie | tfn australie | TFN Australie (Tax File Number) : comment le demander gratuitement ? |
 | 103 | Checklist | vie-pratique | australie | checklist pvt australie | Checklist PVT Australie : toutes les démarches avant le départ et à l'arrivée |
 
 ## Répartition

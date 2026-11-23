@@ -12,7 +12,7 @@ const WRITTEN = {
        imageAlt: 'Vue sur les gratte-ciel de Montréal depuis le belvédère Kondiaronk du mont Royal, destination phare du PVT Canada' },
   // contentVersion : à incrémenter quand le texte d'un article déjà importé est réécrit,
   // pour que l'admin propose de remplacer l'ancienne version.
-  2: { slug: 'pvt-australie', contentVersion: 2, updatedAt: '2026-11-23', title: 'PVT Australie 2027 : le guide complet pour obtenir votre visa',
+  2: { slug: 'pvt-australie', contentVersion: 3, updatedAt: '2026-11-23', title: 'PVT Australie 2027 : le guide complet pour obtenir votre visa',
        description: 'Conditions, prix (840 AUD), budget, ImmiAccount, 88 jours : je vous guide pas à pas pour obtenir votre PVT Australie (Working Holiday Visa 417).',
        image: '/images/blog/pvt-australie-sydney-opera.webp', imageWidth: 1280, imageHeight: 720,
        imageAlt: "L'Opéra de Sydney et le Harbour Bridge, symboles du PVT Australie (Working Holiday Visa 417)" },
@@ -20,12 +20,18 @@ const WRITTEN = {
        imageAlt: 'Le lac Tekapo au crépuscule sur l\'île du Sud, paysage typique d\'un PVT Nouvelle-Zélande' },
   4: { slug: 'pvt-japon', image: WIKI + '8/8e/Fushimi_Inari-taisha%2C_Kyoto%2C_20240818_1343_4411.jpg/1280px-Fushimi_Inari-taisha%2C_Kyoto%2C_20240818_1343_4411.jpg',
        imageAlt: 'Allée de torii rouges du sanctuaire Fushimi Inari à Kyoto, incontournable pendant un PVT Japon' },
-  8: { slug: 'budget-pvt-australie', image: '/images/blog/budget-pvt-australie-melbourne.webp', imageWidth: 1280, imageHeight: 602,
+  8: { slug: 'budget-pvt-australie', contentVersion: 2, image: '/images/blog/budget-pvt-australie-melbourne.webp', imageWidth: 1280, imageHeight: 602,
        imageAlt: 'Le centre-ville de Melbourne et le Princes Bridge de nuit : estimer son budget PVT Australie selon la ville' },
   96: { slug: 'assurance-pvt-australie', image: '/images/blog/assurance-pvt-australie-bondi-beach.webp', imageWidth: 1280, imageHeight: 853,
        imageAlt: 'Baigneurs et surfeurs à Bondi Beach, Sydney : bien choisir son assurance PVT Australie' },
   101: { slug: 'tuto-immiaccount-pvt-australie', image: '/images/blog/tuto-immiaccount-pvt-australie-uluru.webp', imageWidth: 1280, imageHeight: 853,
        imageAlt: 'Uluru au cœur de l\'Australie : demander son visa 417 sur ImmiAccount pour partir en PVT' },
+  11: { slug: 'trouver-travail-australie-pvt', image: '/images/blog/trouver-travail-australie-pvt-perth.webp', imageWidth: 1280, imageHeight: 848,
+       imageAlt: 'Les gratte-ciel de Perth au coucher du soleil : trouver du travail en Australie avec un PVT' },
+  12: { slug: '88-jours-pvt-australie-specified-work', image: '/images/blog/88-jours-pvt-australie-vendanges.webp', imageWidth: 1280, imageHeight: 914,
+       imageAlt: 'Vendanges dans un vignoble australien, un travail éligible aux 88 jours de specified work du PVT' },
+  102: { slug: 'tfn-australie-tax-file-number', image: '/images/blog/tfn-australie-perth-elizabeth-quay.webp', imageWidth: 1280, imageHeight: 922,
+       imageAlt: 'Le pont d\'Elizabeth Quay à Perth : demander son TFN en arrivant en Australie' },
   5: { slug: 'pvt-coree-du-sud', image: WIKI + '8/86/Gyeongbok_Palace_%EA%B2%BD%EB%B3%B5%EA%B6%81_%283119193250%29.jpg/1280px-Gyeongbok_Palace_%EA%B2%BD%EB%B3%B5%EA%B6%81_%283119193250%29.jpg',
        imageAlt: 'Le palais Gyeongbokgung à Séoul, à visiter pendant un PVT Corée du Sud' }
 };
