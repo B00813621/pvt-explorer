@@ -59,68 +59,91 @@
 .mapLoad{display:flex;align-items:center;justify-content:center;height:300px;color:var(--muted);font-size:14px;position:absolute;inset:0}
 </style>
 <style>
-/* ——— Design refresh ——— */
-:root{--display:'DM Serif Display',Georgia,serif}
+/* ——— Design refresh — Emil Kowalski principles ——— */
+:root{
+  --display:'DM Serif Display',Georgia,serif;
+  --ease-out:cubic-bezier(0.23,1,0.32,1);
+  --ease-in-out:cubic-bezier(0.77,0,0.175,1)
+}
 
 /* Display typography */
 .hero h1,.sectionHead h2,.panel h3,.newsletter h2,.modalHead h2,.countryTitle h3,.modalContent h3{font-family:var(--display);font-weight:400}
 .hero h1{font-size:clamp(50px,6.5vw,82px);letter-spacing:-2px;line-height:1.02}
 .sectionHead h2{font-size:40px;letter-spacing:-1px}
 .newsletter h2{font-size:30px;letter-spacing:-.5px}
-
-/* Stat numbers */
+.countryTitle h3{font-size:20px;letter-spacing:-.4px}
+.contactSide h3{font-family:var(--display);font-weight:400;font-size:22px}
 .stat b{font-family:var(--display);font-size:28px;font-weight:400;letter-spacing:-.5px}
+.compare .sectionHead h2{color:white}
 
 /* Hero */
 .hero{padding:86px 0 70px;background:radial-gradient(circle at 75% 15%,#c8e8db 0,transparent 35%),radial-gradient(circle at 10% 80%,#d9eee6 0,transparent 28%),linear-gradient(120deg,#ecf6f1,#f8f8f3 65%)}
-.heroPhoto{transition:transform .6s cubic-bezier(.4,0,.2,1)}
-.heroPhoto:hover{transform:scale(1.02)}
-.floatCard{backdrop-filter:blur(10px);background:rgba(255,255,255,.93);border:1px solid rgba(255,255,255,.9);transition:transform .2s ease,box-shadow .2s ease}
-.floatCard:hover{transform:translateY(-2px);box-shadow:0 20px 50px #183a3520}
+.heroPhoto{transition:transform .6s var(--ease-out)}
+.floatCard{backdrop-filter:blur(10px);background:rgba(255,255,255,.93);border:1px solid rgba(255,255,255,.9);transition:transform 200ms var(--ease-out),box-shadow 200ms ease}
 
-/* Buttons */
-.btn{transition:transform .18s cubic-bezier(.4,0,.2,1),background .18s ease,box-shadow .18s ease}
-.btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px #087e7940;background:#066b67}
-.btn:active{transform:translateY(0);box-shadow:none}
-.btn.light:hover{background:#c5e9d8;box-shadow:none}
-.btn.outline:hover{box-shadow:0 4px 12px #183a3515;background:#f8faf8}
+/* Buttons — scale(0.97) on :active gives real press feedback */
+.btn{transition:transform 160ms var(--ease-out),background 160ms ease,box-shadow 160ms ease}
+.btn:active{transform:scale(0.97)!important;box-shadow:none!important}
 
 /* Country cards */
 .countryTop{height:195px}
-.country{transition:transform .22s ease,box-shadow .22s ease}
-.country:hover{transform:translateY(-5px);box-shadow:0 20px 50px #183a3515}
+.country{transition:transform 220ms var(--ease-out),box-shadow 220ms ease}
 
-/* Chip filters */
-.chip{transition:all .18s ease}
+/* Stagger entry for country cards (cascade naturelle) */
+@keyframes cardIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.country{opacity:0;animation:cardIn 350ms var(--ease-out) forwards}
+.country:nth-child(1){animation-delay:0ms}
+.country:nth-child(2){animation-delay:40ms}
+.country:nth-child(3){animation-delay:70ms}
+.country:nth-child(4){animation-delay:100ms}
+.country:nth-child(5){animation-delay:130ms}
+.country:nth-child(6){animation-delay:150ms}
+.country:nth-child(n+7){animation-delay:170ms}
 
-/* Testimonials avec marques de citation */
-.testimonialGrid>div{position:relative;overflow:hidden;transition:transform .22s ease,box-shadow .22s ease}
-.testimonialGrid>div:hover{transform:translateY(-3px);box-shadow:0 15px 40px #183a3512}
+/* Chips — props spécifiques, jamais "all" */
+.chip{transition:background 150ms var(--ease-out),color 150ms var(--ease-out),border-color 150ms var(--ease-out)}
+
+/* Testimonials */
+.testimonialGrid>div{position:relative;overflow:hidden;transition:transform 220ms var(--ease-out),box-shadow 220ms ease}
 .testimonialGrid>div::before{content:'\201C';font-family:var(--display);font-size:90px;color:var(--teal);opacity:.12;position:absolute;top:-5px;left:15px;line-height:1;pointer-events:none}
 
-/* Compare section */
-.compare .sectionHead h2{color:white}
+/* Partner and product cards */
+.partner{transition:transform 200ms var(--ease-out),box-shadow 200ms ease}
+.productCard{transition:transform 200ms var(--ease-out),box-shadow 200ms ease}
 
-/* Country card title sizing */
-.countryTitle h3{font-size:20px;letter-spacing:-.4px}
+/* FAQ smoother easing */
+.faqA{transition:max-height 280ms var(--ease-out)}
+.faqQ{transition:background 150ms ease}
 
-/* Contact aside */
-.contactSide h3{font-family:var(--display);font-weight:400;font-size:22px}
+/* Nav links */
+.links a{transition:color 150ms ease}
 
-/* Partner cards */
-.partner{transition:transform .2s ease,box-shadow .2s ease}
-.partner:hover{transform:translateY(-3px);box-shadow:0 12px 35px #183a3512}
+/* Modal entrance — scale(0.95→1) via @starting-style */
+.modal.show .modalBox{opacity:1;transform:scale(1);transition:opacity 250ms ease,transform 250ms var(--ease-out);transform-origin:center center}
+@starting-style{.modal.show .modalBox{opacity:0;transform:scale(0.95)}}
 
-/* Product cards */
-.productCard{transition:transform .2s ease,box-shadow .2s ease}
-.productCard:hover{transform:translateY(-3px);box-shadow:0 12px 35px #183a3512}
-
-/* FAQ hover */
-.faqQ{transition:background .15s ease}
+/* All hover states gated — touch devices ne déclenchent pas de faux hover */
+@media(hover:hover) and (pointer:fine){
+  .heroPhoto:hover{transform:scale(1.02)}
+  .floatCard:hover{transform:translateY(-2px);box-shadow:0 20px 50px #183a3520}
+  .btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px #087e7940;background:#066b67}
+  .btn.light:hover{transform:translateY(-1px);background:#c5e9d8;box-shadow:none}
+  .btn.outline:hover{transform:translateY(-1px);box-shadow:0 4px 12px #183a3515;background:#f8faf8}
+  .country:hover{transform:translateY(-5px);box-shadow:0 20px 50px #183a3515}
+  .testimonialGrid>div:hover{transform:translateY(-3px);box-shadow:0 15px 40px #183a3512}
+  .partner:hover{transform:translateY(-3px);box-shadow:0 12px 35px #183a3512}
+  .productCard:hover{transform:translateY(-3px);box-shadow:0 12px 35px #183a3512}
+}
 
 /* Responsive */
 @media(max-width:800px){.sectionHead h2{font-size:34px}}
 @media(max-width:540px){.hero h1{font-size:clamp(40px,10vw,54px);letter-spacing:-1.5px}.sectionHead h2{font-size:30px}}
+
+/* prefers-reduced-motion — animations supprimées, transitions maintenues pour comprehension */
+@media(prefers-reduced-motion:reduce){
+  .country{animation:none;opacity:1}
+  .heroPhoto,.floatCard,.btn,.country,.partner,.productCard,.testimonialGrid>div{transition-duration:.01ms!important}
+}
 </style>
 </head>
 <body>
