@@ -189,6 +189,21 @@ function htmlEsc(s) {
   return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 
+// Extrait les questions/réponses de la section « FAQ » (h2 FAQ puis h3 question + paragraphes) pour le schéma FAQPage
+function extractFaq(html) {
+  const strip = s => s.replace(/<[^>]+>/g, '').replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/\s+/g, ' ').trim();
+  const m = String(html || '').match(/<h2[^>]*>[^<]*FAQ[\s\S]*?<\/h2>([\s\S]*?)(?=<h2|$)/i);
+  if (!m) return null;
+  const items = [];
+  const re = /<h3[^>]*>([\s\S]*?)<\/h3>([\s\S]*?)(?=<h3|$)/gi;
+  let q;
+  while ((q = re.exec(m[1]))) {
+    const name = strip(q[1]), text = strip(q[2]);
+    if (name && text) items.push({ '@type': 'Question', name, acceptedAnswer: { '@type': 'Answer', text } });
+  }
+  return items.length ? { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: items } : null;
+}
+
 function renderBlogPost(post, host = 'pvt-explorer.fr') {
   const baseUrl = `https://${host}`;
   const postUrl = `${baseUrl}/blog/${post.slug}`;
@@ -199,7 +214,9 @@ function renderBlogPost(post, host = 'pvt-explorer.fr') {
   const catIcons = { vols:'✈️', hébergement:'🏠', assurance:'🛡️', budget:'💰', visa:'🛂', travail:'💼', 'vie-pratique':'🏙️', activités:'🎯' };
   const catIcon = catIcons[post.category] || '📝';
   const readTime = post.readingTime ? `${post.readingTime} min · ` : '';
-  const imgHtml = post.image ? `<img src="${htmlEsc(post.image)}" alt="${title}" class="hero-img" loading="eager">` : '';
+  const imgAlt = htmlEsc(post.imageAlt || post.title || '');
+  const imgHtml = post.image ? `<img src="${htmlEsc(post.image)}" alt="${imgAlt}" class="hero-img" loading="eager" fetchpriority="high">` : '';
+  const faqLd = extractFaq(post.content);
   const jsonLd = JSON.stringify({
     '@context': 'https://schema.org',
     '@type': 'Article',
@@ -208,7 +225,7 @@ function renderBlogPost(post, host = 'pvt-explorer.fr') {
     description: post.description,
     url: postUrl,
     inLanguage: 'fr-FR',
-    ...(post.image ? { image: { '@type': 'ImageObject', url: post.image } } : {}),
+    ...(post.image ? { image: { '@type': 'ImageObject', url: post.image, ...(post.imageAlt ? { caption: post.imageAlt } : {}) } } : {}),
     datePublished: post.publishedAt,
     dateModified: post.updatedAt || post.publishedAt,
     author: { '@type': 'Organization', name: 'PVT Explorer', url: baseUrl },
@@ -237,11 +254,12 @@ function renderBlogPost(post, host = 'pvt-explorer.fr') {
 <meta property="og:url" content="${htmlEsc(postUrl)}">
 <meta property="og:site_name" content="PVT Explorer">
 <meta property="og:locale" content="fr_FR">
-${post.image ? `<meta property="og:image" content="${htmlEsc(post.image)}">` : ''}
+${post.image ? `<meta property="og:image" content="${htmlEsc(post.image)}"><meta property="og:image:alt" content="${imgAlt}">` : ''}
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="${title}">
 <meta name="twitter:description" content="${desc}">
 <script type="application/ld+json">${jsonLd}<\/script>
+${faqLd ? `<script type="application/ld+json">${JSON.stringify(faqLd).replace(/</g, '\\u003c')}<\/script>` : ''}
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -470,6 +488,16 @@ module.exports = async function handler(req, res) {
           })
         }).catch(() => {});
       }
+      // Store subscriber in blob for admin panel
+      if (blobToken()) {
+        blobGet('data/newsletter-subscribers.json').then(raw => {
+          const data = raw ? JSON.parse(raw) : { subscribers: [] };
+          if (!data.subscribers.find(s => s.email === email)) {
+            data.subscribers.unshift({ email, subscribedAt: new Date().toISOString() });
+            return blobPut('data/newsletter-subscribers.json', JSON.stringify(data));
+          }
+        }).catch(() => {});
+      }
       return json(res, 200, { ok: true, message: 'Un e-mail de confirmation vient de t\'être envoyé. Confirme ton inscription pour rejoindre la newsletter.' });
     }
 
@@ -615,10 +643,19 @@ module.exports = async function handler(req, res) {
       } catch (e) { return json(res, 500, { error: e.message }); }
     }
 
+    // GET /api/admin/blog-plan — plan éditorial (100 brouillons SEO) à importer
+    if (method === 'GET' && p === '/api/admin/blog-plan') {
+      if (!verifyToken(adminToken(req))) return json(res, 401, { error: 'Non autorisé.' });
+      try {
+        const plan = JSON.parse(fs.readFileSync(path.join(__dirname, 'blog-plan.json'), 'utf8'));
+        return json(res, 200, plan);
+      } catch (e) { return json(res, 500, { error: 'Plan éditorial introuvable : ' + e.message }); }
+    }
+
     // POST /api/admin/blog — save posts array
     if (method === 'POST' && p === '/api/admin/blog') {
       if (!verifyToken(adminToken(req))) return json(res, 401, { error: 'Non autorisé.' });
-      const b = await readBody(req, 500000);
+      const b = await readBody(req, 4000000);
       try {
         if (blobToken()) await blobPut('data/blog-posts.json', JSON.stringify(b));
         return json(res, 200, { ok: true });
@@ -662,6 +699,99 @@ module.exports = async function handler(req, res) {
         res.writeHead(200, { 'Content-Type': 'application/xml; charset=utf-8', 'Cache-Control': 'public, max-age=3600' });
         return res.end(xml);
       } catch (e) { return json(res, 500, { error: e.message }); }
+    }
+
+    // GET /api/admin/newsletter
+    if (method === 'GET' && p === '/api/admin/newsletter') {
+      if (!verifyToken(adminToken(req))) return json(res, 401, { error: 'Non autorisé.' });
+      try {
+        const raw = blobToken() ? await blobGet('data/newsletter-subscribers.json') : null;
+        return json(res, 200, raw ? JSON.parse(raw) : { subscribers: [] });
+      } catch(e) { return json(res, 500, { error: e.message }); }
+    }
+
+    // POST /api/contact
+    if (method === 'POST' && p === '/api/contact') {
+      if (!limited(req, 'contact', 3, 3600000)) return json(res, 429, { error: 'Trop de messages. Réessaie plus tard.' });
+      const b = await readBody(req, 5000);
+      const firstname = clean(b.firstname, 60);
+      const email = clean(b.email, 254).toLowerCase();
+      const message = clean(b.message, 2000);
+      if (firstname.length < 2 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || message.length < 10) {
+        return json(res, 400, { error: 'Prénom, email valide et message requis (min. 10 caractères).' });
+      }
+      const id = newId();
+      const msg = { id, firstname, email, message, createdAt: new Date().toISOString(), replied: false };
+      if (blobToken()) {
+        try {
+          const raw = await blobGet('data/contact-messages.json');
+          const data = raw ? JSON.parse(raw) : { messages: [] };
+          data.messages.unshift(msg);
+          await blobPut('data/contact-messages.json', JSON.stringify(data));
+        } catch(e) { return json(res, 500, { error: e.message }); }
+      }
+      const RESEND_KEY2 = process.env.RESEND_API_KEY || '';
+      const ADMIN_EMAIL2 = process.env.ADMIN_EMAIL || '';
+      if (RESEND_KEY2 && ADMIN_EMAIL2) {
+        fetch('https://api.resend.com/emails', {
+          method: 'POST',
+          headers: { Authorization: `Bearer ${RESEND_KEY2}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            from: 'PVT Explorer <onboarding@resend.dev>',
+            to: [ADMIN_EMAIL2],
+            subject: `\u{1F4AC} Nouveau message de ${firstname} — PVT Explorer`,
+            html: `<p><strong>Nouveau message de contact :</strong></p><p><strong>Pr\xe9nom :</strong> ${firstname}</p><p><strong>Email :</strong> ${email}</p><p><strong>Message :</strong></p><blockquote style="border-left:3px solid #087e79;padding-left:1rem">${message.replace(/\n/g, '<br>')}</blockquote>`
+          })
+        }).catch(() => {});
+      }
+      return json(res, 200, { ok: true, message: 'Ton message a bien \xe9t\xe9 envoy\xe9 ! On te r\xe9pond tr\xe8s vite.' });
+    }
+
+    // GET /api/admin/contacts
+    if (method === 'GET' && p === '/api/admin/contacts') {
+      if (!verifyToken(adminToken(req))) return json(res, 401, { error: 'Non autorisé.' });
+      try {
+        const raw = blobToken() ? await blobGet('data/contact-messages.json') : null;
+        return json(res, 200, raw ? JSON.parse(raw) : { messages: [] });
+      } catch(e) { return json(res, 500, { error: e.message }); }
+    }
+
+    // POST /api/admin/contacts/:id/reply
+    const replyContactMatch = p.match(/^\/api\/admin\/contacts\/([a-f0-9]+)\/reply$/);
+    if (method === 'POST' && replyContactMatch) {
+      if (!verifyToken(adminToken(req))) return json(res, 401, { error: 'Non autorisé.' });
+      const msgId = replyContactMatch[1];
+      const b = await readBody(req, 5000);
+      const replyText = clean(b.reply, 3000);
+      if (replyText.length < 5) return json(res, 400, { error: 'Réponse trop courte.' });
+      if (!blobToken()) return json(res, 503, { error: 'Blob non configuré.' });
+      try {
+        const raw = await blobGet('data/contact-messages.json');
+        const data = raw ? JSON.parse(raw) : { messages: [] };
+        const msg = data.messages.find(m => m.id === msgId);
+        if (!msg) return json(res, 404, { error: 'Message introuvable.' });
+        const RESEND_KEY3 = process.env.RESEND_API_KEY || '';
+        if (!RESEND_KEY3) return json(res, 503, { error: 'RESEND_API_KEY non configuré.' });
+        const rr = await fetch('https://api.resend.com/emails', {
+          method: 'POST',
+          headers: { Authorization: `Bearer ${RESEND_KEY3}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            from: 'PVT Explorer <onboarding@resend.dev>',
+            to: [msg.email],
+            subject: 'Re: Ta question PVT — PVT Explorer',
+            html: `<p>Bonjour ${msg.firstname},</p><p>${replyText.replace(/\n/g, '<br>')}</p><br><p style="font-size:12px;color:#888">— L’\xe9quipe PVT Explorer</p>`
+          })
+        });
+        if (!rr.ok) {
+          const err = await rr.json().catch(() => ({}));
+          return json(res, 502, { error: err.message || 'Erreur Resend.' });
+        }
+        msg.replied = true;
+        msg.repliedAt = new Date().toISOString();
+        msg.replyText = replyText;
+        await blobPut('data/contact-messages.json', JSON.stringify(data));
+        return json(res, 200, { ok: true });
+      } catch(e) { return json(res, 500, { error: e.message }); }
     }
 
     return json(res, 404, { error: 'Route introuvable.' });

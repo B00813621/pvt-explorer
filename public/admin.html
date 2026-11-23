@@ -187,6 +187,9 @@ tr:hover td{background:#f8fafc}
       <div class="nav-item" data-tab="forum">💬 <span>Forum</span> <span class="nav-badge" id="forum-badge"></span></div>
       <div class="nav-section">SEO</div>
       <div class="nav-item" data-tab="blog">📝 <span>Blog / Astuces</span></div>
+      <div class="nav-section">Utilisateurs</div>
+      <div class="nav-item" data-tab="newsletter">📧 <span>Newsletter</span></div>
+      <div class="nav-item" data-tab="messages">💌 <span>Messages</span> <span class="nav-badge" id="messages-badge"></span></div>
     </div>
     <div class="sid-footer">
       <button class="btn btn-ghost btn-full btn-sm" id="logout-btn">🚪 Déconnexion</button>
@@ -249,7 +252,10 @@ tr:hover td{background:#f8fafc}
         <div class="card">
           <div class="card-header">
             <span class="card-title">Articles du blog</span>
-            <button class="btn btn-primary btn-sm" id="add-blog-btn">+ Nouvel article</button>
+            <div style="display:flex;gap:.4rem;flex-wrap:wrap">
+              <button class="btn btn-ghost btn-sm" id="import-plan-btn" title="Ajoute les 100 articles du plan SEO en brouillon (sans écraser l'existant)">📋 Importer le plan (100)</button>
+              <button class="btn btn-primary btn-sm" id="add-blog-btn">+ Nouvel article</button>
+            </div>
           </div>
           <div class="search-row">
             <input type="text" id="blog-search" placeholder="🔍 Rechercher...">
@@ -283,6 +289,33 @@ tr:hover td{background:#f8fafc}
             <button class="btn btn-ghost btn-sm" onclick="loadForum()">↻ Rafraîchir</button>
           </div>
           <div id="forum-list"><div class="loading-txt">Chargement...</div></div>
+        </div>
+      </div>
+
+      <!-- NEWSLETTER TAB -->
+      <div id="tab-newsletter" hidden>
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Abonnés newsletter</span>
+            <button class="btn btn-ghost btn-sm" onclick="loadNewsletter()">↻ Rafraîchir</button>
+          </div>
+          <div class="tbl-wrap">
+            <table>
+              <thead><tr><th>Email</th><th>Date d'inscription</th></tr></thead>
+              <tbody id="newsletter-tbody"><tr><td colspan="2" class="loading-txt">Chargement...</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- MESSAGES TAB -->
+      <div id="tab-messages" hidden>
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Messages reçus</span>
+            <button class="btn btn-ghost btn-sm" onclick="loadMessages()">↻ Rafraîchir</button>
+          </div>
+          <div id="messages-list"><div class="loading-txt">Chargement...</div></div>
         </div>
       </div>
 
@@ -341,6 +374,7 @@ tr:hover td{background:#f8fafc}
     </div>
     <div class="field"><label>Pays (séparés par virgule)</label><input type="text" id="blog-countries" placeholder="australie, canada, nouvelle-zélande"></div>
     <div class="field"><label>Image (URL complète)</label><input type="url" id="blog-image" placeholder="https://... (utilise l'onglet Images pour uploader)"></div>
+    <div class="field"><label>Texte alternatif de l'image (alt SEO)</label><input type="text" id="blog-image-alt" maxlength="160" placeholder="Décris la photo avec le mot-clé : ex. Opéra de Sydney, destination du PVT Australie"></div>
     <div class="field">
       <label>Contenu de l'article</label>
       <div id="blog-editor-wrap">
@@ -450,14 +484,16 @@ async function doLogin() {
 // ---- TABS ----
 function switchTab(tab) {
   document.querySelectorAll('.nav-item').forEach(el => el.classList.toggle('active', el.dataset.tab === tab));
-  ['affiliates','images','forum','blog'].forEach(t => document.getElementById('tab-'+t).hidden = t !== tab);
-  const titles = { affiliates:'Liens affiliés', images:'Images', forum:'Forum', blog:'Blog / Astuces' };
+  ['affiliates','images','forum','blog','newsletter','messages'].forEach(t => document.getElementById('tab-'+t).hidden = t !== tab);
+  const titles = { affiliates:'Liens affiliés', images:'Images', forum:'Forum', blog:'Blog / Astuces', newsletter:'Newsletter', messages:'Messages' };
   document.getElementById('page-title').textContent = titles[tab] || tab;
   document.getElementById('topbar-info').textContent = '';
   if (tab === 'affiliates') loadAffiliates();
   if (tab === 'images') loadImages();
   if (tab === 'forum') loadForum();
   if (tab === 'blog') loadBlog();
+  if (tab === 'newsletter') loadNewsletter();
+  if (tab === 'messages') loadMessages();
 }
 
 // ---- API HELPER ----
@@ -755,7 +791,8 @@ function ensureQuill() {
         [{ list: 'ordered' }, { list: 'bullet' }],
         ['link', 'code-block'],
         ['clean']
-      ]
+      ],
+      table: true
     },
     placeholder: 'Commence à écrire ton article...'
   });
@@ -874,6 +911,32 @@ document.getElementById('blog-cat-filter').onchange = renderBlogList;
 document.getElementById('blog-status-filter').onchange = renderBlogList;
 
 document.getElementById('add-blog-btn').onclick = () => openBlogModal(null);
+document.getElementById('import-plan-btn').onclick = importBlogPlan;
+
+async function importBlogPlan() {
+  try {
+    const plan = await api('GET', '/api/admin/blog-plan');
+    const isPlaceholder = p => !p.published && (p.content || '').includes('Brouillon — plan SEO');
+    const byId = new Map(blogPosts.map(p => [p.id, p]));
+    const slugs = new Set(blogPosts.map(p => p.slug));
+    const fresh = [], upgrades = new Map();
+    for (const p of plan.posts || []) {
+      const cur = byId.get(p.id);
+      if (cur) { if (p.written && isPlaceholder(cur)) upgrades.set(p.id, p); }
+      else if (!slugs.has(p.slug)) fresh.push(p);
+    }
+    if (!fresh.length && !upgrades.size) { toast('Le plan est déjà à jour ✓'); return; }
+    const msg = [fresh.length && `ajouter ${fresh.length} brouillon(s)`, upgrades.size && `remplir ${upgrades.size} brouillon(s) encore vides avec l'article rédigé`].filter(Boolean).join(' et ');
+    if (!confirm(`Plan éditorial : ${msg} ?\nRien n'est publié, et les articles que vous avez modifiés ne sont pas touchés.`)) return;
+    const before = blogPosts;
+    blogPosts = [...blogPosts.map(p => upgrades.get(p.id) || p), ...fresh];
+    try { await api('POST', '/api/admin/blog', { posts: blogPosts }); }
+    catch (e) { blogPosts = before; throw e; }
+    renderBlogList();
+    document.getElementById('topbar-info').textContent = `${blogPosts.length} articles`;
+    toast(`Plan importé : ${fresh.length} ajouté(s), ${upgrades.size} rempli(s) ✓`);
+  } catch (e) { toast(e.message, 'err'); }
+}
 document.getElementById('blog-close').onclick = closeBlogModal;
 document.getElementById('blog-cancel').onclick = closeBlogModal;
 document.getElementById('blog-save').onclick = saveBlog;
@@ -897,12 +960,14 @@ function openBlogModal(id) {
     document.getElementById('blog-cat').value = p.category || 'vols';
     document.getElementById('blog-countries').value = (p.countries||[]).join(', ');
     document.getElementById('blog-image').value = p.image || '';
+    document.getElementById('blog-image-alt').value = p.imageAlt || '';
     document.getElementById('blog-reading-time').value = p.readingTime || 5;
     document.getElementById('blog-published').checked = !!p.published;
     document.getElementById('blog-edit-id').value = id;
-    quill.clipboard.dangerouslyPasteHTML(0, p.content || '');
+    quill.setContents([]);
+    quill.clipboard.dangerouslyPasteHTML(p.content || '');
   } else {
-    ['blog-title','blog-slug','blog-desc','blog-countries','blog-image'].forEach(i => document.getElementById(i).value = '');
+    ['blog-title','blog-slug','blog-desc','blog-countries','blog-image','blog-image-alt'].forEach(i => document.getElementById(i).value = '');
     document.getElementById('blog-cat').value = 'vols';
     document.getElementById('blog-reading-time').value = 5;
     document.getElementById('blog-published').checked = false;
@@ -929,6 +994,7 @@ async function saveBlog() {
     category: document.getElementById('blog-cat').value,
     countries,
     image: document.getElementById('blog-image').value.trim(),
+    imageAlt: document.getElementById('blog-image-alt').value.trim(),
     content,
     readingTime: parseInt(document.getElementById('blog-reading-time').value) || 5,
     published: document.getElementById('blog-published').checked,
@@ -936,9 +1002,11 @@ async function saveBlog() {
     publishedAt: eid ? (blogPosts.find(x=>x.id===eid)?.publishedAt || new Date().toISOString().slice(0,10)) : new Date().toISOString().slice(0,10),
     updatedAt: new Date().toISOString().slice(0,10)
   };
+  const prev = eid ? blogPosts.find(x => x.id === eid) : null;
+  if (prev && post.published && !prev.published) post.publishedAt = new Date().toISOString().slice(0,10);
   if (eid) {
     const i = blogPosts.findIndex(x => x.id === eid);
-    blogPosts[i] = post;
+    blogPosts[i] = { ...prev, ...post };
   } else {
     blogPosts.unshift(post);
   }
@@ -949,7 +1017,7 @@ async function saveBlog() {
     document.getElementById('topbar-info').textContent = `${blogPosts.length} article${blogPosts.length>1?'s':''}`;
     toast(eid ? 'Article modifié ✓' : 'Article créé ✓');
   } catch(e) {
-    if (eid) { const i = blogPosts.findIndex(x => x.id === eid); blogPosts[i] = blogPosts.find(x=>x.id===eid); }
+    if (eid) { const i = blogPosts.findIndex(x => x.id === eid); blogPosts[i] = prev; }
     else blogPosts.shift();
     toast(e.message, 'err');
   }
@@ -962,6 +1030,81 @@ async function deleteBlog(id) {
     await api('POST', '/api/admin/blog', { posts: blogPosts });
     renderBlogList();
     toast('Article supprimé');
+  } catch(e) { toast(e.message, 'err'); }
+}
+
+// ==============================
+// NEWSLETTER
+// ==============================
+async function loadNewsletter() {
+  try {
+    const d = await api('GET', '/api/admin/newsletter');
+    const subs = d.subscribers || [];
+    document.getElementById('topbar-info').textContent = `${subs.length} abonn\xe9${subs.length > 1 ? 's' : ''}`;
+    const tbody = document.getElementById('newsletter-tbody');
+    if (!subs.length) {
+      tbody.innerHTML = `<tr><td colspan="2" class="empty">Aucun abonn\xe9 pour l'instant.</td></tr>`;
+      return;
+    }
+    tbody.innerHTML = subs.map(s => `<tr><td>${esc(s.email)}</td><td style="font-size:.8rem;color:var(--muted)">${new Date(s.subscribedAt).toLocaleDateString('fr-FR')}</td></tr>`).join('');
+  } catch(e) {
+    document.getElementById('newsletter-tbody').innerHTML = `<tr><td colspan="2" class="empty">⚠️ ${esc(e.message)}</td></tr>`;
+  }
+}
+
+// ==============================
+// MESSAGES
+// ==============================
+async function loadMessages() {
+  const list = document.getElementById('messages-list');
+  list.innerHTML = '<div class="loading-txt">Chargement...</div>';
+  try {
+    const d = await api('GET', '/api/admin/contacts');
+    const msgs = d.messages || [];
+    const badge = document.getElementById('messages-badge');
+    const unread = msgs.filter(m => !m.replied).length;
+    if (unread) { badge.textContent = unread; badge.style.display = 'inline'; }
+    else badge.style.display = 'none';
+    document.getElementById('topbar-info').textContent = msgs.length ? `${msgs.length} message${msgs.length > 1 ? 's' : ''}` : '';
+    if (!msgs.length) { list.innerHTML = `<div class="empty">✅ Aucun message re\xe7u pour l'instant.</div>`; return; }
+    list.innerHTML = msgs.map(msg => `
+      <div class="f-item" id="msg-${msg.id}">
+        <div class="f-meta">
+          ${msg.replied ? '✅ R\xe9pondu' : '\u{1F4E9} Nouveau'} \xb7 <strong>${esc(msg.firstname)}</strong> \xb7 ${esc(msg.email)} \xb7 ${new Date(msg.createdAt).toLocaleDateString('fr-FR')}
+        </div>
+        <div class="f-body">${esc(msg.message)}</div>
+        ${msg.replied ? `<div style="font-size:.78rem;color:var(--success);margin-bottom:.5rem">↩ R\xe9ponse envoy\xe9e le ${new Date(msg.repliedAt).toLocaleDateString('fr-FR')}</div>` : ''}
+        <div class="f-actions">
+          <button class="btn ${msg.replied ? 'btn-ghost' : 'btn-primary'} btn-sm" onclick="openReplyForm('${msg.id}')">${msg.replied ? '↩️ R\xe9pondre \xe0 nouveau' : '✉️ R\xe9pondre'}</button>
+        </div>
+        <div id="reply-form-${msg.id}" style="display:none;margin-top:.8rem">
+          <textarea id="reply-text-${msg.id}" placeholder="Ta r\xe9ponse..." style="width:100%;min-height:90px;border:1.5px solid var(--border);border-radius:8px;padding:.6rem .85rem;font-family:inherit;font-size:.85rem;outline:none;resize:vertical"></textarea>
+          <div style="display:flex;gap:.5rem;margin-top:.5rem">
+            <button class="btn btn-primary btn-sm" onclick="sendReplyMsg('${msg.id}')">Envoyer la r\xe9ponse</button>
+            <button class="btn btn-ghost btn-sm" onclick="closeReplyForm('${msg.id}')">Annuler</button>
+          </div>
+        </div>
+      </div>`).join('');
+  } catch(e) {
+    list.innerHTML = `<div class="empty">⚠️ ${esc(e.message)}</div>`;
+  }
+}
+
+function openReplyForm(id) {
+  document.getElementById('reply-form-' + id).style.display = 'block';
+  document.getElementById('reply-text-' + id).focus();
+}
+function closeReplyForm(id) {
+  document.getElementById('reply-form-' + id).style.display = 'none';
+}
+
+async function sendReplyMsg(id) {
+  const text = document.getElementById('reply-text-' + id).value.trim();
+  if (!text) { toast('Écris une réponse avant d\'envoyer.', 'err'); return; }
+  try {
+    await api('POST', `/api/admin/contacts/${id}/reply`, { reply: text });
+    toast('R\xe9ponse envoy\xe9e ✓');
+    loadMessages();
   } catch(e) { toast(e.message, 'err'); }
 }
 </script>
