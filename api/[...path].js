@@ -34,8 +34,14 @@ async function blobGet(pathname) {
     const matches = blobs.filter(b => b.pathname === pathname);
     if (!matches.length) return null; // file genuinely doesn't exist
     matches.sort((a, b) => new Date(b.uploadedAt) - new Date(a.uploadedAt));
-    const r = await fetch(matches[0].url, {
+    // cache=0 : lecture directe depuis le stockage d'origine (comme get(..., { useCache: false })
+    // du SDK). Sans ça, le CDN de Vercel Blob peut servir l'ancienne version jusqu'à ~1 min
+    // après un enregistrement, et l'admin risque de réécrire des données périmées.
+    const url = new URL(matches[0].url);
+    url.searchParams.set('cache', '0');
+    const r = await fetch(url, {
       headers: { authorization: `Bearer ${tk}` },
+      cache: 'no-store',
     });
     if (!r.ok) throw new Error(`Lecture blob impossible (HTTP ${r.status})`);
     return r.text();
