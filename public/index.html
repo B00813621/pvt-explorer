@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@400;500;600;700;800;900&display=swap">
 <meta name="description" content="PVT Explorer — Le guide indépendant du Programme Vacances-Travail pour les Français. Compare 15 destinations, découvre les démarches, budgets, conseils pratiques et prépare ton départ en toute confiance.">
 <meta property="og:title" content="PVT Explorer — Prépare ton PVT : Australie, Canada, Japon & 12 destinations">
 <meta property="og:description" content="Le guide indépendant du Programme Vacances-Travail pour les Français. Compare 15 destinations, découvre les démarches, budgets et conseils pratiques.">
@@ -57,6 +57,70 @@
 .mapLeg em{width:11px;height:11px;border-radius:50%;flex-shrink:0;font-style:normal}
 .lp{background:var(--teal)}.lo{background:#b5d8c6}
 .mapLoad{display:flex;align-items:center;justify-content:center;height:300px;color:var(--muted);font-size:14px;position:absolute;inset:0}
+</style>
+<style>
+/* ——— Design refresh ——— */
+:root{--display:'DM Serif Display',Georgia,serif}
+
+/* Display typography */
+.hero h1,.sectionHead h2,.panel h3,.newsletter h2,.modalHead h2,.countryTitle h3,.modalContent h3{font-family:var(--display);font-weight:400}
+.hero h1{font-size:clamp(50px,6.5vw,82px);letter-spacing:-2px;line-height:1.02}
+.sectionHead h2{font-size:40px;letter-spacing:-1px}
+.newsletter h2{font-size:30px;letter-spacing:-.5px}
+
+/* Stat numbers */
+.stat b{font-family:var(--display);font-size:28px;font-weight:400;letter-spacing:-.5px}
+
+/* Hero */
+.hero{padding:86px 0 70px;background:radial-gradient(circle at 75% 15%,#c8e8db 0,transparent 35%),radial-gradient(circle at 10% 80%,#d9eee6 0,transparent 28%),linear-gradient(120deg,#ecf6f1,#f8f8f3 65%)}
+.heroPhoto{transition:transform .6s cubic-bezier(.4,0,.2,1)}
+.heroPhoto:hover{transform:scale(1.02)}
+.floatCard{backdrop-filter:blur(10px);background:rgba(255,255,255,.93);border:1px solid rgba(255,255,255,.9);transition:transform .2s ease,box-shadow .2s ease}
+.floatCard:hover{transform:translateY(-2px);box-shadow:0 20px 50px #183a3520}
+
+/* Buttons */
+.btn{transition:transform .18s cubic-bezier(.4,0,.2,1),background .18s ease,box-shadow .18s ease}
+.btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px #087e7940;background:#066b67}
+.btn:active{transform:translateY(0);box-shadow:none}
+.btn.light:hover{background:#c5e9d8;box-shadow:none}
+.btn.outline:hover{box-shadow:0 4px 12px #183a3515;background:#f8faf8}
+
+/* Country cards */
+.countryTop{height:195px}
+.country{transition:transform .22s ease,box-shadow .22s ease}
+.country:hover{transform:translateY(-5px);box-shadow:0 20px 50px #183a3515}
+
+/* Chip filters */
+.chip{transition:all .18s ease}
+
+/* Testimonials avec marques de citation */
+.testimonialGrid>div{position:relative;overflow:hidden;transition:transform .22s ease,box-shadow .22s ease}
+.testimonialGrid>div:hover{transform:translateY(-3px);box-shadow:0 15px 40px #183a3512}
+.testimonialGrid>div::before{content:'\201C';font-family:var(--display);font-size:90px;color:var(--teal);opacity:.12;position:absolute;top:-5px;left:15px;line-height:1;pointer-events:none}
+
+/* Compare section */
+.compare .sectionHead h2{color:white}
+
+/* Country card title sizing */
+.countryTitle h3{font-size:20px;letter-spacing:-.4px}
+
+/* Contact aside */
+.contactSide h3{font-family:var(--display);font-weight:400;font-size:22px}
+
+/* Partner cards */
+.partner{transition:transform .2s ease,box-shadow .2s ease}
+.partner:hover{transform:translateY(-3px);box-shadow:0 12px 35px #183a3512}
+
+/* Product cards */
+.productCard{transition:transform .2s ease,box-shadow .2s ease}
+.productCard:hover{transform:translateY(-3px);box-shadow:0 12px 35px #183a3512}
+
+/* FAQ hover */
+.faqQ{transition:background .15s ease}
+
+/* Responsive */
+@media(max-width:800px){.sectionHead h2{font-size:34px}}
+@media(max-width:540px){.hero h1{font-size:clamp(40px,10vw,54px);letter-spacing:-1.5px}.sectionHead h2{font-size:30px}}
 </style>
 </head>
 <body>
