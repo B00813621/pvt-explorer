@@ -25,13 +25,27 @@
     <button class="cover__toggle" type="button" aria-expanded="false" aria-controls="menu">Menu</button>
     <nav id="menu" aria-label="Navigation principale">
       <ul class="cover__links">
-        <li><a href="/#destinations">Destinations</a></li>
+        <li class="cover__deroulant cover__destinations"><a class="cover__lien" href="/#destinations">Destinations</a><button class="cover__ouvrir" type="button" aria-expanded="false" aria-controls="menu-destinations"><span class="visually-hidden">Aller directement à une destination</span><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M3 4.5l3 3 3-3" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button><div class="cover__sous cover__sous--destinations" id="menu-destinations"><div><p class="cover__sous-titre">Océanie &amp; Asie</p><ul><li><a href="/#pvt-AU" data-destination><span class="cover__code data" aria-hidden="true">AUS</span>Australie</a></li><li><a href="/#pvt-NZ" data-destination><span class="cover__code data" aria-hidden="true">NZL</span>Nouvelle-Zélande</a></li><li><a href="/#pvt-JP" data-destination><span class="cover__code data" aria-hidden="true">JPN</span>Japon</a></li><li><a href="/#pvt-KR" data-destination><span class="cover__code data" aria-hidden="true">KOR</span>Corée du Sud</a></li><li><a href="/#pvt-HK" data-destination><span class="cover__code data" aria-hidden="true">HKG</span>Hong Kong</a></li><li><a href="/#pvt-TW" data-destination><span class="cover__code data" aria-hidden="true">TWN</span>Taïwan</a></li></ul></div><div><p class="cover__sous-titre">Amériques</p><ul><li><a href="/#pvt-CA" data-destination><span class="cover__code data" aria-hidden="true">CAN</span>Canada</a></li><li><a href="/#pvt-AR" data-destination><span class="cover__code data" aria-hidden="true">ARG</span>Argentine</a></li><li><a href="/#pvt-BR" data-destination><span class="cover__code data" aria-hidden="true">BRA</span>Brésil</a></li><li><a href="/#pvt-CL" data-destination><span class="cover__code data" aria-hidden="true">CHL</span>Chili</a></li><li><a href="/#pvt-CO" data-destination><span class="cover__code data" aria-hidden="true">COL</span>Colombie</a></li><li><a href="/#pvt-EC" data-destination><span class="cover__code data" aria-hidden="true">ECU</span>Équateur</a></li><li><a href="/#pvt-MX" data-destination><span class="cover__code data" aria-hidden="true">MEX</span>Mexique</a></li><li><a href="/#pvt-PE" data-destination><span class="cover__code data" aria-hidden="true">PER</span>Pérou</a></li><li><a href="/#pvt-UY" data-destination><span class="cover__code data" aria-hidden="true">URY</span>Uruguay</a></li></ul></div><a class="cover__tous" href="/#destinations">Les 15 destinations</a></div></li>
         <li><a href="/#comparer">Comparer</a></li>
         <li class="cover__deroulant"><a class="cover__blog" href="/nos-astuces">Nos astuces <span aria-hidden="true">|</span> Blog</a><button class="cover__ouvrir" type="button" aria-expanded="false" aria-controls="menu-astuces"><span class="visually-hidden">Trier les articles par pays ou par thème</span><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M3 4.5l3 3 3-3" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button><div class="cover__sous" id="menu-astuces"><div><p class="cover__sous-titre">Par pays</p><ul><li><a href="/nos-astuces?pays=australie">Australie</a></li><li><a href="/nos-astuces?pays=canada">Canada</a></li><li><a href="/nos-astuces?pays=nouvelle-z%C3%A9lande">Nouvelle-Zélande</a></li><li><a href="/nos-astuces?pays=japon">Japon</a></li><li><a href="/nos-astuces?pays=cor%C3%A9e-du-sud">Corée du Sud</a></li></ul></div><div><p class="cover__sous-titre">Par thème</p><ul><li><a href="/nos-astuces?categorie=visa">Visa</a></li><li><a href="/nos-astuces?categorie=budget">Budget</a></li><li><a href="/nos-astuces?categorie=assurance">Assurance</a></li><li><a href="/nos-astuces?categorie=travail">Travail</a></li><li><a href="/nos-astuces?categorie=vie-pratique">Vie pratique</a></li></ul></div><a class="cover__tous" href="/nos-astuces">Tous les articles</a></div></li>
-        <li><a href="/a-propos">À propos</a></li>
-        <li><a href="/#ecrire">Écrire</a></li>
+        <li><a href="/actualites">Actualités</a></li>
       </ul>
     </nav>
+    <button class="cover__chercher" type="button" aria-expanded="false" aria-controls="recherche" data-recherche-ouvrir><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.25" fill="none" stroke="currentColor" stroke-width="2"/><path d="m15.2 15.2 4.6 4.6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span class="visually-hidden">Rechercher sur le site</span></button>
+  </div>
+  <div class="recherche" id="recherche" hidden>
+    <div class="recherche__panneau">
+      <form class="recherche__form" role="search" action="/nos-astuces" method="get">
+        <label class="visually-hidden" for="recherche-champ">Rechercher un pays, un visa, une démarche</label>
+        <span class="recherche__icone"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.25" fill="none" stroke="currentColor" stroke-width="2"/><path d="m15.2 15.2 4.6 4.6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
+        <input id="recherche-champ" name="q" type="search" placeholder="Un pays, un visa, une démarche…" autocomplete="off" spellcheck="false" enterkeyhint="search" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="recherche-liste">
+        <button class="recherche__fermer" type="button" data-recherche-fermer><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg><span class="visually-hidden">Fermer la recherche</span></button>
+      </form>
+      <p class="recherche__titre" id="recherche-titre">Recherches fréquentes</p>
+      <ul class="recherche__liste" id="recherche-liste" role="listbox" aria-labelledby="recherche-titre"></ul>
+      <p class="recherche__vide" hidden>Rien de trouvé. Essayez un pays (« Japon »), un thème (« budget ») ou une démarche (« assurance »).</p>
+      <p class="recherche__statut visually-hidden" aria-live="polite"></p>
+    </div>
   </div>
 </header>
 <main id="contenu">
@@ -81,6 +95,7 @@
       <nav aria-labelledby="pied-site">
         <h2 id="pied-site">Le site</h2>
         <ul>
+          <li><a href="/actualites">Actualités</a></li>
           <li><a href="/a-propos">À propos</a></li>
           <li><a href="/#ecrire">Écrire à l'auteur</a></li>
           <li><a href="/mentions-legales.html">Mentions légales</a></li>
@@ -98,5 +113,6 @@
 <script src="/app-config.js"></script>
 <script src="/analytics.js" defer></script>
 <script src="/js/visa.js" defer></script>
+<script src="/js/search.js" defer></script>
 </body>
 </html>

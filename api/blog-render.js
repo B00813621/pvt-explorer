@@ -5,7 +5,7 @@
 
 const SITE = 'https://pvt-explorer.fr';
 
-const CAT_LABELS = { vols: 'Vols', hébergement: 'Hébergement', assurance: 'Assurance', budget: 'Budget', visa: 'Visa', travail: 'Travail', 'vie-pratique': 'Vie pratique', activités: 'Activités' };
+const CAT_LABELS = { vols: 'Vols', hébergement: 'Hébergement', assurance: 'Assurance', budget: 'Budget', visa: 'Visa', travail: 'Travail', 'vie-pratique': 'Vie pratique', activités: 'Activités', actualites: 'Actualités' };
 
 const COUNTRIES = {
   australie: { name: 'Australie', iso: 'AUS', pillar: 'pvt-australie' },
@@ -77,8 +77,24 @@ function stamp(label, tone, rot = -4, attrs = '') {
 }
 
 // ---------- Habillage commun ----------
-function siteHeader(active = '') {
+// Codes à deux lettres des vignettes (#pvt-AU…) et rangement du sous-menu Destinations
+const ISO2 = { AUS: 'AU', NZL: 'NZ', JPN: 'JP', KOR: 'KR', HKG: 'HK', TWN: 'TW', CAN: 'CA', ARG: 'AR', BRA: 'BR', CHL: 'CL', COL: 'CO', ECU: 'EC', MEX: 'MX', PER: 'PE', URY: 'UY' };
+const REGIONS = [
+  ['Océanie & Asie', ['australie', 'nouvelle-zélande', 'japon', 'corée-du-sud', 'hong-kong', 'taïwan']],
+  ['Amériques', ['canada', 'argentine', 'brésil', 'chili', 'colombie', 'équateur', 'mexique', 'pérou', 'uruguay']]
+];
+const CHEVRON = '<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M3 4.5l3 3 3-3" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+const LOUPE = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.25" fill="none" stroke="currentColor" stroke-width="2"/><path d="m15.2 15.2 4.6 4.6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';
+const CROIX = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>';
+
+// opts.home : liens vers les vignettes de la page même (#pvt-AU) plutôt que /#pvt-AU
+function siteHeader(active = '', opts = {}) {
   const cur = key => (key === active ? ' aria-current="page"' : '');
+  const base = opts.home ? '' : '/';
+  const destinations = REGIONS.map(([titre, keys]) => `<div><p class="cover__sous-titre">${htmlEsc(titre)}</p><ul>${keys.map(k => {
+    const c = COUNTRIES[k];
+    return `<li><a href="${base}#pvt-${ISO2[c.iso]}" data-destination><span class="cover__code data" aria-hidden="true">${c.iso}</span>${htmlEsc(c.name)}</a></li>`;
+  }).join('')}</ul></div>`).join('');
   return `<a class="skip" href="#contenu">Aller au contenu</a>
 <header class="cover">
   <div class="wrap cover__bar">
@@ -86,13 +102,27 @@ function siteHeader(active = '') {
     <button class="cover__toggle" type="button" aria-expanded="false" aria-controls="menu">Menu</button>
     <nav id="menu" aria-label="Navigation principale">
       <ul class="cover__links">
-        <li><a href="/#destinations">Destinations</a></li>
-        <li><a href="/#comparer">Comparer</a></li>
-        <li class="cover__deroulant"><a class="cover__blog" href="/nos-astuces"${cur('guides')}>Nos astuces <span aria-hidden="true">|</span> Blog</a><button class="cover__ouvrir" type="button" aria-expanded="false" aria-controls="menu-astuces"><span class="visually-hidden">Trier les articles par pays ou par thème</span><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M3 4.5l3 3 3-3" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button><div class="cover__sous" id="menu-astuces"><div><p class="cover__sous-titre">Par pays</p><ul><li><a href="/nos-astuces?pays=australie">Australie</a></li><li><a href="/nos-astuces?pays=canada">Canada</a></li><li><a href="/nos-astuces?pays=nouvelle-z%C3%A9lande">Nouvelle-Zélande</a></li><li><a href="/nos-astuces?pays=japon">Japon</a></li><li><a href="/nos-astuces?pays=cor%C3%A9e-du-sud">Corée du Sud</a></li></ul></div><div><p class="cover__sous-titre">Par thème</p><ul><li><a href="/nos-astuces?categorie=visa">Visa</a></li><li><a href="/nos-astuces?categorie=budget">Budget</a></li><li><a href="/nos-astuces?categorie=assurance">Assurance</a></li><li><a href="/nos-astuces?categorie=travail">Travail</a></li><li><a href="/nos-astuces?categorie=vie-pratique">Vie pratique</a></li></ul></div><a class="cover__tous" href="/nos-astuces">Tous les articles</a></div></li>
-        <li><a href="/a-propos"${cur('about')}>À propos</a></li>
-        <li><a href="/#ecrire">Écrire</a></li>
+        <li class="cover__deroulant cover__destinations"><a class="cover__lien" href="${base}#destinations">Destinations</a><button class="cover__ouvrir" type="button" aria-expanded="false" aria-controls="menu-destinations"><span class="visually-hidden">Aller directement à une destination</span>${CHEVRON}</button><div class="cover__sous cover__sous--destinations" id="menu-destinations">${destinations}<a class="cover__tous" href="${base}#destinations">Les 15 destinations</a></div></li>
+        <li><a href="${base}#comparer">Comparer</a></li>
+        <li class="cover__deroulant"><a class="cover__blog" href="/nos-astuces"${cur('guides')}>Nos astuces <span aria-hidden="true">|</span> Blog</a><button class="cover__ouvrir" type="button" aria-expanded="false" aria-controls="menu-astuces"><span class="visually-hidden">Trier les articles par pays ou par thème</span>${CHEVRON}</button><div class="cover__sous" id="menu-astuces"><div><p class="cover__sous-titre">Par pays</p><ul><li><a href="/nos-astuces?pays=australie">Australie</a></li><li><a href="/nos-astuces?pays=canada">Canada</a></li><li><a href="/nos-astuces?pays=nouvelle-z%C3%A9lande">Nouvelle-Zélande</a></li><li><a href="/nos-astuces?pays=japon">Japon</a></li><li><a href="/nos-astuces?pays=cor%C3%A9e-du-sud">Corée du Sud</a></li></ul></div><div><p class="cover__sous-titre">Par thème</p><ul><li><a href="/nos-astuces?categorie=visa">Visa</a></li><li><a href="/nos-astuces?categorie=budget">Budget</a></li><li><a href="/nos-astuces?categorie=assurance">Assurance</a></li><li><a href="/nos-astuces?categorie=travail">Travail</a></li><li><a href="/nos-astuces?categorie=vie-pratique">Vie pratique</a></li></ul></div><a class="cover__tous" href="/nos-astuces">Tous les articles</a></div></li>
+        <li><a href="/actualites"${cur('actualites')}>Actualités</a></li>
       </ul>
     </nav>
+    <button class="cover__chercher" type="button" aria-expanded="false" aria-controls="recherche" data-recherche-ouvrir>${LOUPE}<span class="visually-hidden">Rechercher sur le site</span></button>
+  </div>
+  <div class="recherche" id="recherche" hidden>
+    <div class="recherche__panneau">
+      <form class="recherche__form" role="search" action="/nos-astuces" method="get">
+        <label class="visually-hidden" for="recherche-champ">Rechercher un pays, un visa, une démarche</label>
+        <span class="recherche__icone">${LOUPE}</span>
+        <input id="recherche-champ" name="q" type="search" placeholder="Un pays, un visa, une démarche…" autocomplete="off" spellcheck="false" enterkeyhint="search" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="recherche-liste">
+        <button class="recherche__fermer" type="button" data-recherche-fermer>${CROIX}<span class="visually-hidden">Fermer la recherche</span></button>
+      </form>
+      <p class="recherche__titre" id="recherche-titre">Recherches fréquentes</p>
+      <ul class="recherche__liste" id="recherche-liste" role="listbox" aria-labelledby="recherche-titre"></ul>
+      <p class="recherche__vide" hidden>Rien de trouvé. Essayez un pays (« Japon »), un thème (« budget ») ou une démarche (« assurance »).</p>
+      <p class="recherche__statut visually-hidden" aria-live="polite"></p>
+    </div>
   </div>
 </header>`;
 }
@@ -130,6 +160,7 @@ function siteFooter() {
       <nav aria-labelledby="pied-site">
         <h2 id="pied-site">Le site</h2>
         <ul>
+          <li><a href="/actualites">Actualités</a></li>
           <li><a href="/a-propos">À propos</a></li>
           <li><a href="/#ecrire">Écrire à l'auteur</a></li>
           <li><a href="/mentions-legales.html">Mentions légales</a></li>
@@ -166,7 +197,8 @@ ${url ? `<link rel="canonical" href="${htmlEsc(url)}">` : ''}
 function pageScripts(extra = '') {
   return `<script src="/app-config.js"></script>
 <script src="/analytics.js" defer></script>
-<script src="/js/visa.js" defer></script>${extra}`;
+<script src="/js/visa.js" defer></script>
+<script src="/js/search.js" defer></script>${extra}`;
 }
 
 // ---------- Contenu de l'éditeur ----------
@@ -519,6 +551,7 @@ ${siteHeader('guides')}
       <div class="filters__row"><span class="label">Pays</span><ul role="list">${chip('pays', '', 'Tous les pays', !country, href('', category))}${countries.map(c => chip('pays', c, COUNTRIES[c].name, c === country, href(c, category))).join('')}</ul></div>
       <div class="filters__row"><span class="label">Thème</span><ul role="list">${chip('categorie', '', 'Tous les thèmes', !category, href(country, ''))}${categories.map(c => chip('categorie', c, CAT_LABELS[c], c === category, href(country, c))).join('')}</ul></div>
       <p class="filters__compte data" aria-live="polite">${list.length} guide${list.length > 1 ? 's' : ''}</p>
+      <p class="filters__recherche" hidden>Résultats pour « <strong data-q></strong> » <a href="/nos-astuces" data-filtre="q" data-valeur="">Effacer la recherche</a></p>
     </nav>
     ${groups}
     <p class="credits">Photos des guides via Wikimedia Commons, sous licences libres (CC0, CC BY ou CC BY-SA) : l'auteur et la licence de chaque photo sont indiqués à la fin de son article.</p>
@@ -526,6 +559,96 @@ ${siteHeader('guides')}
 </main>
 ${siteFooter()}
 ${pageScripts('\n<script src="/js/astuces.js" defer></script>')}
+</body>
+</html>`;
+}
+
+// ---------- Actualités ----------
+// Une dépêche par changement daté, avec ses pays : elle remonte d'elle-même sous chacun d'eux.
+// Le tri par pays se fait sans recharger (public/js/actualites.js) ; ?pays= donne le même état au premier affichage.
+function renderActualitesIndex(actus, host = 'pvt-explorer.fr', opts = {}) {
+  const baseUrl = `https://${host}`;
+  const url = baseUrl + '/actualites';
+  const pays = COUNTRIES[opts.pays] ? opts.pays : '';
+  const all = actus || [];
+  const de = a => (a.pays || []).filter(k => COUNTRIES[k]);
+  const visible = a => !pays || de(a).includes(pays);
+  const n = all.filter(visible).length;
+  const plural = k => `${k} actualité${k > 1 ? 's' : ''}`;
+
+  const chip = (k, label) => {
+    const c = k ? all.filter(x => de(x).includes(k)).length : all.length;
+    const iso2 = k ? ISO2[COUNTRIES[k].iso] : '';
+    return `<li><a class="chip${c ? '' : ' chip--vide'}" href="/actualites${k ? '?pays=' + encodeURIComponent(k) : ''}" data-filtre="pays" data-valeur="${htmlEsc(k)}" data-nom="${htmlEsc(label)}" data-iso2="${iso2}"${k === pays ? ' aria-current="true"' : ''}>${htmlEsc(label)}<span class="chip__n data"><span class="visually-hidden">, </span>${c}</span></a></li>`;
+  };
+
+  const depeche = a => {
+    const date = frDate(a.date, { day: '2-digit', month: '2-digit', year: 'numeric' }).replace(/\//g, '.');
+    const codes = de(a).map(k => `<abbr class="depeche__code" title="${htmlEsc(COUNTRIES[k].name)}">${COUNTRIES[k].iso}</abbr>`).join('');
+    const lien = a.lien ? `<a class="link-arrow" href="${htmlEsc(a.lien)}">${typoFr(htmlEsc(a.lienTexte || 'Lire la suite'))} ${ARROW}</a>` : '';
+    const source = a.source ? `<a class="depeche__source" href="${htmlEsc(a.source)}" target="_blank" rel="noopener">Source officielle<span class="visually-hidden"> (nouvel onglet)</span></a>` : '';
+    return `<li class="depeche" id="${htmlEsc('a-' + slugId(a.id || a.titre))}" data-pays="${htmlEsc(de(a).join(' '))}"${visible(a) ? '' : ' hidden'}>
+        <p class="depeche__meta">${date ? `<time class="data" datetime="${htmlEsc(a.date)}">${date}</time>` : ''}${codes}</p>
+        <div class="depeche__corps">
+          <h2 class="depeche__titre">${typoFr(htmlEsc(a.titre))}</h2>
+          ${a.texte ? `<p class="depeche__texte">${typoFr(htmlEsc(a.texte))}</p>` : ''}
+          ${lien || source ? `<p class="depeche__liens">${lien}${source}</p>` : ''}
+        </div>
+      </li>`;
+  };
+
+  const vide = pays && !n;
+  const nomVide = pays ? COUNTRIES[pays].name : '';
+  const ficheVide = pays ? '/#pvt-' + ISO2[COUNTRIES[pays].iso] : '/#destinations';
+  const ld = [{
+    '@context': 'https://schema.org', '@type': 'CollectionPage', '@id': url + '#page', url, name: 'Actualités PVT par pays', inLanguage: 'fr-FR',
+    description: 'Les changements qui comptent pour un PVT, pays par pays : tirages, quotas et prix des visas.',
+    isPartOf: { '@id': SITE + '/#website' },
+    mainEntity: { '@type': 'ItemList', numberOfItems: all.length, itemListElement: all.map((x, i) => ({ '@type': 'ListItem', position: i + 1, name: x.titre, url: url + '#a-' + slugId(x.id || x.titre) })) }
+  }, {
+    '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Accueil', item: baseUrl + '/' },
+      { '@type': 'ListItem', position: 2, name: 'Actualités', item: url }
+    ]
+  }];
+  const pageTitle = 'Actualités PVT par pays : tirages, quotas et prix des visas | PVT Explorer';
+  const pageDesc = 'Les changements qui comptent pour votre PVT, pays par pays : ouverture des tirages, quotas, prix des visas. Chaque actualité est datée.';
+
+  return `<!doctype html>
+<html lang="fr">
+<head>
+${headCommon({ title: pageTitle, desc: htmlEsc(pageDesc), url, robots: pays ? 'noindex,follow' : 'index,follow,max-image-preview:large' })}
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="PVT Explorer">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:url" content="${url}">
+<meta property="og:title" content="Actualités PVT par pays">
+<meta property="og:description" content="${htmlEsc(pageDesc)}">
+<meta property="og:image" content="${SITE}/images/og-pvt-explorer.jpg">
+<meta name="twitter:card" content="summary_large_image">
+${ld.map(o => `<script type="application/ld+json">${ldJson(o)}</script>`).join('\n')}
+</head>
+<body class="page-guides page-actualites">
+${siteHeader('actualites')}
+<main id="contenu">
+  <div class="page-edge" aria-hidden="true"></div>
+  <div class="wrap guides-index">
+    <header class="index__head">
+      <nav class="crumbs" aria-label="Fil d'Ariane"><ol><li><a href="/">Accueil</a></li><li aria-current="page">Actualités</li></ol></nav>
+      <h1 class="display index__title">Actualités PVT</h1>
+      <p class="lead">${typoFr('Ce qui change pour votre PVT, pays par pays : ouverture des tirages, quotas, prix des visas. Chaque actualité est datée ; choisissez un pays pour ne voir que les siennes.')}</p>
+    </header>
+    <nav class="filters" aria-label="Trier les actualités par pays">
+      <div class="filters__row"><span class="label">Pays</span><ul role="list">${chip('', 'Tous les pays')}${COUNTRY_ORDER.map(k => chip(k, COUNTRIES[k].name)).join('')}</ul></div>
+      <p class="filters__compte data" aria-live="polite">${plural(n)}</p>
+    </nav>
+    <ol class="depeches" role="list">${all.map(depeche).join('')}</ol>
+    <p class="filters__vide prose-note"${vide ? '' : ' hidden'}>${typoFr(`Pas encore d'actualité pour <strong data-vide-nom>${htmlEsc(nomVide)}</strong>. En attendant, <a data-vide-fiche href="${ficheVide}">sa fiche pays</a> résume les conditions du moment.`)}</p>
+    <p class="credits">${typoFr('Les conditions changent : vérifiez-les toujours sur le site officiel avant toute démarche.')}</p>
+  </div>
+</main>
+${siteFooter()}
+${pageScripts('\n<script src="/js/actualites.js" defer></script>')}
 </body>
 </html>`;
 }
@@ -559,4 +682,4 @@ ${pageScripts()}
 </html>`;
 }
 
-module.exports = { renderBlogPost, renderBlogIndex, renderNotFound, normalizeContent, extractFaq, siteHeader, siteFooter, headCommon, pageScripts, typoFr };
+module.exports = { renderBlogPost, renderBlogIndex, renderActualitesIndex, renderNotFound, normalizeContent, extractFaq, siteHeader, siteFooter, headCommon, pageScripts, typoFr };

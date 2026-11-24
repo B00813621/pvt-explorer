@@ -191,7 +191,28 @@ function readBody(req, max = 12000) {
   });
 }
 
-const { renderBlogPost, renderBlogIndex, renderNotFound } = require('./blog-render.js');
+const { renderBlogPost, renderBlogIndex, renderActualitesIndex, renderNotFound } = require('./blog-render.js');
+
+async function postsPublies() {
+  const raw = blobToken() ? await blobGet('data/blog-posts.json') : null;
+  const data = raw ? JSON.parse(raw) : { posts: [] };
+  return (data.posts || []).filter(x => x.published);
+}
+
+// Actualités : la base du dépôt (api/actualites.json) + les articles publiés dans la catégorie « actualites »,
+// du plus récent au plus ancien. Chaque actualité porte ses pays : elle remonte d'elle-même sous chacun d'eux.
+function chargerActualites(posts) {
+  let base = [];
+  try { base = JSON.parse(fs.readFileSync(path.join(__dirname, 'actualites.json'), 'utf8')).actualites || []; } catch (e) { base = []; }
+  const depuisAdmin = (posts || []).filter(x => x.category === 'actualites').map(x => ({
+    id: x.slug, date: x.publishedAt || x.updatedAt || '', pays: x.countries || [], titre: x.title,
+    texte: x.description || '', lien: '/blog/' + x.slug, lienTexte: 'Lire la suite', source: ''
+  }));
+  const vus = new Set();
+  return [...depuisAdmin, ...base]
+    .filter(a => a && a.titre && !vus.has(a.id) && vus.add(a.id))
+    .sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
+}
 
 module.exports = async function handler(req, res) {
   const { method } = req;
@@ -512,12 +533,32 @@ module.exports = async function handler(req, res) {
       try {
         const raw = blobToken() ? await blobGet('data/blog-posts.json') : null;
         const data = raw ? JSON.parse(raw) : { posts: [] };
-        const published = (data.posts || []).filter(x => x.published);
+        const published = (data.posts || []).filter(x => x.published && x.category !== 'actualites');
         res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'public, max-age=600' });
         return res.end(renderBlogIndex(published, req.headers.host || 'pvt-explorer.fr', {
           country: url.searchParams.get('pays') || '',
           category: url.searchParams.get('categorie') || ''
         }));
+      } catch (e) { return json(res, 500, { error: e.message }); }
+    }
+
+    // GET /actualites (via réécriture) — actualités rangées par pays ; ?pays= filtre au premier affichage
+    if (method === 'GET' && p === '/api/actualites') {
+      try {
+        const posts = await postsPublies();
+        res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'public, max-age=600' });
+        return res.end(renderActualitesIndex(chargerActualites(posts), req.headers.host || 'pvt-explorer.fr', { pays: url.searchParams.get('pays') || '' }));
+      } catch (e) { return json(res, 500, { error: e.message }); }
+    }
+    // GET /api/actualites/feed — bandeau défilant et recherche : actualités + derniers guides
+    if (method === 'GET' && p === '/api/actualites/feed') {
+      try {
+        const posts = await postsPublies();
+        const guides = posts.filter(x => x.category !== 'actualites')
+          .sort((a, b) => new Date(b.publishedAt || 0) - new Date(a.publishedAt || 0)).slice(0, 4)
+          .map(x => ({ titre: x.title, lien: '/blog/' + x.slug, pays: x.countries || [], date: x.publishedAt || '' }));
+        res.setHeader('Cache-Control', 'public, max-age=300');
+        return json(res, 200, { actualites: chargerActualites(posts), guides });
       } catch (e) { return json(res, 500, { error: e.message }); }
     }
 
@@ -605,6 +646,7 @@ module.exports = async function handler(req, res) {
         const staticUrls = [
           { loc: `${host}/`, changefreq: 'weekly', priority: '1.0', lastmod: newest },
           { loc: `${host}/nos-astuces`, changefreq: 'weekly', priority: '0.8', lastmod: newest },
+          { loc: `${host}/actualites`, changefreq: 'daily', priority: '0.8', lastmod: newest },
           { loc: `${host}/a-propos`, changefreq: 'yearly', priority: '0.4', lastmod: '2026-11-23' },
         ];
         const allUrls = [...staticUrls, ...blogUrls];

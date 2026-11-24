@@ -90,6 +90,7 @@ const server = http.createServer(async (req, res) => {
     const apiPath = blogMatch ? 'blog/' + blogMatch[1]
       : p === '/sitemap.xml' ? 'sitemap.xml'
       : /^\/nos-astuces\/?$/.test(p) ? 'nos-astuces'
+      : /^\/actualites\/?$/.test(p) ? 'actualites'
       : p.startsWith('/api/') ? p.slice(5) : null;
     if (apiPath !== null) {
       const qs = new URLSearchParams(url.search);

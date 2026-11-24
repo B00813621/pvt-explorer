@@ -170,8 +170,21 @@
     if (f) { f.closest('dialog').close(); return; }
     if (e.target.tagName === 'DIALOG' && e.target.classList.contains('fiche')) e.target.close();
   });
-  var h = location.hash.match(/^#pvt-([A-Z]{2})$/);
-  if (h) ouvrirFiche('fiche-' + h[1]);
+  // Sous-menu Destinations et recherche : #pvt-XX ouvre la fiche, même si l'adresse porte déjà ce lien
+  function ficheDuLien() {
+    var h = location.hash.match(/^#pvt-([A-Z]{2})$/);
+    if (h) ouvrirFiche('fiche-' + h[1]);
+  }
+  ficheDuLien();
+  window.addEventListener('hashchange', ficheDuLien);
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest && e.target.closest('a[data-destination]');
+    if (!a || e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1) return;
+    var li = a.closest('.cover__deroulant');
+    if (li) { li.removeAttribute('data-open'); var b = li.querySelector('.cover__ouvrir'); if (b) b.setAttribute('aria-expanded', 'false'); }
+    a.blur();
+    if (a.hash === location.hash && a.pathname === location.pathname) ficheDuLien();
+  });
 
   // Carrousel : défilement natif au doigt, glisser à la souris, flèches et jauge
   document.querySelectorAll('.carrousel').forEach(function (c) {
@@ -222,5 +235,5 @@
     c.addEventListener('click', function (e) { if (glisse) { e.preventDefault(); e.stopPropagation(); } }, true);
   });
 
-  window.PVT = { press: press, toast: toast, rosettePath: rosettePath };
+  window.PVT = { press: press, toast: toast, rosettePath: rosettePath, ouvrirFiche: ouvrirFiche };
 })();

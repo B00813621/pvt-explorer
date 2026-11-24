@@ -1,0 +1,25 @@
+{
+  "_lisezmoi": "Actualités de départ, affichées sur /actualites et dans le bandeau de l'accueil. Les articles publiés dans l'admin avec la catégorie « Actualités » s'y ajoutent automatiquement, rangés par pays. pays = clés de COUNTRIES dans api/blog-render.js.",
+  "actualites": [
+    {
+      "id": "eic-2027-ouverture-bassins",
+      "date": "2026-11-23",
+      "pays": ["canada"],
+      "titre": "PVT Canada 2027 : ouverture des bassins attendue vers la mi-décembre 2026",
+      "texte": "L'ouverture des bassins d'Expérience internationale Canada pour la saison 2027 est attendue vers la mi-décembre 2026.",
+      "lien": "/blog/pvt-canada-2027",
+      "lienTexte": "Comment s'inscrire dès l'ouverture",
+      "source": "https://www.canada.ca/fr/immigration-refugies-citoyennete/services/travailler-canada/eic.html"
+    },
+    {
+      "id": "whv-417-tarif-juillet-2026",
+      "date": "2026-07-01",
+      "pays": ["australie"],
+      "titre": "PVT Australie : le visa 417 coûte 840 AUD depuis le 1er juillet 2026",
+      "texte": "Le Working Holiday visa (subclass 417) se demande en ligne sur ImmiAccount, sans quota ni tirage au sort.",
+      "lien": "/blog/pvt-australie",
+      "lienTexte": "Lire mon guide PVT Australie",
+      "source": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/work-holiday-417"
+    }
+  ]
+}

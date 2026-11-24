@@ -265,7 +265,7 @@ tr:hover td{background:#f8fafc}
               <option value="vols">✈️ Vols</option><option value="hébergement">🏠 Hébergement</option>
               <option value="assurance">🛡️ Assurance</option><option value="budget">💰 Budget</option>
               <option value="visa">🛂 Visa</option><option value="travail">💼 Travail</option>
-              <option value="vie-pratique">🏙️ Vie pratique</option><option value="activités">🎯 Activités</option>
+              <option value="vie-pratique">🏙️ Vie pratique</option><option value="activités">🎯 Activités</option><option value="actualites">📰 Actualités</option>
             </select>
             <select id="blog-status-filter">
               <option value="">Tous les statuts</option>
@@ -370,7 +370,7 @@ tr:hover td{background:#f8fafc}
         <option value="vols">✈️ Vols</option><option value="hébergement">🏠 Hébergement</option>
         <option value="assurance">🛡️ Assurance</option><option value="budget">💰 Budget</option>
         <option value="visa">🛂 Visa</option><option value="travail">💼 Travail</option>
-        <option value="vie-pratique">🏙️ Vie pratique</option><option value="activités">🎯 Activités</option>
+        <option value="vie-pratique">🏙️ Vie pratique</option><option value="activités">🎯 Activités</option><option value="actualites">📰 Actualités</option>
       </select>
     </div>
     <div class="field"><label>Pays (séparés par virgule)</label><input type="text" id="blog-countries" placeholder="australie, canada, nouvelle-zélande"></div>
@@ -747,7 +747,7 @@ let blogPosts = [];
 let quill = null;
 let imgPickerRange = null;
 
-const catIcons = { vols:'✈️', hébergement:'🏠', assurance:'🛡️', budget:'💰', visa:'🛂', travail:'💼', 'vie-pratique':'🏙️', activités:'🎯' };
+const catIcons = { vols:'✈️', hébergement:'🏠', assurance:'🛡️', budget:'💰', visa:'🛂', travail:'💼', 'vie-pratique':'🏙️', activités:'🎯', actualites:'📰' };
 
 function slugify(s) {
   return s.toLowerCase().trim()
