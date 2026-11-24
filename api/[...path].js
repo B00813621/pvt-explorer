@@ -529,15 +529,16 @@ module.exports = async function handler(req, res) {
         const raw = blobToken() ? await blobGet('data/blog-posts.json') : null;
         const data = raw ? JSON.parse(raw) : { posts: [] };
         const post = (data.posts || []).find(post => post.slug === slug && post.published);
-        const accept = req.headers.accept || '';
+        // /blog/:slug (réécrit avec __html=1) sert toujours la page ; /api/blog/:slug suit l'en-tête Accept.
+        const html = url.searchParams.get('__html') === '1' || (req.headers.accept || '').includes('text/html');
         if (!post) {
-          if (accept.includes('text/html')) {
+          if (html) {
             res.writeHead(404, { 'Content-Type': 'text/html; charset=utf-8' });
             return res.end(renderNotFound());
           }
           return json(res, 404, { error: 'Article introuvable.' });
         }
-        if (accept.includes('text/html')) {
+        if (html) {
           res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'public, max-age=3600' });
           const host = req.headers.host || 'pvt-explorer.vercel.app';
           const published = (data.posts || []).filter(x => x.published);

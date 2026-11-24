@@ -37,7 +37,7 @@ for VERCEL_OUT in "/vercel/output" "$PWD/.vercel/output"; do
     { "src": "/nos-astuces/?$", "dest": "/api/catchall?__p=nos-astuces" },
     { "src": "/blog.html$", "status": 308, "headers": { "Location": "/nos-astuces" } },
     { "src": "/sitemap.xml", "dest": "/api/catchall?__p=sitemap.xml" },
-    { "src": "/blog/([^/]+)", "dest": "/api/catchall?__p=blog/$1" },
+    { "src": "/blog/([^/]+)", "dest": "/api/catchall?__p=blog/$1&__html=1" },
     { "src": "/api/(.*)", "dest": "/api/catchall?__p=$1" },
     { "handle": "filesystem" },
     { "handle": "error" },

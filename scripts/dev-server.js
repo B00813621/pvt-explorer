@@ -94,6 +94,7 @@ const server = http.createServer(async (req, res) => {
     if (apiPath !== null) {
       const qs = new URLSearchParams(url.search);
       qs.set('__p', apiPath);
+      if (blogMatch) qs.set('__html', '1');
       req.url = '/api/catchall?' + qs.toString();
       return fresh('../api/[...path].js')(req, res);
     }
