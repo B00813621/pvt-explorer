@@ -7,6 +7,9 @@ set -e
 # We also create the output in $PWD/.vercel/output as a fallback.
 rm -f /vercel/output/builds.json
 
+npm run build:pages --silent
+npm run build:speed-insights --silent
+
 for VERCEL_OUT in "/vercel/output" "$PWD/.vercel/output"; do
   mkdir -p "$VERCEL_OUT/static"
   mkdir -p "$VERCEL_OUT/functions/api/catchall.func"

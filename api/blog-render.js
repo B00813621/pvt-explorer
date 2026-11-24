@@ -166,7 +166,8 @@ ${url ? `<link rel="canonical" href="${htmlEsc(url)}">` : ''}
 function pageScripts(extra = '') {
   return `<script src="/app-config.js"></script>
 <script src="/analytics.js" defer></script>
-<script src="/js/visa.js" defer></script>${extra}`;
+<script src="/js/visa.js" defer></script>
+<script type="module" src="/js/speed-insights.js"></script>${extra}`;
 }
 
 // ---------- Contenu de l'éditeur ----------
