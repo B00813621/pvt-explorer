@@ -490,8 +490,8 @@ button,input,select,textarea{font:inherit;color:inherit}
 .cover__ouvrir[aria-expanded=true] svg{transform:rotate(180deg)}
 .cover__sous{position:absolute;top:calc(100% + 12px);right:-16px;z-index:50;display:none;grid-template-columns:1fr 1fr;gap:.4rem 2.2rem;min-width:380px;padding:1.1rem 1.3rem 1rem;background:var(--paper-hi);color:var(--ink);border:1px solid var(--rule);border-radius:var(--r-vignette);box-shadow:0 24px 44px -22px rgb(0 0 0 / .5);transform-origin:top right}
 @media (prefers-reduced-motion:no-preference){
-  .cover__deroulant[data-open] .cover__sous{transition:opacity .18s var(--ease-out),transform .18s var(--ease-out);@starting-style{opacity:0;transform:translateY(-6px) scale(.98)}}
-  @media (hover:hover){.cover__deroulant:hover .cover__sous,.cover__deroulant:focus-within .cover__sous{transition:opacity .18s var(--ease-out),transform .18s var(--ease-out);@starting-style{opacity:0;transform:translateY(-6px) scale(.98)}}}
+  .cover__deroulant[data-open] .cover__sous{transition:opacity .18s var(--ease-out),transform .18s var(--ease-out),display .18s allow-discrete;@starting-style{opacity:0;transform:translateY(-6px) scale(.98)}}
+  @media (hover:hover){.cover__deroulant:hover .cover__sous,.cover__deroulant:focus-within .cover__sous{transition:opacity .18s var(--ease-out),transform .18s var(--ease-out),display .18s allow-discrete;@starting-style{opacity:0;transform:translateY(-6px) scale(.98)}}}
 }
 .cover__sous::before{content:"";position:absolute;left:0;right:0;top:-16px;height:16px}
 .cover__sous ul{list-style:none;margin:0;padding:0}
