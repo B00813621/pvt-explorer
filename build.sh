@@ -28,13 +28,20 @@ for VERCEL_OUT in "/vercel/output" "$PWD/.vercel/output"; do
   "version": 3,
   "routes": [
     { "src": "/(.*)", "has": [{ "type": "host", "value": "www.pvt-explorer.fr" }], "status": 308, "headers": { "Location": "https://pvt-explorer.fr/$1" } },
+    { "src": "/(.*)", "headers": { "X-Content-Type-Options": "nosniff", "Referrer-Policy": "strict-origin-when-cross-origin" }, "continue": true },
+    { "src": "/fonts/(.*)", "headers": { "Cache-Control": "public, max-age=31536000, immutable" }, "continue": true },
+    { "src": "/images/(.*)", "headers": { "Cache-Control": "public, max-age=604800" }, "continue": true },
     { "src": "/go/(?<slug>[^/]*)", "dest": "/api/go?slug=$slug" },
     { "src": "/admin$", "dest": "/admin.html" },
-    { "src": "/nos-astuces$", "dest": "/blog.html" },
+    { "src": "/a-propos/?$", "dest": "/a-propos.html" },
+    { "src": "/nos-astuces/?$", "dest": "/api/catchall?__p=nos-astuces" },
+    { "src": "/blog.html$", "status": 308, "headers": { "Location": "/nos-astuces" } },
     { "src": "/sitemap.xml", "dest": "/api/catchall?__p=sitemap.xml" },
     { "src": "/blog/([^/]+)", "dest": "/api/catchall?__p=blog/$1" },
     { "src": "/api/(.*)", "dest": "/api/catchall?__p=$1" },
-    { "handle": "filesystem" }
+    { "handle": "filesystem" },
+    { "handle": "error" },
+    { "src": "/(.*)", "status": 404, "dest": "/404.html" }
   ]
 }
 CONF

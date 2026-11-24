@@ -191,7 +191,7 @@ function readBody(req, max = 12000) {
   });
 }
 
-const { renderBlogPost } = require('./blog-render.js');
+const { renderBlogPost, renderBlogIndex, renderNotFound } = require('./blog-render.js');
 
 module.exports = async function handler(req, res) {
   const { method } = req;
@@ -507,6 +507,20 @@ module.exports = async function handler(req, res) {
       } catch (e) { return json(res, 500, { error: e.message }); }
     }
 
+    // GET /nos-astuces (via rewrite) — index des articles rendu côté serveur
+    if (method === 'GET' && p === '/api/nos-astuces') {
+      try {
+        const raw = blobToken() ? await blobGet('data/blog-posts.json') : null;
+        const data = raw ? JSON.parse(raw) : { posts: [] };
+        const published = (data.posts || []).filter(x => x.published);
+        res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'public, max-age=600' });
+        return res.end(renderBlogIndex(published, req.headers.host || 'pvt-explorer.fr', {
+          country: url.searchParams.get('pays') || '',
+          category: url.searchParams.get('categorie') || ''
+        }));
+      } catch (e) { return json(res, 500, { error: e.message }); }
+    }
+
     // GET /api/blog/:slug — SSR HTML for browsers, JSON for API calls
     const blogSlugMatch = p.match(/^\/api\/blog\/([^/]+)$/);
     if (method === 'GET' && blogSlugMatch) {
@@ -519,15 +533,16 @@ module.exports = async function handler(req, res) {
         if (!post) {
           if (accept.includes('text/html')) {
             res.writeHead(404, { 'Content-Type': 'text/html; charset=utf-8' });
-            return res.end(`<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><title>Article introuvable | PVT Explorer</title><style>body{font-family:sans-serif;display:flex;align-items:center;justify-content:center;min-height:100vh;background:#f7f8f4;color:#102b36;text-align:center}</style></head><body><div><p style="font-size:3rem">📭</p><h1>Article introuvable</h1><p style="margin:1rem 0;color:#60737a">Cet article n'existe pas ou n'est plus disponible.</p><a href="/nos-astuces" style="color:#087e79;font-weight:700">← Voir tous les articles</a></div></body></html>`);
+            return res.end(renderNotFound());
           }
           return json(res, 404, { error: 'Article introuvable.' });
         }
         if (accept.includes('text/html')) {
           res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'public, max-age=3600' });
           const host = req.headers.host || 'pvt-explorer.vercel.app';
-          const publishedSlugs = new Set((data.posts || []).filter(x => x.published).map(x => x.slug));
-          return res.end(renderBlogPost(post, host, { publishedSlugs }));
+          const published = (data.posts || []).filter(x => x.published);
+          const publishedSlugs = new Set(published.map(x => x.slug));
+          return res.end(renderBlogPost(post, host, { publishedSlugs, relatedPool: published }));
         }
         return json(res, 200, post);
       } catch (e) { return json(res, 500, { error: e.message }); }
@@ -566,10 +581,7 @@ module.exports = async function handler(req, res) {
       try {
         const host = `https://${req.headers.host || 'pvt-explorer.vercel.app'}`;
         const today = new Date().toISOString().split('T')[0];
-        const staticUrls = [
-          { loc: `${host}/`, changefreq: 'weekly', priority: '1.0', lastmod: today },
-          { loc: `${host}/nos-astuces`, changefreq: 'weekly', priority: '0.8', lastmod: today },
-        ];
+        const xmlEsc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
         let blogUrls = [];
         if (blobToken()) {
           try {
@@ -582,19 +594,27 @@ module.exports = async function handler(req, res) {
                   loc: `${host}/blog/${encodeURIComponent(post.slug)}`,
                   changefreq: 'monthly',
                   priority: '0.7',
-                  lastmod: (post.updatedAt || post.publishedAt || today).split('T')[0]
+                  lastmod: (post.updatedAt || post.publishedAt || today).split('T')[0],
+                  image: post.image ? (/^https?:\/\//.test(post.image) ? post.image : host + post.image) : ''
                 }));
             }
           } catch {}
         }
+        const newest = blogUrls.map(u => u.lastmod).sort().pop() || today;
+        const staticUrls = [
+          { loc: `${host}/`, changefreq: 'weekly', priority: '1.0', lastmod: newest },
+          { loc: `${host}/nos-astuces`, changefreq: 'weekly', priority: '0.8', lastmod: newest },
+          { loc: `${host}/a-propos`, changefreq: 'yearly', priority: '0.4', lastmod: '2026-11-23' },
+        ];
         const allUrls = [...staticUrls, ...blogUrls];
         const urlsXml = allUrls.map(u => `  <url>
     <loc>${u.loc}</loc>
     <lastmod>${u.lastmod}</lastmod>
     <changefreq>${u.changefreq}</changefreq>
-    <priority>${u.priority}</priority>
+    <priority>${u.priority}</priority>${u.image ? `
+    <image:image><image:loc>${xmlEsc(u.image)}</image:loc></image:image>` : ''}
   </url>`).join('\n');
-        const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urlsXml}\n</urlset>`;
+        const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">\n${urlsXml}\n</urlset>`;
         res.writeHead(200, { 'Content-Type': 'application/xml; charset=utf-8', 'Cache-Control': 'public, max-age=3600' });
         return res.end(xml);
       } catch (e) { return json(res, 500, { error: e.message }); }

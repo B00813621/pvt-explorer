@@ -4,3 +4,7 @@ data/db.json
 *.log
 .vercel
 .env*
+
+# Fichiers de travail d’autres outils, à ne pas déployer
+public/.taste-skill/
+public/images/photo-f*

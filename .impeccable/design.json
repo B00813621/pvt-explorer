@@ -1,0 +1,857 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-24T11:04:09.874Z",
+  "title": "Design System: PVT Explorer",
+  "extensions": {
+    "colorMeta": {
+      "cover": {
+        "role": "primary",
+        "displayName": "Vert de couverture",
+        "canonical": "#055a56",
+        "oklch": "oklch(42.3% 0.072 189.5)",
+        "tonalRamp": [
+          "#000f0d",
+          "#002c2a",
+          "#0d4c49",
+          "#256e6a",
+          "#4a908b",
+          "#7bb1ac",
+          "#b1d1ce",
+          "#e7f1f0"
+        ]
+      },
+      "cover-deep": {
+        "role": "primary",
+        "displayName": "Vert profond",
+        "canonical": "#0d3038",
+        "oklch": "oklch(28.8% 0.042 215.7)",
+        "tonalRamp": [
+          "#030d10",
+          "#11292f",
+          "#264850",
+          "#456870",
+          "#668992",
+          "#8eabb2",
+          "#bccdd1",
+          "#eaeff1"
+        ]
+      },
+      "foil": {
+        "role": "primary",
+        "displayName": "Or à chaud",
+        "canonical": "#e3c886",
+        "oklch": "oklch(84.1% 0.090 88.2)",
+        "tonalRamp": [
+          "#100a00",
+          "#302301",
+          "#533f03",
+          "#765e19",
+          "#997f3e",
+          "#b8a371",
+          "#d4c8ab",
+          "#f2eee5"
+        ]
+      },
+      "foil-hi": {
+        "role": "primary",
+        "displayName": "Or clair",
+        "canonical": "#eed79f",
+        "oklch": "oklch(88.5% 0.077 88.3)",
+        "tonalRamp": [
+          "#100a00",
+          "#302301",
+          "#533f01",
+          "#735f29",
+          "#95804b",
+          "#b5a379",
+          "#d3c8af",
+          "#f1eee6"
+        ]
+      },
+      "cover-ink": {
+        "role": "primary",
+        "displayName": "Crème de couverture",
+        "canonical": "#f7f8f4",
+        "oklch": "oklch(97.7% 0.005 117.9)",
+        "tonalRamp": [
+          "#0b0c08",
+          "#24261e",
+          "#414438",
+          "#606356",
+          "#818477",
+          "#a4a79b",
+          "#c8cac3",
+          "#eeefed"
+        ]
+      },
+      "cover-ink-2": {
+        "role": "primary",
+        "displayName": "Vert-de-gris de couverture",
+        "canonical": "#c5ddd2",
+        "oklch": "oklch(87.7% 0.030 166.4)",
+        "tonalRamp": [
+          "#060d0a",
+          "#1b2923",
+          "#33473e",
+          "#52675d",
+          "#72887e",
+          "#98aaa2",
+          "#c1ccc7",
+          "#ecefee"
+        ]
+      },
+      "violet": {
+        "role": "secondary",
+        "displayName": "Encre violette de sécurité",
+        "canonical": "#4335b0",
+        "oklch": "oklch(42.8% 0.186 280.2)",
+        "tonalRamp": [
+          "#080722",
+          "#1e1a51",
+          "#363085",
+          "#5048be",
+          "#7173d6",
+          "#989de5",
+          "#c2c7f1",
+          "#e8ecff"
+        ]
+      },
+      "green": {
+        "role": "tertiary",
+        "displayName": "Encre verte (ouvert, fait)",
+        "canonical": "#1d7349",
+        "oklch": "oklch(49.4% 0.105 157.1)",
+        "tonalRamp": [
+          "#010f06",
+          "#062c19",
+          "#114c2f",
+          "#1d6e46",
+          "#538f6c",
+          "#87b096",
+          "#bad2c2",
+          "#e1f4e8"
+        ]
+      },
+      "red": {
+        "role": "tertiary",
+        "displayName": "Encre rouge (alerte)",
+        "canonical": "#b3302a",
+        "oklch": "oklch(51.1% 0.169 27.5)",
+        "tonalRamp": [
+          "#1c0202",
+          "#450c09",
+          "#741a16",
+          "#a62924",
+          "#c45c52",
+          "#da8e84",
+          "#ecbeb7",
+          "#ffe5df"
+        ]
+      },
+      "paper": {
+        "role": "neutral",
+        "displayName": "Papier de sécurité",
+        "canonical": "#f1f2f5",
+        "oklch": "oklch(96.1% 0.004 271.4)",
+        "tonalRamp": [
+          "#0b0b0c",
+          "#242425",
+          "#3f4041",
+          "#5d5d60",
+          "#7f8082",
+          "#a4a4a6",
+          "#cacacb",
+          "#eeeeef"
+        ]
+      },
+      "paper-hi": {
+        "role": "neutral",
+        "displayName": "Papier clair",
+        "canonical": "#fbfbfd",
+        "oklch": "oklch(98.9% 0.003 286.4)",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#242425",
+          "#3f3f41",
+          "#5d5d5f",
+          "#808081",
+          "#a4a4a5",
+          "#cacacb",
+          "#eeeeef"
+        ]
+      },
+      "paper-lo": {
+        "role": "neutral",
+        "displayName": "Papier ombré",
+        "canonical": "#e5e7ee",
+        "oklch": "oklch(92.8% 0.010 273.4)",
+        "tonalRamp": [
+          "#0b0b0c",
+          "#232426",
+          "#3e4044",
+          "#5c5d63",
+          "#7e8085",
+          "#a3a4a8",
+          "#cacacc",
+          "#eeeef0"
+        ]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Encre",
+        "canonical": "#1d1f33",
+        "oklch": "oklch(24.7% 0.038 278.8)",
+        "tonalRamp": [
+          "#0a0b10",
+          "#22232e",
+          "#3c3e4f",
+          "#595c72",
+          "#7c7f93",
+          "#a1a4b2",
+          "#c8cad3",
+          "#edeef5"
+        ]
+      },
+      "ink-2": {
+        "role": "neutral",
+        "displayName": "Encre seconde",
+        "canonical": "#464a63",
+        "oklch": "oklch(41.6% 0.042 277.3)",
+        "tonalRamp": [
+          "#0a0b11",
+          "#21232f",
+          "#3b3e50",
+          "#585c75",
+          "#7b7f95",
+          "#a1a4b4",
+          "#c8cad3",
+          "#eceef6"
+        ]
+      },
+      "ink-3": {
+        "role": "neutral",
+        "displayName": "Encre tierce",
+        "canonical": "#5d6079",
+        "oklch": "oklch(49.6% 0.040 279.5)",
+        "tonalRamp": [
+          "#0a0b10",
+          "#22232e",
+          "#3c3e4f",
+          "#595c73",
+          "#7c7f94",
+          "#a1a3b3",
+          "#c8cad3",
+          "#edeef5"
+        ]
+      },
+      "rule": {
+        "role": "neutral",
+        "displayName": "Filet",
+        "canonical": "#c6c9d6",
+        "oklch": "oklch(83.7% 0.018 275.6)",
+        "tonalRamp": [
+          "#0a0b0e",
+          "#232429",
+          "#3e3f47",
+          "#5b5d68",
+          "#7d8089",
+          "#a3a4ab",
+          "#c9cace",
+          "#edeef2"
+        ]
+      },
+      "rule-soft": {
+        "role": "neutral",
+        "displayName": "Filet doux",
+        "canonical": "#dcdee6",
+        "oklch": "oklch(90.1% 0.011 274.9)",
+        "tonalRamp": [
+          "#0b0b0d",
+          "#232427",
+          "#3e3f44",
+          "#5c5d64",
+          "#7e8086",
+          "#a3a4a9",
+          "#cacacd",
+          "#eeeef0"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "H1 de l'accueil, en crème sur le frontispice vert."
+      },
+      "display-index": {
+        "displayName": "Display index",
+        "purpose": "H1 de l'index « Nos astuces »."
+      },
+      "display-sub": {
+        "displayName": "Sous-titre du display",
+        "purpose": "Le small sous le display, en or sur le frontispice, chasse 100 %."
+      },
+      "page-title": {
+        "displayName": "Titre de page",
+        "purpose": "Titres d'article et de pages de texte, en vert."
+      },
+      "sheet-title": {
+        "displayName": "Titre de fiche",
+        "purpose": "Titre de la fiche pays, en vert."
+      },
+      "service-title": {
+        "displayName": "Titre de service",
+        "purpose": "Titre centré en capitales des cartes de services, chasse 125 %, en crème."
+      },
+      "objet-title": {
+        "displayName": "Titre d'objet",
+        "purpose": "Titre en capitales verte des cartes « Dans le sac », chasse 118 %."
+      },
+      "brand": {
+        "displayName": "Mot-symbole",
+        "purpose": "« PVT Explorer » du bandeau et du pied, « Explorer » en or."
+      },
+      "headline": {
+        "displayName": "Titre de section",
+        "purpose": "Titres de section, en encre."
+      },
+      "region-title": {
+        "displayName": "Rubrique",
+        "purpose": "Régions et rayons de guides, capitales verte sur filet de 2px."
+      },
+      "title": {
+        "displayName": "Titre de bloc",
+        "purpose": "Sous-titres de blocs."
+      },
+      "vignette-name": {
+        "displayName": "Nom de vignette",
+        "purpose": "Nom du pays sur sa vignette."
+      },
+      "result-count": {
+        "displayName": "Compteur de résultat",
+        "purpose": "Nombre de pays éligibles dans le formulaire, en vert."
+      },
+      "ui": {
+        "displayName": "UI",
+        "purpose": "Libellés des boutons, de la pilule « Découvrir » et du bouton or des services."
+      },
+      "body": {
+        "displayName": "Texte",
+        "purpose": "Texte d'interface."
+      },
+      "lead": {
+        "displayName": "Chapeau",
+        "purpose": "Chapeau de l'accueil (40ch) ; chapeau d'article proche (clamp 1.12 → 1.32rem)."
+      },
+      "body-sm": {
+        "displayName": "Texte petit",
+        "purpose": "Pas de 0.93 à 0.98rem : résumés, registre, entrées, pied, toast, actualité."
+      },
+      "body-xs": {
+        "displayName": "Texte très petit",
+        "purpose": "Pas de 0.88 à 0.92rem : puces, petits boutons, pilule pays, texte des cartes « Dans le sac », métadonnées, statuts."
+      },
+      "caption": {
+        "displayName": "Légende",
+        "purpose": "Pas de 0.82 à 0.86rem : légendes, mentions, fil d’Ariane, progression."
+      },
+      "meta": {
+        "displayName": "Méta",
+        "purpose": "Pas de 0.76 à 0.8rem : métadonnées d’entrée, MRZ du formulaire, tampon « Éligible », compteurs de rubrique."
+      },
+      "prose": {
+        "displayName": "Prose",
+        "purpose": "Colonne de lecture à 62ch."
+      },
+      "label": {
+        "displayName": "Étiquette",
+        "purpose": "Étiquette de champ, d'en-tête de registre ou de colonne de menu ; traduction anglaise en italique après un point médian ; jamais un surtitre."
+      },
+      "stamp": {
+        "displayName": "Tampon",
+        "purpose": "Texte des tampons d'état."
+      },
+      "data": {
+        "displayName": "Donnée",
+        "purpose": "Compteurs, codes, métadonnées en chiffres tabulaires."
+      },
+      "mrz": {
+        "displayName": "MRZ",
+        "purpose": "Ligne lisible par machine des vignettes."
+      }
+    },
+    "shadows": [
+      {
+        "name": "fiche-posee",
+        "value": "0 1px 0 var(--paper-hi) inset, 0 10px 24px -18px color-mix(in srgb, var(--ink) 45%, transparent)",
+        "purpose": "Vignettes et entrées de guides au repos."
+      },
+      {
+        "name": "fiche-soulevee",
+        "value": "0 1px 0 var(--paper-hi) inset, 0 18px 30px -20px color-mix(in srgb, var(--ink) 55%, transparent)",
+        "purpose": "Survol d’une vignette ou entrée cliquable, avec translateY(-3px), sur pointeur fin."
+      },
+      {
+        "name": "pression-verte",
+        "value": "0 6px 18px -10px color-mix(in srgb, var(--cover) 80%, transparent)",
+        "purpose": "Survol du bouton principal."
+      },
+      {
+        "name": "toast",
+        "value": "0 14px 30px -14px rgb(0 0 0 / .5)",
+        "purpose": "Message éphémère."
+      },
+      {
+        "name": "miniature-soulevee",
+        "value": "0 10px 20px -14px color-mix(in srgb, var(--ink) 60%, transparent)",
+        "purpose": "Survol d'une ligne de guide : la miniature monte de 2px et pivote de -1deg."
+      },
+      {
+        "name": "registre-sur-couverture",
+        "value": "0 28px 50px -30px rgb(0 0 0 / .6)",
+        "purpose": "Le registre du comparateur posé sur la bande verte ; retirée sous 640px."
+      },
+      {
+        "name": "formulaire-sur-couverture",
+        "value": "0 30px 60px -30px rgb(0 0 0 / .55)",
+        "purpose": "La vignette d'éligibilité posée sur le frontispice vert."
+      },
+      {
+        "name": "carte-article",
+        "value": "0 12px 26px -20px color-mix(in srgb, var(--ink) 50%, transparent)",
+        "purpose": "Carte d'article au repos."
+      },
+      {
+        "name": "carte-article-soulevee",
+        "value": "0 22px 34px -22px color-mix(in srgb, var(--ink) 60%, transparent)",
+        "purpose": "Carte d'article au survol, avec translateY(-4px)."
+      },
+      {
+        "name": "carte-couverture",
+        "value": "0 22px 40px -26px color-mix(in srgb, var(--cover-deep) 90%, transparent)",
+        "purpose": "Carte de service vert posée sur le papier."
+      },
+      {
+        "name": "panneau-suspendu",
+        "value": "0 24px 44px -22px rgb(0 0 0 / .5)",
+        "purpose": "Menu déroulant qui pend du bandeau."
+      },
+      {
+        "name": "fiche-ouverte",
+        "value": "0 30px 60px -28px rgb(0 0 0 / .6)",
+        "purpose": "Fiche pays au-dessus du site, sur un voile rgb(29 31 51 / .6) (l'encre à 60 %)."
+      },
+      {
+        "name": "pilule-sur-photo",
+        "value": "0 12px 26px -12px rgb(0 0 0 / .55)",
+        "purpose": "Pilule « Découvrir » sur l'image d'une carte d'article."
+      },
+      {
+        "name": "pilule-or",
+        "value": "0 10px 20px -12px rgb(0 0 0 / .5)",
+        "purpose": "Bouton or d'une carte de service."
+      },
+      {
+        "name": "double-cerne-medaillon",
+        "value": "0 0 0 1.5px color-mix(in srgb, var(--cover) 22%, transparent), 0 0 0 8px var(--paper-hi), 0 0 0 9.5px color-mix(in srgb, var(--cover) 14%, transparent)",
+        "purpose": "Médaillon de 150px des cartes « Dans le sac » : deux anneaux verts (filets, pas élévation)."
+      },
+      {
+        "name": "double-filet-tampon",
+        "value": "inset 0 0 0 1.5px var(--paper-hi), inset 0 0 0 3px currentColor",
+        "purpose": "Second cadre intérieur du tampon (pas une élévation)."
+      },
+      {
+        "name": "focus-champ",
+        "value": "0 0 0 3px color-mix(in srgb, var(--violet) 18%, transparent)",
+        "purpose": "Halo de focus des champs."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease-out",
+        "value": "cubic-bezier(.16,1,.3,1)",
+        "purpose": "Survols, dépliages, soulèvement des fiches, progression de checklist."
+      },
+      {
+        "name": "ease-press",
+        "value": "cubic-bezier(.2,.9,.25,1)",
+        "purpose": "Pose du tampon (stamp-press, 0.42s : 170 % flou → 93 % → 100 %)."
+      },
+      {
+        "name": "press-button",
+        "value": "transform .12s ease-out; translateY(1px) scale(.985)",
+        "purpose": "Appui sur un bouton."
+      },
+      {
+        "name": "hover-lift",
+        "value": "transform .25s ease-out; translateY(-3px)",
+        "purpose": "Fiches cliquables, gated par (hover:hover)."
+      },
+      {
+        "name": "details-open",
+        "value": "block-size .35s ease-out (interpolate-size: allow-keywords)",
+        "purpose": "Dépliage de la FAQ."
+      },
+      {
+        "name": "reduced-motion",
+        "value": "0.01ms",
+        "purpose": "Toutes animations et transitions sous prefers-reduced-motion: reduce."
+      },
+      {
+        "name": "thumb-lift",
+        "value": "transform .3s ease-out; translateY(-2px) rotate(-1deg)",
+        "purpose": "Miniature de guide au survol de sa ligne, gated par (hover:hover)."
+      },
+      {
+        "name": "objet-lift",
+        "value": "transform .3s ease-out; translateY(-4px), bordure au vert plein, dessin .4s rotate(-6deg) scale(1.05)",
+        "purpose": "Carte « Dans le sac » au survol, gated par (hover:hover)."
+      },
+      {
+        "name": "service-lift",
+        "value": "transform .3s ease-out; translateY(-4px), dessin .4s rotate(-5deg) scale(1.04)",
+        "purpose": "Carte de service au survol, gated par (hover:hover)."
+      },
+      {
+        "name": "carte-lift",
+        "value": "transform .3s ease-out; translateY(-4px), image .5s scale(1.05), pilule gap .6 → .85rem",
+        "purpose": "Carte d'article au survol, gated par (hover:hover)."
+      },
+      {
+        "name": "fiche-ouvre",
+        "value": ".38s ease-out; from opacity 0, translateY(18px) scale(.985)",
+        "purpose": "Ouverture de la fiche pays."
+      },
+      {
+        "name": "press-round",
+        "value": "transform .12s ease-out; scale(.94) (rond), scale(.97) (pilule or)",
+        "purpose": "Appui sur un bouton rond ou la pilule or."
+      },
+      {
+        "name": "logo-tilt",
+        "value": "transform .3s ease-out; rotate(-8deg)",
+        "purpose": "Carré du logo au survol de la marque."
+      },
+      {
+        "name": "chevron-menu",
+        "value": "transform .2s ease-out; rotate(180deg)",
+        "purpose": "Chevron du menu « Nos astuces | Blog » ouvert."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "mobile-sm (pied une colonne)",
+        "value": "480px"
+      },
+      {
+        "name": "stack-sm (formulaires, miniatures 96px, fiche pays 2 col)",
+        "value": "560px"
+      },
+      {
+        "name": "vignettes-2col / comparateur en fiches (max)",
+        "value": "640px"
+      },
+      {
+        "name": "etape-stack",
+        "value": "760px"
+      },
+      {
+        "name": "nav-collapse (menu mobile, déroulant en ligne)",
+        "value": "860px"
+      },
+      {
+        "name": "hero-stack",
+        "value": "900px"
+      },
+      {
+        "name": "grid-wide (vignettes 3-4 col, pilier 2 col)",
+        "value": "1000px"
+      },
+      {
+        "name": "article-rail",
+        "value": "1100px"
+      },
+      {
+        "name": "vignette-fields-4col (container)",
+        "value": "520px"
+      }
+    ],
+    "fonts": [
+      {
+        "family": "Archivo",
+        "source": "/fonts/archivo-latin.woff2, /fonts/archivo-latin-ext.woff2",
+        "axes": "wght 100–900, wdth 62–125",
+        "fallback": "Archivo Fallback (local Arial, size-adjust 104 %)"
+      },
+      {
+        "family": "Azeret Mono",
+        "source": "/fonts/azeret-mono-latin.woff2, /fonts/azeret-mono-latin-ext.woff2",
+        "axes": "wght 100–900"
+      }
+    ],
+    "ornaments": [
+      {
+        "name": "guilloche-band",
+        "source": "public/images/guilloche.svg (scripts/gen-guilloche.js)",
+        "usage": "Masque : or 55 % 6px sous le bandeau, or 50 % 10px au bas du frontispice et sur le pied, or 45 % 10px aux deux bords de la bande du comparateur, violet 12 % 28px au bord de page ; trame pleine or 6 % (168×28px) sur le frontispice et les cartes de services, violette 7 % (120×20px) sur les cartes « Dans le sac »."
+      },
+      {
+        "name": "logo",
+        "source": "public/favicon.svg, public/images/logo-pvt-explorer.png, .brand__logo",
+        "usage": "Carré or (34px, angles 10px ; 8 sur 32 dans le favicon) portant un avion vert vu de dessus ; mot-symbole « PVT » crème + « Explorer » or."
+      },
+      {
+        "name": "rosette-pays",
+        "source": "public/js/visa.js rosettePath(seed)",
+        "usage": "Rosace déterministe par graine ([data-rosette] : code ISO ou « PVT-EXPLORER ») : 10 à 17 pétales, 4 à 6 anneaux, amplitude 6 à 9. Violet 62 % 76px en pied de vignette, 45 % 88px sur la fiche pays, 55 % 92px sur le formulaire."
+      },
+      {
+        "name": "noise",
+        "source": "--noise (feTurbulence 140px)",
+        "usage": "Masque d’encre irrégulière des tampons."
+      },
+      {
+        "name": "hachures",
+        "source": "SVG caché en tête de public/index.html",
+        "usage": "#hachure : traits verts 1.3 à 72 %, pas 4, 45deg (formes .w des dessins « Dans le sac »). #hachure-or : traits or 1.1 à 70 %, -45deg (formes .w des dessins de services)."
+      },
+      {
+        "name": "dessin-au-trait",
+        "source": "SVG inline dans public/index.html (.service__dessin, .objet__dessin)",
+        "usage": "viewBox 96, extrémités rondes. Services : trait or 1.8, 150px, sur le vert. Dans le sac : trait vert 2, 104px, dans un médaillon papier clair de 150px à double cerne."
+      }
+    ],
+    "stateInks": {
+      "green": [
+        "Ouvert",
+        "Éligible",
+        "Fait",
+        "Envoyé",
+        "Inscrit"
+      ],
+      "violet": [
+        "Sur invitation",
+        "Sur dossier",
+        "Sous quota"
+      ],
+      "red": [
+        "Actualité",
+        "Attention",
+        "Important",
+        "Hors limite",
+        "Trop tôt",
+        "Entrée refusée"
+      ],
+      "ink-2": [
+        "À vérifier",
+        "À noter",
+        "Mis à jour · date"
+      ],
+      "cover": [
+        "Bon à savoir",
+        "À retenir"
+      ]
+    }
+  },
+  "components": [
+    {
+      "name": "Bouton principal",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Action principale : verte, texte crème, flèche quand il mène quelque part.",
+      "html": "<a class=\"ds-btn\" href=\"#\">Voir les destinations <svg viewBox=\"0 0 16 16\" width=\"18\" height=\"18\" aria-hidden=\"true\"><path d=\"M3 8h9M8.5 4.5 12 8l-3.5 3.5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg></a>",
+      "css": ":host{--paper:#f1f2f5;--paper-hi:#fbfbfd;--paper-lo:#e5e7ee;--ink:#1d1f33;--ink-2:#464a63;--ink-3:#5d6079;--rule:#c6c9d6;--rule-soft:#dcdee6;--cover:#055a56;--cover-deep:#0d3038;--cover-ink:#f7f8f4;--cover-ink-2:#c5ddd2;--foil:#e3c886;--violet:#4335b0;--green:#1d7349;--red:#b3302a;--font:\"Archivo\",\"Archivo Fallback\",system-ui,sans-serif;--mono:\"Azeret Mono\",ui-monospace,\"SF Mono\",Menlo,monospace;--r-vignette:10px;--r-control:6px;--ease-out:cubic-bezier(.16,1,.3,1);--ease-press:cubic-bezier(.2,.9,.25,1)} .ds-btn{display:inline-flex;align-items:center;gap:.55rem;min-height:48px;padding:.8rem 1.3rem;border-radius:var(--r-control);border:1.5px solid var(--cover);background:var(--cover);color:var(--cover-ink);font:700 1rem/1.1 var(--font);font-stretch:106%;letter-spacing:.01em;text-decoration:none;cursor:pointer;transition:background-color .2s,border-color .2s,transform .12s var(--ease-out),box-shadow .2s}.ds-btn:hover{background:var(--cover-deep);border-color:var(--cover-deep);box-shadow:0 6px 18px -10px color-mix(in srgb,var(--cover) 80%,transparent)}.ds-btn:active{transform:translateY(1px) scale(.985)}.ds-btn:focus-visible{outline:2px solid var(--violet);outline-offset:3px}"
+    },
+    {
+      "name": "Bouton au trait",
+      "kind": "button",
+      "refersTo": "button-line",
+      "description": "Action secondaire : trait d'encre, s'emplit d'encre au survol.",
+      "html": "<button class=\"ds-btn-line\" type=\"button\">M’inscrire</button>",
+      "css": ":host{--paper:#f1f2f5;--paper-hi:#fbfbfd;--paper-lo:#e5e7ee;--ink:#1d1f33;--ink-2:#464a63;--ink-3:#5d6079;--rule:#c6c9d6;--rule-soft:#dcdee6;--cover:#055a56;--cover-deep:#0d3038;--cover-ink:#f7f8f4;--cover-ink-2:#c5ddd2;--foil:#e3c886;--violet:#4335b0;--green:#1d7349;--red:#b3302a;--font:\"Archivo\",\"Archivo Fallback\",system-ui,sans-serif;--mono:\"Azeret Mono\",ui-monospace,\"SF Mono\",Menlo,monospace;--r-vignette:10px;--r-control:6px;--ease-out:cubic-bezier(.16,1,.3,1);--ease-press:cubic-bezier(.2,.9,.25,1)} .ds-btn-line{display:inline-flex;align-items:center;min-height:48px;padding:.8rem 1.3rem;border-radius:var(--r-control);border:1.5px solid var(--ink);background:transparent;color:var(--ink);font:700 1rem/1.1 var(--font);font-stretch:106%;cursor:pointer;transition:background-color .2s,color .2s,transform .12s var(--ease-out)}.ds-btn-line:hover{background:var(--ink);color:var(--paper-hi)}.ds-btn-line:active{transform:translateY(1px) scale(.985)}.ds-btn-line:focus-visible{outline:2px solid var(--violet);outline-offset:3px}"
+    },
+    {
+      "name": "Petit bouton au trait",
+      "kind": "button",
+      "refersTo": "button-sm-line",
+      "description": "Bouton de 44px « Fiche pays » sur chaque vignette.",
+      "html": "<div class=\"ds-row\"><button class=\"ds-btn ds-btn--sm ds-btn--line\" type=\"button\">Fiche pays</button></div>",
+      "css": ":host{--paper:#f1f2f5;--paper-hi:#fbfbfd;--paper-lo:#e5e7ee;--ink:#1d1f33;--ink-2:#464a63;--ink-3:#5d6079;--rule:#c6c9d6;--rule-soft:#dcdee6;--cover:#055a56;--cover-deep:#0d3038;--cover-ink:#f7f8f4;--cover-ink-2:#c5ddd2;--foil:#e3c886;--violet:#4335b0;--green:#1d7349;--red:#b3302a;--font:\"Archivo\",\"Archivo Fallback\",system-ui,sans-serif;--mono:\"Azeret Mono\",ui-monospace,\"SF Mono\",Menlo,monospace;--r-vignette:10px;--r-control:6px;--ease-out:cubic-bezier(.16,1,.3,1);--ease-press:cubic-bezier(.2,.9,.25,1)} .ds-row{display:flex;flex-wrap:wrap;gap:1rem;padding:1rem;background:var(--paper-hi)}.ds-btn{display:inline-flex;align-items:center;gap:.55rem;min-height:44px;padding:.55rem .95rem;border-radius:var(--r-control);border:1.5px solid var(--cover);background:var(--cover);color:var(--cover-ink);font:700 .9rem/1.1 var(--font);font-stretch:106%;letter-spacing:.01em;text-decoration:none;cursor:pointer;transition:background-color .2s,border-color .2s,color .2s,transform .12s var(--ease-out),box-shadow .2s}.ds-btn svg{width:15px;height:15px;flex:none}.ds-btn:hover{background:var(--cover-deep);border-color:var(--cover-deep);box-shadow:0 6px 18px -10px color-mix(in srgb,var(--cover) 80%,transparent)}.ds-btn:active{transform:translateY(1px) scale(.985)}.ds-btn:focus-visible{outline:2px solid var(--violet);outline-offset:3px;border-radius:2px}.ds-btn--line{background:transparent;color:var(--ink);border-color:var(--ink)}.ds-btn--line:hover{background:var(--ink);border-color:var(--ink);color:var(--paper-hi);box-shadow:none}"
+    },
+    {
+      "name": "Tampons d’état",
+      "kind": "custom",
+      "refersTo": "stamp-open",
+      "description": "Le langage d'état : vert ouvert, violet accès limité, rouge alerte, encre grise à vérifier, vert de couverture conseil.",
+      "html": "<div class=\"ds-row\"><span class=\"ds-stamp\" style=\"--rot:-2deg\">Ouvert</span><span class=\"ds-stamp ds-stamp--violet\" style=\"--rot:-2deg\">Sur dossier</span><span class=\"ds-stamp ds-stamp--red\" style=\"--rot:-4deg\">Actualité</span><span class=\"ds-stamp ds-stamp--ink\" style=\"--rot:-3deg\">À vérifier</span><span class=\"ds-stamp ds-stamp--cover\" style=\"--rot:-5deg\">Bon à savoir</span></div>",
+      "css": ":host{--paper:#f1f2f5;--paper-hi:#fbfbfd;--paper-lo:#e5e7ee;--ink:#1d1f33;--ink-2:#464a63;--ink-3:#5d6079;--rule:#c6c9d6;--rule-soft:#dcdee6;--cover:#055a56;--cover-deep:#0d3038;--cover-ink:#f7f8f4;--cover-ink-2:#c5ddd2;--foil:#e3c886;--violet:#4335b0;--green:#1d7349;--red:#b3302a;--font:\"Archivo\",\"Archivo Fallback\",system-ui,sans-serif;--mono:\"Azeret Mono\",ui-monospace,\"SF Mono\",Menlo,monospace;--r-vignette:10px;--r-control:6px;--ease-out:cubic-bezier(.16,1,.3,1);--ease-press:cubic-bezier(.2,.9,.25,1)} .ds-row{display:flex;flex-wrap:wrap;gap:1rem;padding:1rem;background:var(--paper-hi)}.ds-stamp{--rot:-5deg;display:inline-flex;align-items:center;padding:.4em .72em .38em;border:2.5px solid currentColor;border-radius:4px;box-shadow:inset 0 0 0 1.5px var(--paper-hi),inset 0 0 0 3px currentColor;color:var(--green);font:800 .72rem/1 var(--font);font-stretch:116%;letter-spacing:.1em;text-transform:uppercase;white-space:nowrap;transform:rotate(var(--rot));mix-blend-mode:multiply}.ds-stamp--violet{color:var(--violet)}.ds-stamp--red{color:var(--red)}.ds-stamp--ink{color:var(--ink-2)}.ds-stamp--cover{color:var(--cover)}.ds-stamp.is-pressed{animation:ds-press .42s var(--ease-press) both}@keyframes ds-press{0%{opacity:0;transform:rotate(var(--rot)) scale(1.7);filter:blur(2px)}55%{opacity:1;transform:rotate(var(--rot)) scale(.93);filter:blur(0)}100%{opacity:1;transform:rotate(var(--rot)) scale(1)}}"
+    },
+    {
+      "name": "Vignette pays",
+      "kind": "card",
+      "refersTo": "vignette",
+      "description": "Fiche visa d'un pays : nom, résumé, champs étiquetés, tampon d'accès, lien et ligne MRZ.",
+      "html": "<article class=\"ds-vig\"><div class=\"ds-vig__body\"><h4 class=\"ds-vig__name\"><a href=\"#\">Australie</a></h4><p class=\"ds-vig__sum\">Le grand classique : jobs saisonniers, road trips et grandes villes, sans tirage au sort.</p><dl class=\"ds-vig__fields\"><div><dt class=\"ds-label\">Âge</dt><dd>18 – 35 ans</dd></div><div><dt class=\"ds-label\">Accès</dt><dd><span class=\"ds-stamp\" style=\"--rot:-2deg\">Ouvert</span></dd></div></dl></div><div class=\"ds-vig__foot\"><a class=\"ds-vig__go\" href=\"#\">Lire mon guide <svg viewBox=\"0 0 16 16\" width=\"18\" height=\"18\" aria-hidden=\"true\"><path d=\"M3 8h9M8.5 4.5 12 8l-3.5 3.5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg></a></div><span class=\"ds-mrz\">V&lt;AUS&lt;&lt;PVT&lt;&lt;18&lt;35&lt;&lt;&lt;&lt;&lt;&lt;</span></article>",
+      "css": ":host{--paper:#f1f2f5;--paper-hi:#fbfbfd;--paper-lo:#e5e7ee;--ink:#1d1f33;--ink-2:#464a63;--ink-3:#5d6079;--rule:#c6c9d6;--rule-soft:#dcdee6;--cover:#055a56;--cover-deep:#0d3038;--cover-ink:#f7f8f4;--cover-ink-2:#c5ddd2;--foil:#e3c886;--violet:#4335b0;--green:#1d7349;--red:#b3302a;--font:\"Archivo\",\"Archivo Fallback\",system-ui,sans-serif;--mono:\"Azeret Mono\",ui-monospace,\"SF Mono\",Menlo,monospace;--r-vignette:10px;--r-control:6px;--ease-out:cubic-bezier(.16,1,.3,1);--ease-press:cubic-bezier(.2,.9,.25,1)} .ds-stamp{--rot:-5deg;display:inline-flex;align-items:center;padding:.4em .72em .38em;border:2.5px solid currentColor;border-radius:4px;box-shadow:inset 0 0 0 1.5px var(--paper-hi),inset 0 0 0 3px currentColor;color:var(--green);font:800 .72rem/1 var(--font);font-stretch:116%;letter-spacing:.1em;text-transform:uppercase;white-space:nowrap;transform:rotate(var(--rot));mix-blend-mode:multiply}.ds-stamp--violet{color:var(--violet)}.ds-stamp--red{color:var(--red)}.ds-stamp--ink{color:var(--ink-2)}.ds-stamp--cover{color:var(--cover)}.ds-stamp.is-pressed{animation:ds-press .42s var(--ease-press) both}@keyframes ds-press{0%{opacity:0;transform:rotate(var(--rot)) scale(1.7);filter:blur(2px)}55%{opacity:1;transform:rotate(var(--rot)) scale(.93);filter:blur(0)}100%{opacity:1;transform:rotate(var(--rot)) scale(1)}}.ds-vig{position:relative;display:flex;flex-direction:column;max-width:320px;background:var(--paper-hi);border:1px solid var(--rule);border-radius:var(--r-vignette);box-shadow:0 1px 0 var(--paper-hi) inset,0 10px 24px -18px color-mix(in srgb,var(--ink) 45%,transparent);overflow:hidden;isolation:isolate;font-family:var(--font);color:var(--ink);transition:transform .25s var(--ease-out),box-shadow .25s var(--ease-out)}.ds-vig::before{content:'';position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,color-mix(in srgb,var(--violet) 7%,transparent),transparent 42%)}.ds-vig:hover{transform:translateY(-3px);box-shadow:0 1px 0 var(--paper-hi) inset,0 18px 30px -20px color-mix(in srgb,var(--ink) 55%,transparent)}.ds-vig__body{padding:1rem 1rem 0;display:grid;gap:.9rem}.ds-vig__name{margin:0;font:800 1.55rem/1 var(--font);font-stretch:116%;letter-spacing:-.01em}.ds-vig__name a{color:inherit;text-decoration:none}.ds-vig__sum{margin:0;color:var(--ink-2);font-size:.95rem;line-height:1.5}.ds-vig__fields{display:grid;grid-template-columns:1fr 1fr;gap:.8rem 1rem;margin:0}.ds-vig__fields dd{margin:.2rem 0 0;font:600 .98rem/1.3 var(--font);font-variant-numeric:tabular-nums}.ds-label{display:block;font:650 .7rem/1.3 var(--font);font-stretch:108%;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-2)}.ds-vig__foot{padding:.5rem 1rem .7rem}.ds-vig__go{display:inline-flex;align-items:center;gap:.35rem;font:650 .9rem/1.2 var(--font);color:var(--cover);text-decoration:none}.ds-vig__go svg{width:15px;height:15px;transition:transform .2s var(--ease-out)}.ds-vig:hover .ds-vig__go svg{transform:translateX(3px)}.ds-vig__go:focus-visible{outline:2px solid var(--violet);outline-offset:3px}.ds-mrz{display:block;padding:.55rem 1rem .7rem;border-top:1px solid var(--rule-soft);font:500 .74rem/1.35 var(--mono);letter-spacing:.08em;color:var(--ink-3);white-space:nowrap;overflow:hidden}"
+    },
+    {
+      "name": "Champ de formulaire",
+      "kind": "input",
+      "refersTo": "field",
+      "description": "Champ administratif : trait fin, base d'encre de 2px, focus violet.",
+      "html": "<label class=\"ds-field\"><span class=\"ds-label\">Votre âge</span><input type=\"text\" inputmode=\"numeric\" placeholder=\"27\"></label>",
+      "css": ":host{--paper:#f1f2f5;--paper-hi:#fbfbfd;--paper-lo:#e5e7ee;--ink:#1d1f33;--ink-2:#464a63;--ink-3:#5d6079;--rule:#c6c9d6;--rule-soft:#dcdee6;--cover:#055a56;--cover-deep:#0d3038;--cover-ink:#f7f8f4;--cover-ink-2:#c5ddd2;--foil:#e3c886;--violet:#4335b0;--green:#1d7349;--red:#b3302a;--font:\"Archivo\",\"Archivo Fallback\",system-ui,sans-serif;--mono:\"Azeret Mono\",ui-monospace,\"SF Mono\",Menlo,monospace;--r-vignette:10px;--r-control:6px;--ease-out:cubic-bezier(.16,1,.3,1);--ease-press:cubic-bezier(.2,.9,.25,1)} .ds-field{display:grid;gap:.35rem;max-width:280px;font-family:var(--font)}.ds-label{font:650 .7rem/1.3 var(--font);font-stretch:108%;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-2)}.ds-field input{min-height:48px;padding:.7rem .85rem;background:var(--paper-hi);border:1.5px solid var(--rule);border-bottom:2px solid var(--ink);border-radius:var(--r-control) var(--r-control) 2px 2px;font:500 1rem/1.4 var(--font);color:var(--ink);transition:border-color .2s,box-shadow .2s}.ds-field input::placeholder{color:var(--ink-3)}.ds-field input:hover{border-color:var(--ink-3);border-bottom-color:var(--ink)}.ds-field input:focus{outline:none;border-color:var(--violet);box-shadow:0 0 0 3px color-mix(in srgb,var(--violet) 18%,transparent)}"
+    },
+    {
+      "name": "Bandeau de couverture",
+      "kind": "nav",
+      "refersTo": "cover-bar",
+      "description": "Couverture de passeport : verte, carré or à avion vert, mot-symbole deux tons, liens crème, lien « Nos astuces | Blog » en or, filet or.",
+      "html": "<header class=\"ds-cover\"><a class=\"ds-brand\" href=\"#\"><span class=\"ds-logo\" aria-hidden=\"true\"><svg viewBox=\"0 0 24 24\"><path transform=\"rotate(90 12 12)\" d=\"M12 2.5c.8 0 1.4.9 1.4 2.2v5.1l7.1 4.3v1.9l-7.1-2.1v4.6l2 1.5v1.5L12 20.6l-3.4.9V20l2-1.5v-4.6l-7.1 2.1v-1.9l7.1-4.3V4.7c0-1.3.6-2.2 1.4-2.2Z\"/></svg></span><span>PVT <em>Explorer</em></span></a><nav><a href=\"#\" aria-current=\"page\">Destinations</a><a class=\"ds-blog\" href=\"#\">Nos astuces <span aria-hidden=\"true\">|</span> Blog</a><a href=\"#\">À propos</a></nav></header>",
+      "css": ":host{--paper:#f1f2f5;--paper-hi:#fbfbfd;--paper-lo:#e5e7ee;--ink:#1d1f33;--ink-2:#464a63;--ink-3:#5d6079;--rule:#c6c9d6;--rule-soft:#dcdee6;--cover:#055a56;--cover-deep:#0d3038;--cover-ink:#f7f8f4;--cover-ink-2:#c5ddd2;--foil:#e3c886;--violet:#4335b0;--green:#1d7349;--red:#b3302a;--font:\"Archivo\",\"Archivo Fallback\",system-ui,sans-serif;--mono:\"Azeret Mono\",ui-monospace,\"SF Mono\",Menlo,monospace;--r-vignette:10px;--r-control:6px;--ease-out:cubic-bezier(.16,1,.3,1);--ease-press:cubic-bezier(.2,.9,.25,1)} .ds-cover{display:flex;align-items:center;gap:32px;min-height:64px;padding:0 24px;background:var(--cover);color:var(--cover-ink);border-bottom:2px solid color-mix(in srgb,var(--foil) 55%,transparent)}.ds-brand{display:inline-flex;align-items:center;gap:.6rem;color:var(--cover-ink);text-decoration:none;font:850 1.2rem/1 var(--font);letter-spacing:-.03em;white-space:nowrap}.ds-logo{display:grid;place-items:center;width:34px;height:34px;border-radius:10px;background:var(--foil);color:var(--cover);transition:transform .3s var(--ease-out)}.ds-logo svg{width:20px;height:20px;fill:currentColor}.ds-brand em{font-style:normal;color:var(--foil)}.ds-brand:hover .ds-logo{transform:rotate(-8deg)}.ds-cover nav{display:flex;gap:24px;margin-left:auto}.ds-cover nav a{color:var(--cover-ink);text-decoration:none;font:600 .92rem/1 var(--font);font-stretch:104%;padding:.55rem 0;border-bottom:1.5px solid transparent;transition:border-color .2s var(--ease-out),color .2s}.ds-cover nav a:hover,.ds-cover nav a[aria-current=page]{color:#fff;border-bottom-color:var(--foil)}.ds-cover a:focus-visible{outline:2px solid var(--foil);outline-offset:3px}.ds-cover nav a.ds-blog{color:var(--foil);font-weight:700}.ds-cover nav a.ds-blog span{opacity:.55;font-weight:400;margin-inline:.15em}.ds-cover nav a.ds-blog:hover{color:#eed79f;border-bottom-color:var(--foil)}"
+    },
+    {
+      "name": "Puces de filtre",
+      "kind": "chip",
+      "refersTo": "chip",
+      "description": "Filtres de l’index des guides ; la puce active est pleine verte.",
+      "html": "<ul class=\"ds-chips\"><li><a class=\"ds-chip\" href=\"#\" aria-current=\"true\">Tous</a></li><li><a class=\"ds-chip\" href=\"#\">Australie</a></li><li><a class=\"ds-chip\" href=\"#\">Canada</a></li></ul>",
+      "css": ":host{--paper:#f1f2f5;--paper-hi:#fbfbfd;--paper-lo:#e5e7ee;--ink:#1d1f33;--ink-2:#464a63;--ink-3:#5d6079;--rule:#c6c9d6;--rule-soft:#dcdee6;--cover:#055a56;--cover-deep:#0d3038;--cover-ink:#f7f8f4;--cover-ink-2:#c5ddd2;--foil:#e3c886;--violet:#4335b0;--green:#1d7349;--red:#b3302a;--font:\"Archivo\",\"Archivo Fallback\",system-ui,sans-serif;--mono:\"Azeret Mono\",ui-monospace,\"SF Mono\",Menlo,monospace;--r-vignette:10px;--r-control:6px;--ease-out:cubic-bezier(.16,1,.3,1);--ease-press:cubic-bezier(.2,.9,.25,1)} .ds-chips{display:flex;flex-wrap:wrap;gap:.45rem;margin:0;padding:0;list-style:none}.ds-chip{display:inline-flex;align-items:center;min-height:40px;padding:.4rem .85rem;border:1.5px solid var(--rule);border-radius:999px;background:var(--paper-hi);color:var(--ink);font:600 .9rem/1 var(--font);text-decoration:none;transition:border-color .2s,background-color .2s}.ds-chip:hover{border-color:var(--ink)}.ds-chip[aria-current]{border-color:var(--cover);background:var(--cover);color:var(--cover-ink)}.ds-chip:focus-visible{outline:2px solid var(--violet);outline-offset:3px}"
+    },
+    {
+      "name": "Encadré tamponné",
+      "kind": "card",
+      "refersTo": "stamp-cover",
+      "description": "Note d'article : encre de la note en bordure et en voile, tampon à cheval sur le bord.",
+      "html": "<div class=\"ds-note\" role=\"note\"><span class=\"ds-stamp ds-stamp--cover\" style=\"--rot:-5deg\">Bon à savoir</span><p>Gardez une copie numérique de votre grant letter : on vous la demandera à l’embauche.</p></div>",
+      "css": ":host{--paper:#f1f2f5;--paper-hi:#fbfbfd;--paper-lo:#e5e7ee;--ink:#1d1f33;--ink-2:#464a63;--ink-3:#5d6079;--rule:#c6c9d6;--rule-soft:#dcdee6;--cover:#055a56;--cover-deep:#0d3038;--cover-ink:#f7f8f4;--cover-ink-2:#c5ddd2;--foil:#e3c886;--violet:#4335b0;--green:#1d7349;--red:#b3302a;--font:\"Archivo\",\"Archivo Fallback\",system-ui,sans-serif;--mono:\"Azeret Mono\",ui-monospace,\"SF Mono\",Menlo,monospace;--r-vignette:10px;--r-control:6px;--ease-out:cubic-bezier(.16,1,.3,1);--ease-press:cubic-bezier(.2,.9,.25,1)} .ds-stamp{--rot:-5deg;display:inline-flex;align-items:center;padding:.4em .72em .38em;border:2.5px solid currentColor;border-radius:4px;box-shadow:inset 0 0 0 1.5px var(--paper-hi),inset 0 0 0 3px currentColor;color:var(--green);font:800 .72rem/1 var(--font);font-stretch:116%;letter-spacing:.1em;text-transform:uppercase;white-space:nowrap;transform:rotate(var(--rot));mix-blend-mode:multiply}.ds-stamp--violet{color:var(--violet)}.ds-stamp--red{color:var(--red)}.ds-stamp--ink{color:var(--ink-2)}.ds-stamp--cover{color:var(--cover)}.ds-stamp.is-pressed{animation:ds-press .42s var(--ease-press) both}@keyframes ds-press{0%{opacity:0;transform:rotate(var(--rot)) scale(1.7);filter:blur(2px)}55%{opacity:1;transform:rotate(var(--rot)) scale(.93);filter:blur(0)}100%{opacity:1;transform:rotate(var(--rot)) scale(1)}}.ds-note{--tone:var(--cover);position:relative;max-width:62ch;margin-top:1.5rem;padding:1.5rem 1.25rem 1.1rem;border:1.5px solid color-mix(in srgb,var(--tone) 55%,transparent);border-radius:var(--r-vignette);background:color-mix(in srgb,var(--tone) 5%,var(--paper-hi));font:400 1.04rem/1.62 var(--font);color:var(--ink)}.ds-note>.ds-stamp{position:absolute;top:0;left:1rem;translate:0 -55%;background:var(--paper-hi)}.ds-note p{margin:0}"
+    },
+    {
+      "name": "Carte de service",
+      "kind": "card",
+      "refersTo": "service-card",
+      "description": "Carte de couverture verte, 20px, trame or, titre en capitales, dessin or hachuré, pilule or courte.",
+      "html": "<article class=\"ds-service\"><h4 class=\"ds-service__titre\">Assurance PVT</h4><svg class=\"ds-service__dessin\" viewBox=\"0 0 96 96\" aria-hidden=\"true\"><defs><pattern id=\"ds-hachure-or\" width=\"4\" height=\"4\" patternUnits=\"userSpaceOnUse\" patternTransform=\"rotate(-45)\"><path d=\"M0 0V4\" stroke=\"#e3c886\" stroke-width=\"1.1\" stroke-opacity=\".7\"/></pattern></defs><path class=\"w\" d=\"M48 12 76 22v22c0 18-12 32-28 40-16-8-28-22-28-40V22Z\"/><path d=\"M48 34v24M36 46h24\"/></svg><p class=\"ds-service__texte\">Soins, hospitalisation, rapatriement : comparez les plafonds et les exclusions.</p><a class=\"ds-service__btn\" href=\"#\">Comparer <svg viewBox=\"0 0 16 16\" aria-hidden=\"true\"><path d=\"M6 3.5 10.5 8 6 12.5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg></a></article>",
+      "css": ":host{--paper:#f1f2f5;--paper-hi:#fbfbfd;--paper-lo:#e5e7ee;--ink:#1d1f33;--ink-2:#464a63;--ink-3:#5d6079;--rule:#c6c9d6;--rule-soft:#dcdee6;--cover:#055a56;--cover-deep:#0d3038;--cover-ink:#f7f8f4;--cover-ink-2:#c5ddd2;--foil:#e3c886;--violet:#4335b0;--green:#1d7349;--red:#b3302a;--font:\"Archivo\",\"Archivo Fallback\",system-ui,sans-serif;--mono:\"Azeret Mono\",ui-monospace,\"SF Mono\",Menlo,monospace;--r-vignette:10px;--r-control:6px;--ease-out:cubic-bezier(.16,1,.3,1);--ease-press:cubic-bezier(.2,.9,.25,1)} .ds-service{display:flex;flex-direction:column;align-items:center;gap:1.1rem;width:290px;min-height:440px;padding:2.2rem 1.5rem 1.9rem;border-radius:20px;background:var(--cover);color:var(--cover-ink);text-align:center;font-family:var(--font);box-shadow:0 22px 40px -26px color-mix(in srgb,var(--cover-deep) 90%,transparent);transition:transform .3s var(--ease-out)}.ds-service:hover{transform:translateY(-4px)}.ds-service__titre{margin:0;font:800 1.55rem/1.05 var(--font);font-stretch:125%;letter-spacing:.02em;text-transform:uppercase}.ds-service__dessin{width:150px;height:150px;fill:none;stroke:var(--foil);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;transition:transform .4s var(--ease-out)}.ds-service__dessin .w{fill:url(#ds-hachure-or)}.ds-service:hover .ds-service__dessin{transform:rotate(-5deg) scale(1.04)}.ds-service__texte{margin:0;max-width:26ch;font-size:.95rem;line-height:1.45;color:var(--cover-ink-2)}.ds-service__btn{margin-top:auto;display:inline-flex;align-items:center;gap:.7rem;min-height:48px;padding:.7rem 1.1rem .7rem 1.35rem;border-radius:999px;background:var(--foil);color:var(--cover-deep);font:700 1rem/1 var(--font);text-decoration:none;white-space:nowrap;box-shadow:0 10px 20px -12px rgb(0 0 0 / .5);transition:background-color .2s,gap .2s var(--ease-out),transform .12s var(--ease-out)}.ds-service__btn svg{width:16px;height:16px}.ds-service__btn:hover{background:#eed79f;gap:.95rem}.ds-service__btn:active{transform:scale(.97)}.ds-service__btn:focus-visible{outline:2px solid var(--cover-ink);outline-offset:3px}"
+    },
+    {
+      "name": "Carte « Dans le sac »",
+      "kind": "card",
+      "refersTo": "objet-card",
+      "description": "Variante claire des cartes de services : papier tramé violet, 20px, médaillon à double cerne, dessin vert hachuré, titre en capitales, pilule au trait.",
+      "html": "<article class=\"ds-objet\"><span class=\"ds-objet__planche\"><svg class=\"ds-objet__dessin\" viewBox=\"0 0 96 96\" aria-hidden=\"true\"><defs><pattern id=\"ds-hachure\" width=\"4\" height=\"4\" patternUnits=\"userSpaceOnUse\" patternTransform=\"rotate(45)\"><path d=\"M0 0V4\" stroke=\"#055a56\" stroke-width=\"1.3\" stroke-opacity=\".72\"/></pattern></defs><path class=\"w\" d=\"M28 34c0-12 8-18 20-18s20 6 20 18v44c0 4-2 6-6 6H34c-4 0-6-2-6-6Z\"/><path d=\"M28 42c8 6 32 6 40 0\"/><rect x=\"36\" y=\"56\" width=\"24\" height=\"18\" rx=\"3\"/><path d=\"M42 16c0-6 12-6 12 0M36 62h24\"/></svg></span><h4 class=\"ds-objet__titre\">Sac à dos de voyage</h4><p class=\"ds-objet__texte\">Robuste et au format cabine.</p><a class=\"ds-objet__btn\" href=\"#\">Voir sur Amazon <svg viewBox=\"0 0 16 16\" aria-hidden=\"true\"><path d=\"M6 3.5 10.5 8 6 12.5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg></a></article>",
+      "css": ":host{--paper:#f1f2f5;--paper-hi:#fbfbfd;--paper-lo:#e5e7ee;--ink:#1d1f33;--ink-2:#464a63;--ink-3:#5d6079;--rule:#c6c9d6;--rule-soft:#dcdee6;--cover:#055a56;--cover-deep:#0d3038;--cover-ink:#f7f8f4;--cover-ink-2:#c5ddd2;--foil:#e3c886;--violet:#4335b0;--green:#1d7349;--red:#b3302a;--font:\"Archivo\",\"Archivo Fallback\",system-ui,sans-serif;--mono:\"Azeret Mono\",ui-monospace,\"SF Mono\",Menlo,monospace;--r-vignette:10px;--r-control:6px;--ease-out:cubic-bezier(.16,1,.3,1);--ease-press:cubic-bezier(.2,.9,.25,1)} .ds-objet{position:relative;isolation:isolate;display:flex;flex-direction:column;align-items:center;gap:.7rem;width:250px;min-height:400px;padding:1.4rem 1.3rem 1.6rem;overflow:hidden;border:1.5px solid color-mix(in srgb,var(--cover) 30%,var(--rule));border-radius:20px;background:var(--paper-hi);text-align:center;font-family:var(--font);transition:transform .3s var(--ease-out),border-color .3s}.ds-objet:hover{transform:translateY(-4px);border-color:var(--cover)}.ds-objet__planche{display:grid;place-items:center;width:150px;height:150px;margin-bottom:.3rem;border-radius:50%;background:var(--paper-hi);box-shadow:0 0 0 1.5px color-mix(in srgb,var(--cover) 22%,transparent),0 0 0 8px var(--paper-hi),0 0 0 9.5px color-mix(in srgb,var(--cover) 14%,transparent)}.ds-objet__dessin{width:104px;height:104px;fill:none;stroke:var(--cover);stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:transform .4s var(--ease-out)}.ds-objet__dessin .w{fill:url(#ds-hachure)}.ds-objet:hover .ds-objet__dessin{transform:rotate(-6deg) scale(1.05)}.ds-objet__titre{margin:0;font:800 1.12rem/1.15 var(--font);font-stretch:118%;letter-spacing:.01em;text-transform:uppercase;color:var(--cover)}.ds-objet__texte{flex:1;margin:0;max-width:24ch;font-size:.92rem;line-height:1.45;color:var(--ink-2)}.ds-objet__btn{display:inline-flex;align-items:center;gap:.6rem;min-height:46px;padding:.6rem 1rem .6rem 1.2rem;border:1.5px solid var(--cover);border-radius:999px;color:var(--cover);font:700 .95rem/1 var(--font);text-decoration:none;white-space:nowrap;transition:background-color .2s,color .2s,gap .2s var(--ease-out),transform .12s var(--ease-out)}.ds-objet__btn svg{width:15px;height:15px}.ds-objet__btn:hover{background:var(--cover);color:var(--cover-ink);gap:.85rem}.ds-objet__btn:active{transform:scale(.97)}.ds-objet__btn:focus-visible{outline:2px solid var(--violet);outline-offset:3px}"
+    },
+    {
+      "name": "Bande du comparateur",
+      "kind": "custom",
+      "refersTo": "band",
+      "description": "Section pleine largeur en vert, filets guillochés or en haut et en bas, registre en papier clair à ombre noire.",
+      "html": "<section class=\"ds-band\"><h2 class=\"ds-band__h\">Comparer les PVT en un coup d’œil</h2><div class=\"ds-reg\"><table><thead><tr><th>Pays</th><th>Âge</th><th>Durée</th></tr></thead><tbody><tr><td>Australie</td><td class=\"num\">18–35</td><td class=\"num\">12 mois</td></tr><tr><td>Canada</td><td class=\"num\">18–35</td><td class=\"num\">24 mois</td></tr></tbody></table></div></section>",
+      "css": ":host{--paper:#f1f2f5;--paper-hi:#fbfbfd;--paper-lo:#e5e7ee;--ink:#1d1f33;--ink-2:#464a63;--ink-3:#5d6079;--rule:#c6c9d6;--rule-soft:#dcdee6;--cover:#055a56;--cover-deep:#0d3038;--cover-ink:#f7f8f4;--cover-ink-2:#c5ddd2;--foil:#e3c886;--violet:#4335b0;--green:#1d7349;--red:#b3302a;--font:\"Archivo\",\"Archivo Fallback\",system-ui,sans-serif;--mono:\"Azeret Mono\",ui-monospace,\"SF Mono\",Menlo,monospace;--r-vignette:10px;--r-control:6px;--ease-out:cubic-bezier(.16,1,.3,1);--ease-press:cubic-bezier(.2,.9,.25,1)} .ds-band{position:relative;padding:56px 24px;background:var(--cover);color:var(--cover-ink);font-family:var(--font)}.ds-band::before,.ds-band::after{content:\"\";position:absolute;left:0;right:0;height:3px;border-block:1px solid color-mix(in srgb,var(--foil) 45%,transparent)}.ds-band::before{top:14px}.ds-band::after{bottom:14px}.ds-band__h{margin:0 0 1.25rem;font:780 1.85rem/1.02 var(--font);font-stretch:114%;letter-spacing:-.02em;color:var(--cover-ink)}.ds-reg{background:var(--paper-hi);color:var(--ink);border-radius:var(--r-vignette);box-shadow:0 28px 50px -30px rgb(0 0 0 / .6);overflow:hidden}.ds-reg table{width:100%;border-collapse:collapse;font-size:.95rem}.ds-reg th{font:650 .7rem/1.25 var(--font);font-stretch:108%;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-2);text-align:left;padding:.85rem 1rem;border-bottom:2px solid var(--ink)}.ds-reg td{padding:.8rem 1rem;border-bottom:1px solid var(--rule-soft)}.ds-reg td:first-child{font-weight:650}.ds-reg td.num{font-variant-numeric:tabular-nums}.ds-reg tbody tr:hover td{background:color-mix(in srgb,var(--violet) 4%,var(--paper-hi))}"
+    },
+    {
+      "name": "Carte d'article",
+      "kind": "card",
+      "refersTo": "article-card",
+      "description": "Carte du carrousel « Nos articles » : pilule pays à puce ISO or, titre complet, trois lignes, image 16/10 et pilule « Découvrir ».",
+      "html": "<a class=\"ds-carte\" href=\"#\"><span class=\"ds-pays\"><span class=\"ds-iso\">AUS</span> Australie</span><span class=\"ds-carte__titre\">PVT Australie 2027 : le guide complet pour obtenir votre visa</span><span class=\"ds-carte__texte\">Conditions, prix, budget, ImmiAccount, 88 jours : je vous guide pas à pas pour obtenir votre PVT Australie.</span><span class=\"ds-carte__image\"><span class=\"ds-cta\">Découvrir <svg viewBox=\"0 0 16 16\" aria-hidden=\"true\"><path d=\"M3 8h9M8.5 4.5 12 8l-3.5 3.5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg></span></span></a>",
+      "css": ":host{--paper:#f1f2f5;--paper-hi:#fbfbfd;--paper-lo:#e5e7ee;--ink:#1d1f33;--ink-2:#464a63;--ink-3:#5d6079;--rule:#c6c9d6;--rule-soft:#dcdee6;--cover:#055a56;--cover-deep:#0d3038;--cover-ink:#f7f8f4;--cover-ink-2:#c5ddd2;--foil:#e3c886;--violet:#4335b0;--green:#1d7349;--red:#b3302a;--font:\"Archivo\",\"Archivo Fallback\",system-ui,sans-serif;--mono:\"Azeret Mono\",ui-monospace,\"SF Mono\",Menlo,monospace;--r-vignette:10px;--r-control:6px;--ease-out:cubic-bezier(.16,1,.3,1);--ease-press:cubic-bezier(.2,.9,.25,1)} .ds-carte{display:flex;flex-direction:column;width:320px;overflow:hidden;background:var(--paper-hi);color:var(--ink);text-decoration:none;border:1px solid var(--rule);border-radius:var(--r-vignette);font-family:var(--font);box-shadow:0 12px 26px -20px color-mix(in srgb,var(--ink) 50%,transparent);transition:transform .3s var(--ease-out),box-shadow .3s var(--ease-out)}.ds-carte:hover{transform:translateY(-4px);box-shadow:0 22px 34px -22px color-mix(in srgb,var(--ink) 60%,transparent)}.ds-carte:focus-visible{outline:2px solid var(--violet);outline-offset:3px}.ds-pays{align-self:flex-start;display:inline-flex;align-items:center;gap:.45rem;margin:1.25rem 1.25rem 0;padding:.3rem .8rem .3rem .3rem;border-radius:999px;background:var(--cover);color:var(--cover-ink);font:700 .9rem/1 var(--font)}.ds-iso{padding:.28rem .45rem;border-radius:999px;background:var(--foil);color:var(--cover);font:600 .72rem/1 var(--mono)}.ds-carte__titre{margin:.9rem 1.25rem 0;font:780 1.2rem/1.3 var(--font);font-stretch:106%}.ds-carte__texte{display:-webkit-box;margin:.6rem 1.25rem 1.25rem;overflow:hidden;-webkit-line-clamp:3;-webkit-box-orient:vertical;font-size:.95rem;line-height:1.5;color:var(--ink-2)}.ds-carte__image{position:relative;display:block;aspect-ratio:16/10;background:var(--paper-lo)}.ds-cta{position:absolute;left:50%;top:50%;translate:-50% -50%;display:inline-flex;align-items:center;gap:.6rem;padding:.45rem .5rem .45rem 1.1rem;border-radius:999px;background:var(--paper-hi);color:var(--cover);font:700 1rem/1 var(--font);white-space:nowrap;box-shadow:0 12px 26px -12px rgb(0 0 0 / .55);transition:gap .2s var(--ease-out)}.ds-cta svg{width:30px;height:30px;padding:7px;border-radius:50%;background:var(--cover);color:var(--cover-ink)}.ds-carte:hover .ds-cta{gap:.85rem}"
+    },
+    {
+      "name": "Menu « Nos astuces | Blog »",
+      "kind": "nav",
+      "refersTo": "nav-dropdown",
+      "description": "Panneau papier clair suspendu au bandeau, cerné d’un filet de règle : colonnes « Par pays » / « Par thème », « Tous les articles ».",
+      "html": "<div class=\"ds-sous\"><div><p class=\"ds-sous__t\">Par pays</p><a href=\"#\">Australie</a><a href=\"#\">Canada</a><a href=\"#\">Japon</a></div><div><p class=\"ds-sous__t\">Par thème</p><a href=\"#\">Visa</a><a href=\"#\">Budget</a><a href=\"#\">Travail</a></div><a class=\"ds-tous\" href=\"#\">Tous les articles</a></div>",
+      "css": ":host{--paper:#f1f2f5;--paper-hi:#fbfbfd;--paper-lo:#e5e7ee;--ink:#1d1f33;--ink-2:#464a63;--ink-3:#5d6079;--rule:#c6c9d6;--rule-soft:#dcdee6;--cover:#055a56;--cover-deep:#0d3038;--cover-ink:#f7f8f4;--cover-ink-2:#c5ddd2;--foil:#e3c886;--violet:#4335b0;--green:#1d7349;--red:#b3302a;--font:\"Archivo\",\"Archivo Fallback\",system-ui,sans-serif;--mono:\"Azeret Mono\",ui-monospace,\"SF Mono\",Menlo,monospace;--r-vignette:10px;--r-control:6px;--ease-out:cubic-bezier(.16,1,.3,1);--ease-press:cubic-bezier(.2,.9,.25,1)} .ds-sous{display:grid;grid-template-columns:1fr 1fr;gap:.4rem 2.2rem;width:380px;padding:1.1rem 1.3rem 1rem;background:var(--paper-hi);color:var(--ink);border:1px solid var(--rule);border-radius:var(--r-vignette);font-family:var(--font);box-shadow:0 24px 44px -22px rgb(0 0 0 / .5)}.ds-sous__t{margin:0 0 .35rem;font:650 .7rem/1.3 var(--font);font-stretch:108%;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-2)}.ds-sous a{display:block;padding:.4rem 0;color:var(--ink);font-weight:550;text-decoration:none;font-size:.92rem}.ds-sous a:hover{color:var(--cover)}.ds-sous a:focus-visible{outline:2px solid var(--violet);outline-offset:3px}.ds-sous .ds-tous{grid-column:1 / -1;margin-top:.4rem;padding-top:.7rem;border-top:1px solid var(--rule-soft);color:var(--cover);font-weight:700}"
+    }
+  ],
+  "narrative": {
+    "northStar": "Le Visa",
+    "overview": "Le site entier est un passeport qu'on feuillette. La couverture verte dorée à chaud ouvre et ferme chaque page (bandeau en haut, dos de couverture en pied) ; entre les deux, les pages intérieures sont en papier de sécurité froid, bordé d'un guilloché fin. Sur l'accueil, la couverture se prolonge jusqu'à l'actualité : un frontispice vert tramé d'un guilloché or très pâle, fermé par un bord guilloché or, qui porte le titre, le formulaire d'éligibilité et l'actualité ; plus bas, des cartes de services en vert et dessins dorés reprennent la même matière. Chaque destination est une vignette visa blanche à rosace guillochée propre à son pays, avec des champs étiquetés (en français, doublés de l'anglais en italique comme sur un vrai visa) et une ligne MRZ en chasse fixe ; elle s'ouvre en fiche pays, une page de visa posée au-dessus du site. L'état ne se dit pas avec une pastille ou une couleur de fond : il se tamponne, à l'encre, légèrement de travers.\n\nLa densité est celle d'un document administratif bien tenu : beaucoup de données exactes (âge, durée, budget, accès), alignées en chiffres tabulaires, rangées dans des registres et des fiches. Le monde possède le cadre, jamais le texte : les surfaces de lecture (articles, pages légales) gardent une colonne calme de 62ch, des intertitres simples et une encre neutre ; le passeport habille autour.\n\nRejets confirmés par le build : la grande photo de paysage plein écran, le titre centré sur image, la grille de cartes à drapeaux emoji. Le monde emprunte au passeport sans jamais emprunter à l'État : ni Marianne, ni tricolore, ni « République française ».",
+    "keyCharacteristics": [
+      "Couverture verte et or en tête et en pied, papier de sécurité au milieu ; sur l'accueil, un frontispice vert, une bande verte pour le comparateur et des cartes de services vertes.",
+      "Marque : un carré or aux angles doux portant un avion vert, et un mot-symbole « PVT Explorer » en deux tons.",
+      "Guilloché généré (bande et rosaces) et hachures fines comme seule ornementation.",
+      "Tampons d'encre comme unique langage d'état, avec une grammaire de couleurs fixe.",
+      "Grotesque variable très large pour les titres, mono pour les données et la MRZ.",
+      "Colonne de lecture calme à 62ch, sans ornement dans le texte.",
+      "Polices auto-hébergées, aucune requête vers un service de polices."
+    ],
+    "rules": [
+      {
+        "name": "La règle des encres d'état",
+        "body": "L'état se dit avec un tampon, et chaque encre a un sens fixe : vert = ouvert, éligible, fait, envoyé, inscrit ; violet = accès limité (sur invitation, sur dossier, sous quota) ; rouge = alerte, actualité, hors limite, refus ; encre grise (ink-2) = à vérifier ou neutre, comme « Mis à jour · date » ou « À noter » ; vert de couverture = conseil et point clé (« Bon à savoir », « À retenir »). Une encre ne change jamais de sens d'une page à l'autre.",
+        "section": "colors"
+      },
+      {
+        "name": "La règle de l'or sur couverture",
+        "body": "L'or ne quitte pas le vert (bandeau, frontispice, bande du comparateur, cartes de services, pilule pays, pied). Sur le papier, la marque parle en vert et l'impression de sécurité en violet. Aucune exception : le menu déroulant, en papier, porte un simple filet de règle.",
+        "section": "colors"
+      },
+      {
+        "name": "La règle de l'encre à dose",
+        "body": "Le violet et les encres d'état passent en teinte légère (4 à 12 % via color-mix ou opacité) quand ils deviennent surface ; ils ne servent jamais de fond plein. L'or en trame ne dépasse pas 6 %. Le vert, qui est la couverture et non une encre, ne s'emploie en plein que pour les surfaces de couverture (bandeau, frontispice, bande du comparateur, cartes de services, pied), les boutons, la pilule pays et la puce active.",
+        "section": "colors"
+      },
+      {
+        "name": "La règle de la chasse",
+        "body": "La largeur dit le rang : plus un titre est haut dans la hiérarchie, plus il est étiré (118 % pour le display, 104 % pour un titre de bloc). Le texte courant reste à 100 %. Seul le titre en capitales des cartes de services va jusqu'à 125 %, la chasse maximale de la police, comme une capitale gravée sur couverture.",
+        "section": "typography"
+      },
+      {
+        "name": "La règle de la donnée en mono",
+        "body": "Un code pays, un compteur, une date technique ou une ligne MRZ passent en Azeret Mono ; une phrase, jamais. Les valeurs des champs de vignette (âge, durée, budget) restent en Archivo 600 à chiffres tabulaires : ce sont des valeurs lues, pas du code.",
+        "section": "typography"
+      },
+      {
+        "name": "La règle du pas existant",
+        "body": "Une nouvelle surface prend la valeur d'un rôle de la rampe ; elle n'invente pas un 0.87rem entre deux pas.",
+        "section": "typography"
+      },
+      {
+        "name": "La règle de la typographie française",
+        "body": "Espace fine insécable avant ? ! : ; et à l'intérieur des guillemets « », apostrophe typographique, appliquées au rendu (scripts/typo-fr.js côté serveur). La voix est « je » et « vous », partout.",
+        "section": "typography"
+      },
+      {
+        "name": "La règle de la colonne calme",
+        "body": "Une surface de lecture garde le texte dans 62ch, sans tampon décoratif, sans guilloché, sans couleur d'état dans le corps : le monde habille le cadre (bandeau, bord de page, encadrés, pied), pas le texte. Seuls les encadrés de notes et la checklist portent un tampon, parce qu'ils portent un état.",
+        "section": "layout"
+      },
+      {
+        "name": "La règle de la fiche posée",
+        "body": "Sur le papier, une seule ombre au repos, toujours négative en étalement et teintée d'encre ; elle grandit au survol, rien d'autre ne s'élève. L'ombre noire, plus profonde, est réservée à ce qui se pose sur le vert, sur une photo ou au-dessus du site ; elle ne tombe jamais d'une carte posée sur le papier.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "**Do** dire chaque état avec un tampon et la bonne encre : vert ouvert/fait, violet accès limité, rouge alerte/hors limite, encre grise à vérifier, vert de couverture conseil.",
+      "**Do** garder la couverture verte et or en tête et en pied de chaque page, et le papier de sécurité entre les deux ; une surface verte en pleine page (frontispice, bande du comparateur) se borde d'un filet guilloché or.",
+      "**Do** prendre la taille d'un rôle de la rampe (meta 0.78, caption 0.84, body xs 0.9, body sm 0.95, body 1.0625rem…) plutôt qu'un pas intermédiaire.",
+      "**Do** illustrer une carte de service par un dessin or à hachure or sur le vert, et une carte « Dans le sac » par un dessin vert à hachure verte sur un médaillon de papier ; conclure chacune par une vraie pilule (or ou au trait).",
+      "**Do** emplir les formes marquées d'un dessin avec les hachures partagées (`#hachure`, `#hachure-or`) plutôt qu'avec un aplat ou un dégradé.",
+      "**Do** doubler en anglais, en italique après un point médian, les étiquettes des champs d'un visa (vignette, fiche, formulaire).",
+      "**Do** tenir toute surface de lecture dans une colonne de 62ch, sans ornement dans le texte.",
+      "**Do** écrire les données (codes ISO, compteurs, MRZ) en Azeret Mono avec chiffres tabulaires.",
+      "**Do** générer le guilloché et les rosaces (scripts/gen-guilloche.js, public/js/visa.js) plutôt que d'importer un motif.",
+      "**Do** dessiner les icônes en SVG inline au trait de 1.5 à 1.6px en currentColor, et les chevrons en bordure CSS.",
+      "**Do** servir Archivo et Azeret Mono depuis public/fonts, avec le repli métrique Archivo Fallback.",
+      "**Do** écrire en « je » et « vous », avec espaces fines insécables avant ? ! : ; et dans les guillemets « ».",
+      "**Do** respecter « prefers-reduced-motion » : tampons, survols et dépliages tombent à 0.01ms."
+    ],
+    "donts": [
+      "**Don't** poser d'étiquette en capitales ou de surtitre au-dessus d'un titre : l'étiquette en capitales nomme un champ de donnée, jamais une section.",
+      "**Don't** utiliser d'emoji comme icône, ni de drapeaux emoji pour les pays : un pays se reconnaît à son nom, son code ISO et sa rosace.",
+      "**Don't** ouvrir une page sur une grande photo de paysage plein écran avec un titre centré.",
+      "**Don't** emprunter les symboles de l'État : ni Marianne, ni tricolore, ni « République française ».",
+      "**Don't** utiliser l'or sur le papier, ni le violet ou les encres d'état en fond plein.",
+      "**Don't** poser de dégradé pastel ou de fond de visa teinté en haut de page : le haut de l'accueil est la couverture verte.",
+      "**Don't** reprendre l'angle de 20px ou la pilule hors des cartes de « Avant de partir » (services et « Dans le sac »), des puces de filtre et des pilules des cartes d'articles.",
+      "**Don't** changer le sens d'une encre (un vert qui signifierait « à vérifier », un rouge décoratif).",
+      "**Don't** charger de polices depuis un service externe.",
+      "**Don't** écrire « notre équipe » ni passer au tutoiement."
+    ]
+  }
+}

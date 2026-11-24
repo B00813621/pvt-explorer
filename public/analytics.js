@@ -37,18 +37,19 @@
     });
   }
 
-  var css = '#pvt-consent{position:fixed;left:16px;right:16px;bottom:16px;z-index:9999;max-width:560px;margin:0 auto;background:#fff;color:#102b36;border:1px solid #e4eae6;border-radius:16px;box-shadow:0 14px 40px rgba(16,43,54,.18);padding:16px 18px;font:14px/1.5 Inter,system-ui,sans-serif}' +
-    '#pvt-consent p{margin:0 0 12px}#pvt-consent a{color:#087e79;font-weight:600;text-decoration:underline}' +
-    '#pvt-consent .row{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}' +
-    '#pvt-consent button{border:1px solid #087e79;border-radius:999px;padding:8px 16px;font:600 13px Inter,system-ui,sans-serif;cursor:pointer;background:#fff;color:#087e79}' +
-    '#pvt-consent button.ok{background:#087e79;color:#fff}';
+  var css = '#pvt-consent{position:fixed;left:16px;right:16px;bottom:16px;z-index:90;max-width:560px;margin:0 auto;background:#fbfbfd;color:#1d1f33;border:1px solid #c6c9d6;border-top:3px solid #055a56;border-radius:10px;box-shadow:0 18px 40px -18px rgba(29,31,51,.45);padding:18px 20px;font:400 15px/1.5 Archivo,system-ui,sans-serif}' +
+    '#pvt-consent p{margin:0 0 14px}#pvt-consent a{color:#055a56;font-weight:600;text-decoration:underline;text-underline-offset:.2em}' +
+    '#pvt-consent .row{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}' +
+    '#pvt-consent button{min-height:44px;border:1.5px solid #1d1f33;border-radius:6px;padding:9px 18px;font:700 14px/1 Archivo,system-ui,sans-serif;cursor:pointer;background:transparent;color:#1d1f33}' +
+    '#pvt-consent button.ok{background:#055a56;border-color:#055a56;color:#f7f8f4}' +
+    '#pvt-consent button:focus-visible{outline:2px solid #4335b0;outline-offset:3px}';
 
   function banner() {
     if (document.getElementById('pvt-consent')) return;
     var st = document.createElement('style'); st.textContent = css; document.head.appendChild(st);
     var b = document.createElement('div');
     b.id = 'pvt-consent'; b.setAttribute('role', 'dialog'); b.setAttribute('aria-label', 'Gestion des cookies');
-    b.innerHTML = '<p>🍪 J\'utilise Google Analytics pour mesurer l\'audience du site et l\'améliorer. Ces cookies ne sont déposés qu\'avec votre accord. <a href="/confidentialite.html">En savoir plus</a></p>' +
+    b.innerHTML = '<p>J\'utilise Google Analytics pour mesurer l\'audience du site et l\'améliorer. Ces cookies ne sont déposés qu\'avec votre accord. <a href="/confidentialite.html">En savoir plus</a></p>' +
       '<div class="row"><button type="button" data-c="0">Refuser</button><button type="button" class="ok" data-c="1">Accepter</button></div>';
     b.addEventListener('click', function (e) {
       var c = e.target && e.target.getAttribute('data-c');

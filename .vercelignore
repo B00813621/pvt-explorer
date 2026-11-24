@@ -1,6 +1,10 @@
-server.js
-Dockerfile
-docker-compose.yml
-data/
-README.txt
-/package.json
+# Fichiers de travail d’autres outils, jamais déployés
+public/.taste-skill/
+public/assets/
+public/images/photo-f*
+public/images/credits.json
+.impeccable/
+.taste-skill/
+.agents/
+.claude/
+skills-lock.json
