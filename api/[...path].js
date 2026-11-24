@@ -82,6 +82,53 @@ async function blobDelete(urls) {
   } catch {}
 }
 
+// ---- Stockage : Vercel Blob en ligne ; fichiers locaux (data/stockage/) en développement ----
+// En local, l'admin peut ainsi être testé sans jamais écrire dans les données du site en ligne.
+const LOCAL_STORE = process.env.VERCEL ? '' : path.join(process.cwd(), 'data', 'stockage');
+async function lireDonnees(chemin, defaut) {
+  if (blobToken()) { const raw = await blobGet(chemin); return raw ? JSON.parse(raw) : defaut; }
+  if (LOCAL_STORE) {
+    try { return JSON.parse(fs.readFileSync(path.join(LOCAL_STORE, chemin), 'utf8')); } catch { return defaut; }
+  }
+  return defaut;
+}
+async function ecrireDonnees(chemin, obj) {
+  if (blobToken()) return blobPut(chemin, JSON.stringify(obj));
+  if (LOCAL_STORE) {
+    const f = path.join(LOCAL_STORE, chemin);
+    fs.mkdirSync(path.dirname(f), { recursive: true });
+    fs.writeFileSync(f, JSON.stringify(obj));
+    return;
+  }
+  throw new Error('Stockage non configuré : BLOB_READ_WRITE_TOKEN manquant dans Vercel.');
+}
+
+// Un article est en ligne s'il est publié et que sa date de publication est passée (publication programmée)
+function estVisible(post, maintenant = Date.now()) {
+  if (!post || !post.published) return false;
+  const t = post.publishedAt ? Date.parse(post.publishedAt) : NaN;
+  return isNaN(t) || t <= maintenant;
+}
+function idPropre(v) { return String(v || '').replace(/[^a-z0-9_-]/gi, '').slice(0, 48); }
+
+async function ajouterRevision(id, ancien) {
+  const chemin = `data/revisions/${idPropre(id)}.json`;
+  const d = await lireDonnees(chemin, { versions: [] });
+  d.versions = [{ enregistreLe: ancien.modifieLe || ancien.updatedAt || new Date().toISOString(), post: ancien }, ...(d.versions || [])].slice(0, 12);
+  await ecrireDonnees(chemin, d);
+}
+// Quand l'adresse d'un article publié change : l'ancienne redirige (301) vers la nouvelle, sans chaîne
+async function ajouterRedirection(de, vers, origine) {
+  if (!de || !vers || de === vers) return null;
+  const d = await lireDonnees('data/redirections.json', { redirections: [] });
+  let liste = (d.redirections || []).filter(r => r.de !== de && r.de !== vers);
+  liste = liste.map(r => (r.vers === de ? { ...r, vers } : r));
+  const r = { de, vers, origine, creeLe: new Date().toISOString() };
+  liste.unshift(r);
+  await ecrireDonnees('data/redirections.json', { redirections: liste });
+  return r;
+}
+
 // ---- JWT helpers ----
 function createToken(user) {
   const payload = Buffer.from(JSON.stringify({ user, exp: Date.now() + 86400000 })).toString('base64url');
@@ -136,6 +183,8 @@ function json(res, status, data) {
 function clean(v, n = 1200) {
   return typeof v === 'string' ? v.trim().replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F]/g, '').slice(0, n) : '';
 }
+
+function htmlEscape(v) { return String(v || '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
 
 function newId() { return crypto.randomBytes(9).toString('hex'); }
 
@@ -193,17 +242,26 @@ function readBody(req, max = 12000) {
 
 const { renderBlogPost, renderBlogIndex, renderActualitesIndex, renderNotFound } = require('./blog-render.js');
 
+async function lireArticles() {
+  const data = await lireDonnees('data/blog-posts.json', { posts: [] });
+  return data && Array.isArray(data.posts) ? data : { posts: [] };
+}
 async function postsPublies() {
-  const raw = blobToken() ? await blobGet('data/blog-posts.json') : null;
-  const data = raw ? JSON.parse(raw) : { posts: [] };
-  return (data.posts || []).filter(x => x.published);
+  const now = Date.now();
+  return (await lireArticles()).posts.filter(x => estVisible(x, now));
 }
 
 // Actualités : la base du dépôt (api/actualites.json) + les articles publiés dans la catégorie « actualites »,
 // du plus récent au plus ancien. Chaque actualité porte ses pays : elle remonte d'elle-même sous chacun d'eux.
-function chargerActualites(posts) {
-  let base = [];
-  try { base = JSON.parse(fs.readFileSync(path.join(__dirname, 'actualites.json'), 'utf8')).actualites || []; } catch (e) { base = []; }
+function actualitesDeDepart() {
+  try { return JSON.parse(fs.readFileSync(path.join(__dirname, 'actualites.json'), 'utf8')).actualites || []; } catch (e) { return []; }
+}
+// Les actualités gérées dans l'admin (data/actualites.json) remplacent la base du dépôt dès le premier enregistrement
+async function chargerActualites(posts) {
+  let base = null;
+  try { const d = await lireDonnees('data/actualites.json', null); if (d && Array.isArray(d.actualites)) base = d.actualites; } catch (e) { base = null; }
+  if (!base) base = actualitesDeDepart();
+  base = base.filter(a => a && !a.masque);
   const depuisAdmin = (posts || []).filter(x => x.category === 'actualites').map(x => ({
     id: x.slug, date: x.publishedAt || x.updatedAt || '', pays: x.countries || [], titre: x.title,
     texte: x.description || '', lien: '/blog/' + x.slug, lienTexte: 'Lire la suite', source: ''
@@ -369,7 +427,7 @@ module.exports = async function handler(req, res) {
 
     // POST /api/newsletter
     if (method === 'POST' && p === '/api/newsletter') {
-      if (!limited(req, 'newsletter', 3, 3600000)) return json(res, 429, { error: 'Trop de tentatives. Réessaie plus tard.' });
+      if (!limited(req, 'newsletter', 3, 3600000)) return json(res, 429, { error: 'Trop de tentatives. Réessayez plus tard.' });
       const BREVO_KEY = process.env.BREVO_API_KEY || '';
       const BREVO_LIST = Number(process.env.BREVO_LIST_ID || 0);
       const BREVO_TPL = Number(process.env.BREVO_DOI_TEMPLATE_ID || 0);
@@ -417,12 +475,12 @@ module.exports = async function handler(req, res) {
           }
         }).catch(() => {});
       }
-      return json(res, 200, { ok: true, message: 'Un e-mail de confirmation vient de t\'être envoyé. Confirme ton inscription pour rejoindre la newsletter.' });
+      return json(res, 200, { ok: true, message: 'Un e-mail de confirmation vient de vous être envoyé. Confirmez votre inscription pour recevoir la newsletter.' });
     }
 
     // POST /api/admin/login
     if (method === 'POST' && p === '/api/admin/login') {
-      if (!limited(req, 'login', 5)) return json(res, 429, { error: 'Trop de tentatives. Réessaie dans 1 minute.' });
+      if (!limited(req, 'login', 5)) return json(res, 429, { error: 'Trop de tentatives. Réessayez dans une minute.' });
       const b = await readBody(req, 1000);
       const ADMIN_USER = process.env.ADMIN_USER || 'admin';
       const ADMIN_PASS = process.env.ADMIN_PASS || '';
@@ -436,15 +494,8 @@ module.exports = async function handler(req, res) {
     // GET /api/admin/affiliates
     if (method === 'GET' && p === '/api/admin/affiliates') {
       if (!verifyToken(adminToken(req))) return json(res, 401, { error: 'Non autorisé.' });
-      try {
-        if (blobToken()) {
-          const raw = await blobGet('data/affiliates.json');
-          return json(res, 200, raw ? JSON.parse(raw) : { affiliates: [] });
-        }
-        const affFile = path.join(DATA_DIR, 'affiliates.json');
-        if (fs.existsSync(affFile)) return json(res, 200, JSON.parse(fs.readFileSync(affFile, 'utf8')));
-        return json(res, 200, { affiliates: [] });
-      } catch(e) { return json(res, 500, { error: e.message }); }
+      try { return json(res, 200, await lireDonnees('data/affiliates.json', { affiliates: [] })); }
+      catch(e) { return json(res, 500, { error: e.message }); }
     }
 
     // POST /api/admin/affiliates
@@ -452,11 +503,8 @@ module.exports = async function handler(req, res) {
       if (!verifyToken(adminToken(req))) return json(res, 401, { error: 'Non autorisé.' });
       const b = await readBody(req, 100000);
       try {
-        if (blobToken()) {
-          await blobPut('data/affiliates.json', JSON.stringify(b));
-        } else {
-          fs.writeFileSync(path.join(DATA_DIR, 'affiliates.json'), JSON.stringify(b));
-        }
+        if (!Array.isArray(b.affiliates)) return json(res, 400, { error: 'Liste de liens attendue.' });
+        await ecrireDonnees('data/affiliates.json', { affiliates: b.affiliates });
         return json(res, 200, { ok: true });
       } catch(e) { return json(res, 500, { error: e.message }); }
     }
@@ -503,12 +551,11 @@ module.exports = async function handler(req, res) {
     // GET /api/blog — public list of published posts
     if (method === 'GET' && p === '/api/blog') {
       try {
-        const raw = blobToken() ? await blobGet('data/blog-posts.json') : null;
-        const data = raw ? JSON.parse(raw) : { posts: [] };
+        const data = await lireArticles();
         const country = url.searchParams.get('country') || '';
         const category = url.searchParams.get('category') || '';
         const q = (url.searchParams.get('q') || '').toLowerCase();
-        let posts = (data.posts || []).filter(post => post.published);
+        let posts = (data.posts || []).filter(post => estVisible(post));
         if (country) posts = posts.filter(post => (post.countries || []).includes(country));
         if (category) posts = posts.filter(post => post.category === category);
         if (q) posts = posts.filter(post =>
@@ -531,9 +578,7 @@ module.exports = async function handler(req, res) {
     // GET /nos-astuces (via rewrite) — index des articles rendu côté serveur
     if (method === 'GET' && p === '/api/nos-astuces') {
       try {
-        const raw = blobToken() ? await blobGet('data/blog-posts.json') : null;
-        const data = raw ? JSON.parse(raw) : { posts: [] };
-        const published = (data.posts || []).filter(x => x.published && x.category !== 'actualites');
+        const published = (await postsPublies()).filter(x => x.category !== 'actualites');
         res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'public, max-age=600' });
         return res.end(renderBlogIndex(published, req.headers.host || 'pvt-explorer.fr', {
           country: url.searchParams.get('pays') || '',
@@ -547,7 +592,7 @@ module.exports = async function handler(req, res) {
       try {
         const posts = await postsPublies();
         res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'public, max-age=600' });
-        return res.end(renderActualitesIndex(chargerActualites(posts), req.headers.host || 'pvt-explorer.fr', { pays: url.searchParams.get('pays') || '' }));
+        return res.end(renderActualitesIndex(await chargerActualites(posts), req.headers.host || 'pvt-explorer.fr', { pays: url.searchParams.get('pays') || '' }));
       } catch (e) { return json(res, 500, { error: e.message }); }
     }
     // GET /api/actualites/feed — bandeau défilant et recherche : actualités + derniers guides
@@ -558,7 +603,7 @@ module.exports = async function handler(req, res) {
           .sort((a, b) => new Date(b.publishedAt || 0) - new Date(a.publishedAt || 0)).slice(0, 4)
           .map(x => ({ titre: x.title, lien: '/blog/' + x.slug, pays: x.countries || [], date: x.publishedAt || '' }));
         res.setHeader('Cache-Control', 'public, max-age=300');
-        return json(res, 200, { actualites: chargerActualites(posts), guides });
+        return json(res, 200, { actualites: await chargerActualites(posts), guides });
       } catch (e) { return json(res, 500, { error: e.message }); }
     }
 
@@ -567,12 +612,23 @@ module.exports = async function handler(req, res) {
     if (method === 'GET' && blogSlugMatch) {
       const slug = blogSlugMatch[1];
       try {
-        const raw = blobToken() ? await blobGet('data/blog-posts.json') : null;
-        const data = raw ? JSON.parse(raw) : { posts: [] };
-        const post = (data.posts || []).find(post => post.slug === slug && post.published);
+        const data = await lireArticles();
+        const post = (data.posts || []).find(post => post.slug === slug && estVisible(post));
         // /blog/:slug (réécrit avec __html=1) sert toujours la page ; /api/blog/:slug suit l'en-tête Accept.
         const html = url.searchParams.get('__html') === '1' || (req.headers.accept || '').includes('text/html');
         if (!post) {
+          // Ancienne adresse d'un article renommé : redirection permanente
+          let cible = null;
+          try {
+            let de = '/blog/' + slug;
+            try { de = '/blog/' + decodeURIComponent(slug); } catch (_) {}
+            const r = (await lireDonnees('data/redirections.json', { redirections: [] })).redirections || [];
+            cible = (r.find(x => x.de === de) || {}).vers || null;
+          } catch (_) { cible = null; }
+          if (cible) {
+            res.writeHead(301, { Location: cible, 'Cache-Control': 'public, max-age=3600' });
+            return res.end();
+          }
           if (html) {
             res.writeHead(404, { 'Content-Type': 'text/html; charset=utf-8' });
             return res.end(renderNotFound());
@@ -582,7 +638,7 @@ module.exports = async function handler(req, res) {
         if (html) {
           res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'public, max-age=3600' });
           const host = req.headers.host || 'pvt-explorer.vercel.app';
-          const published = (data.posts || []).filter(x => x.published);
+          const published = (data.posts || []).filter(x => estVisible(x));
           const publishedSlugs = new Set(published.map(x => x.slug));
           return res.end(renderBlogPost(post, host, { publishedSlugs, relatedPool: published }));
         }
@@ -594,8 +650,7 @@ module.exports = async function handler(req, res) {
     if (method === 'GET' && p === '/api/admin/blog') {
       if (!verifyToken(adminToken(req))) return json(res, 401, { error: 'Non autorisé.' });
       try {
-        const raw = blobToken() ? await blobGet('data/blog-posts.json') : null;
-        return json(res, 200, raw ? JSON.parse(raw) : { posts: [] });
+        return json(res, 200, await lireArticles());
       } catch (e) { return json(res, 500, { error: e.message }); }
     }
 
@@ -613,7 +668,8 @@ module.exports = async function handler(req, res) {
       if (!verifyToken(adminToken(req))) return json(res, 401, { error: 'Non autorisé.' });
       const b = await readBody(req, 4000000);
       try {
-        if (blobToken()) await blobPut('data/blog-posts.json', JSON.stringify(b));
+        if (!Array.isArray(b.posts)) return json(res, 400, { error: 'Liste d\'articles attendue.' });
+        await ecrireDonnees('data/blog-posts.json', { ...b, posts: b.posts });
         return json(res, 200, { ok: true });
       } catch (e) { return json(res, 500, { error: e.message }); }
     }
@@ -625,13 +681,12 @@ module.exports = async function handler(req, res) {
         const today = new Date().toISOString().split('T')[0];
         const xmlEsc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
         let blogUrls = [];
-        if (blobToken()) {
+        {
           try {
-            const raw = await blobGet('data/blog-posts.json');
-            if (raw) {
-              const bdata = JSON.parse(raw);
+            const bdata = await lireArticles();
+            {
               blogUrls = (bdata.posts || [])
-                .filter(post => post.published && post.slug)
+                .filter(post => estVisible(post) && post.slug)
                 .map(post => ({
                   loc: `${host}/blog/${encodeURIComponent(post.slug)}`,
                   changefreq: 'monthly',
@@ -667,29 +722,27 @@ module.exports = async function handler(req, res) {
     if (method === 'GET' && p === '/api/admin/newsletter') {
       if (!verifyToken(adminToken(req))) return json(res, 401, { error: 'Non autorisé.' });
       try {
-        const raw = blobToken() ? await blobGet('data/newsletter-subscribers.json') : null;
-        return json(res, 200, raw ? JSON.parse(raw) : { subscribers: [] });
+        return json(res, 200, await lireDonnees('data/newsletter-subscribers.json', { subscribers: [] }));
       } catch(e) { return json(res, 500, { error: e.message }); }
     }
 
     // POST /api/contact
     if (method === 'POST' && p === '/api/contact') {
-      if (!limited(req, 'contact', 3, 3600000)) return json(res, 429, { error: 'Trop de messages. Réessaie plus tard.' });
+      if (!limited(req, 'contact', 3, 3600000)) return json(res, 429, { error: 'Trop de messages envoyés. Réessayez plus tard.' });
       const b = await readBody(req, 5000);
       const firstname = clean(b.firstname, 60);
       const email = clean(b.email, 254).toLowerCase();
       const message = clean(b.message, 2000);
       if (firstname.length < 2 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || message.length < 10) {
-        return json(res, 400, { error: 'Prénom, email valide et message requis (min. 10 caractères).' });
+        return json(res, 400, { error: 'Indiquez votre prénom, une adresse e-mail valide et un message d\'au moins 10 caractères.' });
       }
       const id = newId();
       const msg = { id, firstname, email, message, createdAt: new Date().toISOString(), replied: false };
-      if (blobToken()) {
+      if (blobToken() || LOCAL_STORE) {
         try {
-          const raw = await blobGet('data/contact-messages.json');
-          const data = raw ? JSON.parse(raw) : { messages: [] };
-          data.messages.unshift(msg);
-          await blobPut('data/contact-messages.json', JSON.stringify(data));
+          const data = await lireDonnees('data/contact-messages.json', { messages: [] });
+          data.messages = [msg, ...(data.messages || [])];
+          await ecrireDonnees('data/contact-messages.json', data);
         } catch(e) { return json(res, 500, { error: e.message }); }
       }
       const RESEND_KEY2 = process.env.RESEND_API_KEY || '';
@@ -706,15 +759,14 @@ module.exports = async function handler(req, res) {
           })
         }).catch(() => {});
       }
-      return json(res, 200, { ok: true, message: 'Ton message a bien \xe9t\xe9 envoy\xe9 ! On te r\xe9pond tr\xe8s vite.' });
+      return json(res, 200, { ok: true, message: 'Votre message est bien parti. Je vous réponds dès que possible.' });
     }
 
     // GET /api/admin/contacts
     if (method === 'GET' && p === '/api/admin/contacts') {
       if (!verifyToken(adminToken(req))) return json(res, 401, { error: 'Non autorisé.' });
       try {
-        const raw = blobToken() ? await blobGet('data/contact-messages.json') : null;
-        return json(res, 200, raw ? JSON.parse(raw) : { messages: [] });
+        return json(res, 200, await lireDonnees('data/contact-messages.json', { messages: [] }));
       } catch(e) { return json(res, 500, { error: e.message }); }
     }
 
@@ -726,11 +778,9 @@ module.exports = async function handler(req, res) {
       const b = await readBody(req, 5000);
       const replyText = clean(b.reply, 3000);
       if (replyText.length < 5) return json(res, 400, { error: 'Réponse trop courte.' });
-      if (!blobToken()) return json(res, 503, { error: 'Blob non configuré.' });
       try {
-        const raw = await blobGet('data/contact-messages.json');
-        const data = raw ? JSON.parse(raw) : { messages: [] };
-        const msg = data.messages.find(m => m.id === msgId);
+        const data = await lireDonnees('data/contact-messages.json', { messages: [] });
+        const msg = (data.messages || []).find(m => m.id === msgId);
         if (!msg) return json(res, 404, { error: 'Message introuvable.' });
         const RESEND_KEY3 = process.env.RESEND_API_KEY || '';
         if (!RESEND_KEY3) return json(res, 503, { error: 'RESEND_API_KEY non configuré.' });
@@ -740,8 +790,8 @@ module.exports = async function handler(req, res) {
           body: JSON.stringify({
             from: 'PVT Explorer <onboarding@resend.dev>',
             to: [msg.email],
-            subject: 'Re: Ta question PVT — PVT Explorer',
-            html: `<p>Bonjour ${msg.firstname},</p><p>${replyText.replace(/\n/g, '<br>')}</p><br><p style="font-size:12px;color:#888">— L’\xe9quipe PVT Explorer</p>`
+            subject: 'Re : votre message à PVT Explorer',
+            html: `<p>Bonjour ${htmlEscape(msg.firstname)},</p><p>${htmlEscape(replyText).replace(/\n/g, '<br>')}</p><p style="font-size:12px;color:#666">— PVT Explorer, pvt-explorer.fr</p>`
           })
         });
         if (!rr.ok) {
@@ -751,9 +801,198 @@ module.exports = async function handler(req, res) {
         msg.replied = true;
         msg.repliedAt = new Date().toISOString();
         msg.replyText = replyText;
-        await blobPut('data/contact-messages.json', JSON.stringify(data));
+        msg.traite = true;
+        await ecrireDonnees('data/contact-messages.json', data);
         return json(res, 200, { ok: true });
       } catch(e) { return json(res, 500, { error: e.message }); }
+    }
+
+    // ===================== Espace auteur (nouvelle administration) =====================
+    const session = p.startsWith('/api/admin/') ? verifyToken(adminToken(req)) : null;
+    const refus = () => json(res, 401, { error: 'Session expirée : reconnectez-vous.' });
+
+    // État des services branchés au site
+    if (method === 'GET' && p === '/api/admin/etat') {
+      if (!session) return refus();
+      const env = process.env;
+      return json(res, 200, {
+        stockage: blobToken() ? 'blob' : (LOCAL_STORE ? 'local' : 'aucun'),
+        emails: !!env.RESEND_API_KEY, emailAdmin: !!env.ADMIN_EMAIL,
+        newsletter: !!(env.BREVO_API_KEY && env.BREVO_LIST_ID && env.BREVO_DOI_TEMPLATE_ID && env.BREVO_REDIRECT_URL),
+        assistant: !!env.ANTHROPIC_API_KEY, amazon: !!env.AMAZON_PARTNER_TAG,
+        partenaires: { flights: !!env.PARTNER_FLIGHTS_URL, stay: !!env.PARTNER_STAYS_URL, insurance: !!env.PARTNER_INSURANCE_URL, esim: !!env.PARTNER_ESIM_URL, activities: !!env.PARTNER_ACTIVITIES_URL, car: !!env.PARTNER_CAR_URL },
+        session: { user: session.user, expire: session.exp }
+      });
+    }
+
+    // Enregistrer un seul article : contrôle d'adresse, conflit de version, révision, redirection automatique
+    if (method === 'POST' && p === '/api/admin/article') {
+      if (!session) return refus();
+      const b = await readBody(req, 2500000);
+      const post = b.post || {};
+      const id = idPropre(post.id);
+      const slug = String(post.slug || '');
+      if (!id || !String(post.title || '').trim()) return json(res, 400, { error: 'Un titre est nécessaire.' });
+      if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) return json(res, 400, { error: 'Adresse invalide : lettres minuscules sans accents, chiffres et tirets uniquement.' });
+      const data = await lireArticles();
+      const posts = data.posts;
+      if (posts.some(x => x.slug === slug && x.id !== id)) return json(res, 409, { error: 'Cette adresse est déjà utilisée par un autre article.' });
+      const i = posts.findIndex(x => x.id === id);
+      const prev = i >= 0 ? posts[i] : null;
+      if (prev && b.versionLue && prev.modifieLe && prev.modifieLe !== b.versionLue && !b.forcer) {
+        return json(res, 409, { error: 'Cet article a été modifié ailleurs depuis son ouverture.', conflit: true, modifieLe: prev.modifieLe });
+      }
+      const merged = { ...(prev || {}), ...post, id, slug, modifieLe: new Date().toISOString() };
+      if (prev) {
+        const sans = o => JSON.stringify({ ...o, modifieLe: 0, updatedAt: 0 });
+        if (sans(prev) !== sans(merged)) await ajouterRevision(id, prev);
+      }
+      let redirection = null;
+      if (prev && estVisible(prev) && prev.slug && prev.slug !== slug) {
+        redirection = await ajouterRedirection('/blog/' + prev.slug, '/blog/' + slug, 'auto');
+      }
+      if (i >= 0) posts[i] = merged; else posts.unshift(merged);
+      await ecrireDonnees('data/blog-posts.json', { ...data, posts });
+      return json(res, 200, { ok: true, post: merged, redirection });
+    }
+
+    // Supprimer un article : il part à la corbeille (50 derniers), restaurable
+    if (method === 'POST' && p === '/api/admin/article/supprimer') {
+      if (!session) return refus();
+      const b = await readBody(req, 2000);
+      const id = idPropre(b.id);
+      const data = await lireArticles();
+      const post = data.posts.find(x => x.id === id);
+      if (!post) return json(res, 404, { error: 'Article introuvable.' });
+      const corbeille = await lireDonnees('data/corbeille.json', { articles: [] });
+      corbeille.articles = [{ supprimeLe: new Date().toISOString(), post }, ...(corbeille.articles || []).filter(x => x.post && x.post.id !== id)].slice(0, 50);
+      await ecrireDonnees('data/corbeille.json', corbeille);
+      await ecrireDonnees('data/blog-posts.json', { ...data, posts: data.posts.filter(x => x.id !== id) });
+      return json(res, 200, { ok: true });
+    }
+    if (method === 'GET' && p === '/api/admin/corbeille') {
+      if (!session) return refus();
+      return json(res, 200, await lireDonnees('data/corbeille.json', { articles: [] }));
+    }
+    if (method === 'POST' && p === '/api/admin/corbeille/restaurer') {
+      if (!session) return refus();
+      const b = await readBody(req, 2000);
+      const id = idPropre(b.id);
+      const corbeille = await lireDonnees('data/corbeille.json', { articles: [] });
+      const item = (corbeille.articles || []).find(x => x.post && x.post.id === id);
+      if (!item) return json(res, 404, { error: 'Article introuvable dans la corbeille.' });
+      const data = await lireArticles();
+      if (data.posts.some(x => x.id === id)) return json(res, 409, { error: 'Un article avec cet identifiant existe déjà.' });
+      if (data.posts.some(x => x.slug === item.post.slug)) return json(res, 409, { error: 'Son adresse est reprise par un autre article : changez-la avant de restaurer.' });
+      data.posts.unshift({ ...item.post, published: false, modifieLe: new Date().toISOString() });
+      await ecrireDonnees('data/blog-posts.json', data);
+      corbeille.articles = corbeille.articles.filter(x => x !== item);
+      await ecrireDonnees('data/corbeille.json', corbeille);
+      return json(res, 200, { ok: true });
+    }
+
+    // Versions précédentes d'un article (12 dernières)
+    const revMatch = p.match(/^\/api\/admin\/revisions\/([a-z0-9_-]+)$/i);
+    if (method === 'GET' && revMatch) {
+      if (!session) return refus();
+      return json(res, 200, await lireDonnees(`data/revisions/${idPropre(revMatch[1])}.json`, { versions: [] }));
+    }
+
+    // Aperçu : l'article tel qu'il paraîtra, avec le vrai gabarit du site
+    if (method === 'POST' && p === '/api/admin/apercu') {
+      if (!session) return refus();
+      const b = await readBody(req, 2500000);
+      const post = { ...(b.post || {}), slug: String((b.post || {}).slug || 'apercu') };
+      const published = await postsPublies();
+      const html = renderBlogPost(post, req.headers.host || 'pvt-explorer.fr', { publishedSlugs: new Set(published.map(x => x.slug)), relatedPool: published })
+        .replace('<head>', '<head>\n<meta name="robots" content="noindex,nofollow">');
+      res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store' });
+      return res.end(html);
+    }
+
+    // Actualités (page /actualites et bandeau de l'accueil)
+    if (method === 'GET' && p === '/api/admin/actualites') {
+      if (!session) return refus();
+      const d = await lireDonnees('data/actualites.json', null);
+      const posts = (await lireArticles()).posts.filter(x => x.category === 'actualites');
+      return json(res, 200, {
+        actualites: d && Array.isArray(d.actualites) ? d.actualites : actualitesDeDepart(),
+        depuisDepot: !(d && Array.isArray(d.actualites)),
+        depuisArticles: posts.map(x => ({ id: x.id, titre: x.title, slug: x.slug, date: x.publishedAt || '', pays: x.countries || [], enLigne: estVisible(x) }))
+      });
+    }
+    if (method === 'POST' && p === '/api/admin/actualites') {
+      if (!session) return refus();
+      const b = await readBody(req, 400000);
+      if (!Array.isArray(b.actualites)) return json(res, 400, { error: 'Liste d\'actualités attendue.' });
+      const lien = v => { const u = clean(v, 500); return /^(\/|https:\/\/)/.test(u) ? u : ''; };
+      const liste = b.actualites.slice(0, 300).map(a => ({
+        id: idPropre(a.id) || newId(),
+        date: /^\d{4}-\d{2}-\d{2}/.test(a.date || '') ? String(a.date).slice(0, 10) : new Date().toISOString().slice(0, 10),
+        pays: (Array.isArray(a.pays) ? a.pays : []).map(x => clean(x, 40)).filter(Boolean).slice(0, 15),
+        titre: clean(a.titre, 160), texte: clean(a.texte, 600),
+        lien: lien(a.lien), lienTexte: clean(a.lienTexte, 80), source: lien(a.source),
+        masque: !!a.masque
+      })).filter(a => a.titre);
+      await ecrireDonnees('data/actualites.json', { actualites: liste, modifieLe: new Date().toISOString() });
+      return json(res, 200, { ok: true, actualites: liste });
+    }
+
+    // Redirections 301 des anciennes adresses d'articles
+    if (method === 'GET' && p === '/api/admin/redirections') {
+      if (!session) return refus();
+      return json(res, 200, await lireDonnees('data/redirections.json', { redirections: [] }));
+    }
+    if (method === 'POST' && p === '/api/admin/redirections') {
+      if (!session) return refus();
+      const b = await readBody(req, 200000);
+      if (!Array.isArray(b.redirections)) return json(res, 400, { error: 'Liste attendue.' });
+      const liste = b.redirections.slice(0, 500).map(r => ({
+        de: clean(r.de, 300), vers: clean(r.vers, 500), origine: r.origine === 'auto' ? 'auto' : 'manuelle', creeLe: clean(r.creeLe, 40) || new Date().toISOString()
+      })).filter(r => /^\/blog\/[^/\s]+$/.test(r.de) && /^(\/|https:\/\/)/.test(r.vers) && r.de !== r.vers);
+      await ecrireDonnees('data/redirections.json', { redirections: liste });
+      return json(res, 200, { ok: true, redirections: liste });
+    }
+
+    // Messages : traité / à traiter, suppression
+    const etatMsg = p.match(/^\/api\/admin\/contacts\/([a-f0-9]+)\/(etat|supprimer)$/);
+    if (method === 'POST' && etatMsg) {
+      if (!session) return refus();
+      const b = await readBody(req, 1000);
+      const data = await lireDonnees('data/contact-messages.json', { messages: [] });
+      const msgs = data.messages || [];
+      const m = msgs.find(x => x.id === etatMsg[1]);
+      if (!m) return json(res, 404, { error: 'Message introuvable.' });
+      if (etatMsg[2] === 'supprimer') data.messages = msgs.filter(x => x !== m);
+      else m.traite = !!b.traite;
+      await ecrireDonnees('data/contact-messages.json', data);
+      return json(res, 200, { ok: true });
+    }
+
+    // Newsletter : retirer une adresse de la liste du site (la liste Brevo reste la référence)
+    if (method === 'POST' && p === '/api/admin/newsletter/supprimer') {
+      if (!session) return refus();
+      const b = await readBody(req, 1000);
+      const email = clean(b.email, 254).toLowerCase();
+      const data = await lireDonnees('data/newsletter-subscribers.json', { subscribers: [] });
+      data.subscribers = (data.subscribers || []).filter(x => x.email !== email);
+      await ecrireDonnees('data/newsletter-subscribers.json', data);
+      return json(res, 200, { ok: true });
+    }
+
+    // Sauvegarde complète en un fichier
+    if (method === 'GET' && p === '/api/admin/sauvegarde') {
+      if (!session) return refus();
+      const [articles, actualites, redirections, liens, abonnes, messages, corbeille] = await Promise.all([
+        lireArticles(), lireDonnees('data/actualites.json', null), lireDonnees('data/redirections.json', { redirections: [] }),
+        lireDonnees('data/affiliates.json', { affiliates: [] }), lireDonnees('data/newsletter-subscribers.json', { subscribers: [] }),
+        lireDonnees('data/contact-messages.json', { messages: [] }), lireDonnees('data/corbeille.json', { articles: [] })
+      ]);
+      res.writeHead(200, {
+        'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store',
+        'Content-Disposition': `attachment; filename="pvt-explorer-sauvegarde-${new Date().toISOString().slice(0, 10)}.json"`
+      });
+      return res.end(JSON.stringify({ site: 'pvt-explorer.fr', exporteLe: new Date().toISOString(), articles, actualites: actualites || { actualites: actualitesDeDepart() }, redirections, liens, abonnes, messages, corbeille }, null, 1));
     }
 
     return json(res, 404, { error: 'Route introuvable.' });

@@ -606,6 +606,9 @@ Juste sous le frontispice, une bande vert profond de 50px sur toute la largeur, 
 ### Dépêches (page Actualités)
 Une liste ouverte par un filet d'encre de 2px, une dépêche par ligne séparée d'un filet de règle : à gauche la date en mono (23.11.2026) et le code pays dans un cadre vert de 1.5px (angles de 4px) ; à droite le titre en 760 (1.2 à 1.5rem), le texte en encre seconde, puis le lien vers le guide (flèche verte) et « Source officielle ». Les puces de pays portent leur nombre d'actualités en mono ; une puce à zéro passe en pointillés, encre tierce. Sur mobile, date et code passent au-dessus du titre.
 
+### Espace auteur (/admin)
+Le même monde, en outil : la navigation est une tranche de couverture verte de 268px (guilloché or à 5 %, marque du site, liens crème, lien courant sur vert profond avec icône or, compteurs or en pastille), le travail se fait sur papier. Titres de vue en 800 étiré à 114 %, données en mono (dates, adresses, comptes, codes pays dans un cadre vert de 1.5px). Panneaux en papier clair à filet de règle et angles de 10px ; états d'article en tampons (« En ligne » vert, « Programmé » violet, « Brouillon » encre, « À traiter » rouge). Connexion : carte papier sur couverture verte guillochée, tampon « Accès réservé », ligne MRZ au pied. Seule exception assumée : l'aperçu Google de l'éditeur reprend la police et les couleurs de Google pour être fidèle. Sous 900px, la tranche verte devient un tiroir ; sous 1180px, les réglages de l'éditeur passent sous le texte.
+
 ### Notes and callouts
 - Encadré de 10px, bordure de 1.5px à 55 % de l'encre et fond à 5 %, tampon posé à cheval sur le bord supérieur gauche. Libellés par défaut : « Bon à savoir » et « À retenir » en vert, « À noter » en encre grise, « Attention » et « Important » en rouge.
 
