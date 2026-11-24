@@ -244,11 +244,13 @@ button,input,select,textarea{font:inherit;color:inherit}
   .region[aria-labelledby=r-americas] .vignettes{grid-template-columns:repeat(3,minmax(0,1fr))}
 }
 @container (min-width:520px){.vignette__fields{grid-template-columns:repeat(4,minmax(0,1fr))}}
+/* Destinations avec un guide complet : accent doré discret en haut */
+.vignette:has(a.vignette__go[href^="/blog"]){border-top:2.5px solid color-mix(in srgb,var(--foil) 55%,var(--rule))}
 
 .parcours{margin:0;padding:0;list-style:none;border-top:2px solid var(--ink)}
 .etape{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,2fr);gap:1rem 3rem;padding:1.6rem 0;border-bottom:1px solid var(--rule)}
 .etape__titre{display:flex;align-items:baseline;gap:.8rem;font:750 1.25rem/1.25 var(--font);font-stretch:108%;text-wrap:balance}
-.etape__num{display:inline-grid;place-items:center;flex:none;width:2.1rem;height:2.1rem;border:2px solid var(--cover);border-radius:50%;color:var(--cover);font-size:.95rem;font-weight:600;transform:translateY(.15rem)}
+.etape__num{display:inline-grid;place-items:center;flex:none;width:2.4rem;height:2.4rem;border:2px solid var(--cover);border-radius:50%;background:var(--cover);color:var(--cover-ink);font-size:.92rem;font-weight:700;transform:translateY(.12rem)}
 .guides{display:grid;gap:1rem;margin:0;padding:0;list-style:none}
 .guides li{display:grid;gap:.15rem}
 .guides a{font-weight:650;font-size:1.06rem;line-height:1.35;text-decoration-color:color-mix(in srgb,var(--cover) 35%,transparent)}
@@ -432,7 +434,7 @@ button,input,select,textarea{font:inherit;color:inherit}
 .cover__links a.cover__blog:hover,.cover__links a.cover__blog[aria-current]{color:#eed79f;border-bottom-color:var(--foil)}
 
 /* Le haut de page prolonge la couverture du passeport jusqu'à l'actualité */
-.frontispice{position:relative;isolation:isolate;overflow:hidden;padding-bottom:clamp(40px,5vw,72px);background:var(--cover);color:var(--cover-ink)}
+.frontispice{position:relative;isolation:isolate;overflow:hidden;padding-bottom:clamp(40px,5vw,72px);background:radial-gradient(ellipse 55% 80% at 72% 50%,color-mix(in srgb,var(--cover) 68%,var(--cover-ink) 6%) 0%,transparent 65%),linear-gradient(160deg,color-mix(in srgb,var(--cover) 94%,#fff 6%) 0%,var(--cover) 42%,var(--cover-deep) 100%);color:var(--cover-ink)}
 .frontispice::before{content:"";position:absolute;inset:0;z-index:-1;background:var(--foil);opacity:.06;-webkit-mask:url(/images/guilloche.svg) 0 0/168px 28px repeat;mask:url(/images/guilloche.svg) 0 0/168px 28px repeat}
 .frontispice::after{content:"";position:absolute;inset:auto 0 0 0;height:10px;background:var(--foil);opacity:.5;-webkit-mask:url(/images/guilloche.svg) 0 50%/60px 10px repeat-x;mask:url(/images/guilloche.svg) 0 50%/60px 10px repeat-x}
 .frontispice .page-edge{display:none}
@@ -457,8 +459,8 @@ button,input,select,textarea{font:inherit;color:inherit}
 #comparer + .section{padding-top:clamp(64px,9vw,128px)}
 
 /* Guides illustrés */
-.guides li.guide{position:relative;display:grid;grid-template-columns:132px minmax(0,1fr);gap:1rem;align-items:center}
-.guide__img{width:132px;height:88px;object-fit:cover;border-radius:6px;border:1px solid var(--rule);background:var(--paper-lo);transition:transform .3s var(--ease-out),box-shadow .3s var(--ease-out)}
+.guides li.guide{position:relative;display:grid;grid-template-columns:148px minmax(0,1fr);gap:1rem;align-items:center}
+.guide__img{width:148px;height:100px;object-fit:cover;border-radius:6px;border:1px solid var(--rule);background:var(--paper-lo);transition:transform .3s var(--ease-out),box-shadow .3s var(--ease-out)}
 .guide__txt{display:grid;gap:.15rem}
 .guide__txt a::after{content:"";position:absolute;inset:-4px}
 @media (hover:hover){.guide:hover .guide__img{transform:translateY(-2px) rotate(-1deg);box-shadow:0 10px 20px -14px color-mix(in srgb,var(--ink) 60%,transparent)}.guide:hover .guide__txt a{text-decoration-color:var(--cover)}}
