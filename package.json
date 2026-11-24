@@ -7,9 +7,13 @@
     "dev": "node scripts/dev-server.js",
     "build:pages": "node scripts/build-pages.js && node scripts/typo-fr.js public/index.html",
     "build:guilloche": "node scripts/gen-guilloche.js",
+    "build:speed-insights": "cp node_modules/@vercel/speed-insights/dist/index.mjs public/js/vercel-speed-insights.mjs",
     "dev:local": "node server.js"
   },
   "engines": {
     "node": ">=18"
+  },
+  "dependencies": {
+    "@vercel/speed-insights": "^2.1.0"
   }
 }

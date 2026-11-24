@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Politique de confidentialité | PVT Explorer</title>
-<meta name="description" content="Données traitées par PVT Explorer, durées de conservation, sous-traitants, mesure d'audience avec consentement et exercice de vos droits.">
+<meta name="description" content="Données traitées par PVT Explorer, durées de conservation, sous-traitants, mesure d'audience et de performance, et exercice de vos droits.">
 <meta name="robots" content="noindex,follow">
 <link rel="canonical" href="https://pvt-explorer.fr/confidentialite.html">
 <meta name="theme-color" content="#055a56">
@@ -54,6 +54,7 @@
 <tr><td>Newsletter (si vous vous inscrivez)</td><td>E-mail</td><td>Envoi de la newsletter, avec double confirmation (consentement)</td><td>Jusqu'à la désinscription</td></tr>
 <tr><td>Questions et réponses publiées</td><td>Pseudo facultatif, texte publié</td><td>Animation de l'espace d'entraide, après modération (intérêt légitime)</td><td>Tant que le contenu est en ligne</td></tr>
 <tr><td>Mesure d'audience (Google Analytics 4)</td><td>Pages vues, durée, provenance, type d'appareil, identifiant de cookie</td><td>Statistiques de fréquentation (consentement)</td><td>Cookies 13 mois maximum ; données détaillées conservées 2 mois dans Google Analytics</td></tr>
+<tr><td>Mesure de performance (Vercel Speed Insights)</td><td>Web Vitals, route et URL, navigateur, type d'appareil, système, réseau et pays</td><td>Mesurer les performances réelles du site ; Vercel indique que ces mesures ne sont pas liées à un visiteur ni à une adresse IP</td><td>Selon les paramètres et durées de conservation de Vercel</td></tr>
 <tr><td>Journaux techniques</td><td>Adresse IP, date, page demandée</td><td>Sécurité et bon fonctionnement du site (intérêt légitime)</td><td>Durée courte fixée par l'hébergeur</td></tr>
 </tbody>
 </table></div>
@@ -70,6 +71,9 @@
 
 <h2 id="audience">Mesure d'audience (Google Analytics 4)</h2>
 <p>Avec votre accord uniquement, le site utilise Google Analytics 4 pour mesurer son audience. Le script de Google et les cookies <code>_ga</code> et <code>_ga_*</code> ne sont chargés qu'après un clic sur « Accepter » dans le bandeau. Votre choix est mémorisé 13 mois sur votre appareil. Vous pouvez le modifier à tout moment via le lien « Gérer les cookies », présent en bas de chaque page. Refuser n'a aucune conséquence sur l'accès au site.</p>
+
+<h2 id="performance">Mesure des performances (Vercel Speed Insights)</h2>
+<p>Le site utilise Vercel Speed Insights pour mesurer des indicateurs techniques (Web Vitals). Selon <a href="https://vercel.com/docs/speed-insights/privacy-policy" rel="noopener">la documentation de Vercel</a>, les mesures incluent notamment la route et l'URL, le navigateur, le type d'appareil, le système d'exploitation, le réseau et le pays ; elles ne sont ni associées à un visiteur ni à une adresse IP. Vercel indique ne pas utiliser ces données pour reconstruire une session ou identifier une personne.</p>
 
 <h2 id="affiliation">Liens d'affiliation</h2>
 <p>Lorsque vous cliquez sur un lien affilié, le site partenaire (Amazon, assureur, comparateur…) peut déposer ses propres cookies selon sa politique de confidentialité, que je vous invite à consulter.</p>
@@ -128,5 +132,6 @@
 <script src="/app-config.js"></script>
 <script src="/analytics.js" defer></script>
 <script src="/js/visa.js" defer></script>
+<script type="module" src="/js/speed-insights.js"></script>
 </body>
 </html>
