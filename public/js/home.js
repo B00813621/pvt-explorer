@@ -178,6 +178,19 @@
   var rt;
   window.addEventListener('resize', function () { clearTimeout(rt); rt = setTimeout(function () { writeMrz(lastCodes, true); }, 150); });
 
+  // Carrousel des destinations : commandes accessibles, le swipe natif reste actif sur mobile.
+  var destinationTrack = document.querySelector('[data-destination-track]');
+  if (destinationTrack) {
+    var destinationStep = function () {
+      var slide = destinationTrack.querySelector('.destination-slide');
+      return slide ? slide.getBoundingClientRect().width + (parseFloat(getComputedStyle(destinationTrack).columnGap) || 0) : destinationTrack.clientWidth * 0.8;
+    };
+    var previous = document.querySelector('[data-destination-prev]');
+    var next = document.querySelector('[data-destination-next]');
+    if (previous) previous.addEventListener('click', function () { destinationTrack.scrollBy({ left: -destinationStep() * 1.5, behavior: reduce ? 'auto' : 'smooth' }); });
+    if (next) next.addEventListener('click', function () { destinationTrack.scrollBy({ left: destinationStep() * 1.5, behavior: reduce ? 'auto' : 'smooth' }); });
+  }
+
   // Newsletter et liens partenaires : l'état réel vient du serveur
   fetch('/api/config').then(function (r) { return r.json(); }).then(function (c) {
     if (!c.newsletterConfigured) {
