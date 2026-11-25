@@ -830,3 +830,19 @@ dialog.fiche{width:100%;max-width:min(700px,calc(100vw - 24px));max-height:calc(
 @media (max-width:900px){.destinations-carousel__viewport{grid-auto-columns:calc((100% - 2 * var(--slide-gap))/3)}.hero__foot{grid-template-columns:1fr}}
 @media (max-width:600px){.hero{row-gap:24px;padding-block:26px 38px}.hero__text{gap:14px}.destinations-carousel{--slide-gap:12px}.destinations-carousel__top{align-items:center}.destinations-carousel__intro{font-size:.83rem}.destinations-carousel__controls{gap:6px}.destinations-carousel__arrow{width:36px;height:36px}.destinations-carousel__viewport{grid-auto-columns:82%;padding-bottom:10px}.destination-slide{aspect-ratio:1.38/1;border-radius:13px}.destination-slide__label{inset:auto 15px 14px}.destinations-carousel__hint{font-size:.7rem}.elig{max-width:100%}}
 @media (prefers-reduced-motion:reduce){.destination-slide img,.destinations-carousel__arrow{transition:none}}
+
+
+/* Contraste renforcé et finition du carrousel des 15 destinations */
+.destinations-carousel__eyebrow{color:var(--cover)!important}
+.destinations-carousel__top h2{color:var(--ink)!important}
+.destinations-carousel__intro,.destinations-carousel__hint{color:var(--ink-2)!important}
+.destination-slide{background:#073f3b;color:#fff!important;border:1px solid rgba(5,90,86,.16);box-shadow:0 10px 26px -14px rgba(9,42,39,.42)}
+.destination-slide img{filter:saturate(1.12) contrast(1.04)}
+.destination-slide__shade{background:linear-gradient(180deg,rgba(3,22,21,.02) 8%,rgba(3,22,21,.24) 38%,rgba(3,22,21,.94) 100%)!important}
+.destination-slide__label,.destination-slide__label strong,.destination-slide__label>span{color:#fff!important;text-shadow:0 2px 10px rgba(0,0,0,.4)}
+.destination-slide__label small{color:#f2d99b!important;opacity:1!important;text-shadow:0 1px 5px rgba(0,0,0,.55)}
+.destination-slide__label strong{font-size:clamp(1.08rem,1rem + .55vw,1.5rem)!important;line-height:1.12!important}
+.destination-slide__label>span{font-weight:600;opacity:1!important}
+.destination-slide:focus-visible{outline:3px solid var(--cover);outline-offset:4px}
+@media(max-width:900px){.destinations-carousel__viewport{grid-auto-columns:calc((100% - 2 * var(--slide-gap))/3)}}
+@media(max-width:600px){.destinations-carousel__viewport{grid-auto-columns:82%}}
