@@ -35,6 +35,7 @@ for VERCEL_OUT in "/vercel/output" "$PWD/.vercel/output"; do
     { "src": "/go/(?<slug>[^/]*)", "dest": "/api/go?slug=$slug" },
     { "src": "/admin$", "dest": "/admin.html" },
     { "src": "/a-propos/?$", "dest": "/a-propos.html" },
+    { "src": "/trouver-mon-pvt/?$", "dest": "/trouver-mon-pvt.html" },
     { "src": "/actualites/?$", "dest": "/api/catchall?__p=actualites" },
     { "src": "/nos-astuces/?$", "dest": "/api/catchall?__p=nos-astuces" },
     { "src": "/blog.html$", "status": 308, "headers": { "Location": "/nos-astuces" } },
