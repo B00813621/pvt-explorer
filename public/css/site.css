@@ -1071,3 +1071,10 @@ dialog.fiche{width:100%;max-width:min(700px,calc(100vw - 24px));max-height:calc(
   .etape .guides{display:none}
   .etape.is-expanded .guides{display:grid}
 }
+
+
+/* Force le masquage réel des listes tant que l'étape n'est pas dépliée */
+@media(max-width:600px){
+  #guides .etape .guides[hidden]{display:none!important}
+  #guides .etape.is-expanded .guides{display:grid!important}
+}
