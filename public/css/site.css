@@ -1078,3 +1078,11 @@ dialog.fiche{width:100%;max-width:min(700px,calc(100vw - 24px));max-height:calc(
   #guides .etape .guides[hidden]{display:none!important}
   #guides .etape.is-expanded .guides{display:grid!important}
 }
+
+/* Guides mobile : deux articles visibles, surplus replié derrière « Voir plus ». */
+@media(max-width:600px){
+  #guides .etape .guides{display:grid!important}
+  #guides .etape .guides .guide--mobile-extra{display:none!important}
+  #guides .etape .guides .guide--mobile-extra[hidden]{display:none!important}
+  #guides .etape .etape__more[hidden]{display:none!important}
+}
