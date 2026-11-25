@@ -546,7 +546,7 @@
     var q = new Quill('#e-quill', {
       theme: 'snow',
       placeholder: 'Écrivez votre article…',
-      modules: { toolbar: [[{ header: [2, 3, false] }], ['bold', 'italic', 'underline'], [{ list: 'ordered' }, { list: 'bullet' }], ['link'], ['clean']] }
+      modules: { toolbar: [[{ header: [2, 3, false] }], ['bold', 'italic', 'underline'], [{ list: 'ordered' }, { list: 'bullet' }, { list: 'check' }], ['link'], ['clean']], table: true }
     });
     E.quill = q;
     if (p.content) q.clipboard.dangerouslyPasteHTML(p.content, 'silent');
@@ -554,7 +554,7 @@
     barre.className = 'inserer';
     barre.innerHTML = '<span class="inserer__titre">Insérer</span><button type="button" data-ins="image">Photo</button><button type="button" data-ins="tableau">Tableau</button>' +
       [['tip', 'Astuce'], ['warning', 'Attention'], ['danger', 'À éviter'], ['info', 'Info'], ['key', 'Chiffre clé']].map(function (c) { return '<button type="button" data-callout="' + c[0] + '">' + c[1] + '</button>'; }).join('') +
-      '<button type="button" data-ins="lien">Lien vers un article</button>';
+      '<button type="button" data-ins="lien">Lien vers un article</button><button type="button" data-ins="importer">Importer (ChatGPT, HTML)</button>';
     var tb = vue.querySelector('.ql-toolbar');
     tb.parentNode.insertBefore(barre, tb.nextSibling);
     barre.addEventListener('click', function (e) {
@@ -568,6 +568,7 @@
         var html = '<table><thead><tr><th>Colonne 1</th><th>Colonne 2</th><th>Colonne 3</th></tr></thead><tbody><tr><td>…</td><td>…</td><td>…</td></tr><tr><td>…</td><td>…</td><td>…</td></tr></tbody></table><p><br></p>';
         q.clipboard.dangerouslyPasteHTML(sel ? sel.index : q.getLength(), html, 'user');
       }
+      if (ins === 'importer') { importerFiche(); return; }
       if (ins === 'lien') choisirArticle(function (a) {
         var s2 = sel || { index: q.getLength() - 1, length: 0 };
         if (s2.length) q.formatText(s2.index, s2.length, 'link', '/blog/' + a.slug, 'user');
@@ -668,6 +669,43 @@
     p.updatedAt = aujourdhui();
     p.author = p.author || 'PVT Explorer';
     return p;
+  }
+  // Import d'une fiche produite hors de l'admin (GPT « Rédacteur PVT Explorer » ou fichier HTML) :
+  // un bloc JSON (champs + content) remplit tout le formulaire ; du HTML seul remplace le texte.
+  function importerFiche() {
+    var corps = ouvrirFenetre('Importer un article',
+      '<p class="aide">Collez la fiche JSON fournie par le GPT (titre, adresse, description, mot-clé, catégorie, pays, texte…) ou seulement le code HTML du texte. Le contenu actuel de l’éditeur sera remplacé ; rien n’est enregistré avant que vous cliquiez sur Enregistrer.</p>' +
+      '<div class="field"><label class="label" for="imp-texte">Fiche JSON ou HTML</label><textarea id="imp-texte" rows="12" spellcheck="false" placeholder="{ &quot;title&quot;: …, &quot;content&quot;: &quot;&lt;p&gt;…&quot; }"></textarea></div>' +
+      '<p class="avis avis--alerte" id="imp-erreur" hidden></p>' +
+      '<div class="fenetre__pied"><button class="btn btn--doux" type="button" data-fermer>Annuler</button><button class="btn" type="button" id="imp-ok">Importer</button></div>');
+    $('#imp-texte', corps).focus();
+    $('#imp-ok', corps).addEventListener('click', function () {
+      var brut = $('#imp-texte', corps).value.trim().replace(/^```(?:json|html)?\s*/i, '').replace(/```\s*$/, '').trim();
+      var err = $('#imp-erreur', corps);
+      if (!brut) { err.textContent = 'Rien à importer.'; err.hidden = false; return; }
+      var fiche;
+      if (brut.charAt(0) === '{') {
+        try { fiche = JSON.parse(brut); } catch (e) { err.textContent = 'JSON invalide : ' + e.message + '. Demandez au GPT de renvoyer la fiche complète dans un seul bloc.'; err.hidden = false; return; }
+        if (!fiche.content) { err.textContent = 'La fiche n’a pas de champ « content » (le texte de l’article).'; err.hidden = false; return; }
+      } else {
+        fiche = { content: brut };
+      }
+      var actuel = lireFormulaire();
+      var p = Object.assign({}, actuel, fiche.content && brut.charAt(0) !== '{' ? { content: brut } : {
+        title: fiche.title || actuel.title, slug: fiche.slug || actuel.slug, description: fiche.description || actuel.description,
+        focusKeyword: fiche.focusKeyword || actuel.focusKeyword, category: CATEGORIES[fiche.category] ? fiche.category : actuel.category,
+        countries: Array.isArray(fiche.countries) ? fiche.countries : actuel.countries, tags: Array.isArray(fiche.tags) ? fiche.tags : actuel.tags,
+        image: fiche.image || actuel.image, imageAlt: fiche.imageAlt || actuel.imageAlt, readingTime: fiche.readingTime || actuel.readingTime,
+        content: fiche.content
+      });
+      if (p.slug) E.slugManuel = true;
+      fermerFenetre();
+      remplir(p);
+      $('#e-titre').dispatchEvent(new Event('input'));
+      if (p.slug) $('#e-slug').value = p.slug;
+      marquerSale();
+      toast('Article importé. Vérifiez les photos, puis enregistrez.');
+    });
   }
   function remplir(p) {
     $('#e-titre').value = p.title || '';
