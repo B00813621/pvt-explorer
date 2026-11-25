@@ -799,3 +799,34 @@ dialog.fiche{width:100%;max-width:min(700px,calc(100vw - 24px));max-height:calc(
   .depart__budget{white-space:normal}
   .departs__legende{gap:.6rem 1.2rem}
 }
+
+
+/* Carrousel des destinations — accueil */
+.hero{grid-template-columns:minmax(0,1fr);grid-template-areas:"head" "gallery" "form" "foot";row-gap:clamp(24px,3vw,38px);padding-block:clamp(28px,4vw,52px) clamp(36px,5vw,64px)}
+.hero__text{grid-area:head;max-width:900px;width:100%;justify-self:center;text-align:center;align-self:auto}
+.hero__text .lead{max-width:760px;justify-self:center}
+.hero .destinations-carousel{grid-area:gallery;min-width:0;width:100%;max-width:1180px;justify-self:center}
+.hero .elig{grid-area:form;justify-self:center;max-width:760px}
+.hero__foot{grid-area:foot;max-width:1180px;width:100%;justify-self:center;grid-template-columns:1fr auto;align-items:center}
+.destinations-carousel{--slide-gap:16px;color:var(--ink)}
+.destinations-carousel__top{display:flex;align-items:end;justify-content:space-between;gap:1rem;margin-bottom:16px}
+.destinations-carousel__eyebrow{margin:0 0 .35rem;color:var(--cover);font:700 .7rem/1 var(--mono);letter-spacing:.12em;text-transform:uppercase}
+.destinations-carousel__top h2{margin:0;font:800 clamp(1.35rem,1.1rem + 1vw,1.9rem)/1.08 var(--font);font-stretch:112%;letter-spacing:-.025em}
+.destinations-carousel__intro{margin:.45rem 0 0;color:var(--ink-3);font-size:.94rem}
+.destinations-carousel__controls{display:flex;gap:8px;flex:none}
+.destinations-carousel__arrow{display:grid;place-items:center;width:42px;height:42px;border:1px solid var(--rule);border-radius:50%;background:var(--paper-hi);color:var(--ink);font:600 1.25rem/1 var(--font);cursor:pointer;transition:background .18s,border-color .18s,transform .18s}
+.destinations-carousel__arrow:hover{background:var(--cover);border-color:var(--cover);color:var(--cover-ink);transform:translateY(-2px)}
+.destinations-carousel__arrow:focus-visible,.destinations-carousel__viewport:focus-visible{outline:3px solid var(--violet);outline-offset:3px}
+.destinations-carousel__viewport{display:grid;grid-auto-flow:column;grid-auto-columns:calc((100% - 3 * var(--slide-gap))/4);gap:var(--slide-gap);overflow-x:auto;overscroll-behavior-inline:contain;scroll-snap-type:x mandatory;scrollbar-width:thin;scrollbar-color:var(--rule) transparent;padding:2px 2px 12px;scroll-padding-inline:2px;-webkit-overflow-scrolling:touch}
+.destination-slide{position:relative;isolation:isolate;display:block;min-width:0;aspect-ratio:1.48/1;overflow:hidden;border-radius:16px;background:var(--cover-deep);color:#fff;text-decoration:none;scroll-snap-align:start;box-shadow:0 8px 22px -16px color-mix(in srgb,var(--ink) 65%,transparent)}
+.destination-slide img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .45s cubic-bezier(.2,.7,.2,1)}
+.destination-slide__shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(8,18,25,.04) 20%,rgba(8,18,25,.78) 100%);z-index:1}
+.destination-slide__label{position:absolute;z-index:2;inset:auto 18px 17px;display:grid;gap:5px;color:#fff}
+.destination-slide__label small{font:600 .66rem/1.2 var(--mono);letter-spacing:.13em;text-transform:uppercase;opacity:.85}
+.destination-slide__label strong{font:800 clamp(1.05rem,1rem + .4vw,1.45rem)/1.05 var(--font);font-stretch:112%;letter-spacing:-.02em}
+.destination-slide__label>span{font-size:.78rem;opacity:.9}
+.destinations-carousel__hint{margin:3px 0 0;color:var(--ink-3);font-size:.76rem;text-align:right}
+@media (hover:hover){.destination-slide:hover img{transform:scale(1.06)}}
+@media (max-width:900px){.destinations-carousel__viewport{grid-auto-columns:calc((100% - 2 * var(--slide-gap))/3)}.hero__foot{grid-template-columns:1fr}}
+@media (max-width:600px){.hero{row-gap:24px;padding-block:26px 38px}.hero__text{gap:14px}.destinations-carousel{--slide-gap:12px}.destinations-carousel__top{align-items:center}.destinations-carousel__intro{font-size:.83rem}.destinations-carousel__controls{gap:6px}.destinations-carousel__arrow{width:36px;height:36px}.destinations-carousel__viewport{grid-auto-columns:82%;padding-bottom:10px}.destination-slide{aspect-ratio:1.38/1;border-radius:13px}.destination-slide__label{inset:auto 15px 14px}.destinations-carousel__hint{font-size:.7rem}.elig{max-width:100%}}
+@media (prefers-reduced-motion:reduce){.destination-slide img,.destinations-carousel__arrow{transition:none}}
