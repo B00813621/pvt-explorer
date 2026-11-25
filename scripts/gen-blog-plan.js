@@ -12,8 +12,8 @@ const WRITTEN = {
        imageAlt: 'Vue sur les gratte-ciel de Montréal depuis le belvédère Kondiaronk du mont Royal, destination phare du PVT Canada' },
   // contentVersion : à incrémenter quand le texte d'un article déjà importé est réécrit,
   // pour que l'admin propose de remplacer l'ancienne version.
-  2: { slug: 'pvt-australie', contentVersion: 3, updatedAt: '2026-11-23', title: 'PVT Australie 2027 : le guide complet pour obtenir votre visa',
-       description: 'Conditions, prix (840 AUD), budget, ImmiAccount, 88 jours : je vous guide pas à pas pour obtenir votre PVT Australie (Working Holiday Visa 417).',
+  2: { slug: 'pvt-australie', contentVersion: 4, updatedAt: '2026-11-25', title: 'PVT Australie 2027 : le guide complet pour obtenir votre visa',
+       description: 'Conditions, prix (840 AUD), délai de 3 mois, budget, 88 jours et règles 2027 : je vous guide pas à pas pour obtenir votre PVT Australie (visa 417).',
        image: '/images/blog/pvt-australie-sydney-opera.webp', imageWidth: 1280, imageHeight: 720,
        imageAlt: "L'Opéra de Sydney et le Harbour Bridge, symboles du PVT Australie (Working Holiday Visa 417)" },
   3: { slug: 'pvt-nouvelle-zelande', image: WIKI + '0/0f/Evening_at_Lake_Tekapo._NZ.jpg/1280px-Evening_at_Lake_Tekapo._NZ.jpg',

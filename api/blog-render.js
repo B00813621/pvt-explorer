@@ -302,10 +302,13 @@ function normalizeContent(input, opts = {}) {
 function extractFaq(html) {
   const m = String(html || '').match(/<h2[^>]*>[^<]*FAQ[\s\S]*?<\/h2>([\s\S]*?)(?=<h2|$)/i);
   if (!m) return null;
+  // La FAQ est la dernière section : on s'arrête aux lignes de fin (sources, crédits photo)
+  // pour qu'elles ne soient pas ajoutées à la réponse de la dernière question.
+  const section = m[1].split(/<p>\s*(?:<em>\s*)?(?:Sources?(?: officielles?)?\s*:|Photo\s*:)/i)[0];
   const items = [];
   const re = /<h3[^>]*>([\s\S]*?)<\/h3>([\s\S]*?)(?=<h3|$)/gi;
   let q;
-  while ((q = re.exec(m[1]))) {
+  while ((q = re.exec(section))) {
     const name = stripTags(q[1]).replace(/ /g, ' '), text = stripTags(q[2]).replace(/ /g, ' ');
     if (name && text) items.push({ '@type': 'Question', name, acceptedAnswer: { '@type': 'Answer', text } });
   }
