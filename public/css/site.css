@@ -1025,3 +1025,18 @@ dialog.fiche{width:100%;max-width:min(700px,calc(100vw - 24px));max-height:calc(
   .destinations-more span{font-size:1.05rem;transition:transform .2s}
   .destinations-more[aria-expanded="true"] span{transform:rotate(180deg)}
 }
+
+
+/* Tableau comparatif : affichage progressif sur téléphone */
+.depart--mobile-extra{display:table-row}
+.departs-more-wrap{display:none}
+@media(max-width:600px){
+  .depart--mobile-extra{display:none!important}
+  .departs-more-wrap{display:flex;justify-content:center;margin:18px auto 6px}
+  .departs-more{
+    min-height:46px;padding:.72rem 1.25rem;border-radius:999px;gap:12px;
+    font-size:.92rem;box-shadow:0 6px 18px -14px rgba(0,0,0,.45);
+  }
+  .departs-more span{font-size:1.05rem;transition:transform .2s}
+  .departs-more[aria-expanded="true"] span{transform:rotate(180deg)}
+}
