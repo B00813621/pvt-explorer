@@ -846,3 +846,11 @@ dialog.fiche{width:100%;max-width:min(700px,calc(100vw - 24px));max-height:calc(
 .destination-slide:focus-visible{outline:3px solid var(--cover);outline-offset:4px}
 @media(max-width:900px){.destinations-carousel__viewport{grid-auto-columns:calc((100% - 2 * var(--slide-gap))/3)}}
 @media(max-width:600px){.destinations-carousel__viewport{grid-auto-columns:82%}}
+
+
+/* Lisibilité des textes du carrousel sur le fond vert */
+.destinations-carousel__eyebrow{color:var(--foil)!important}
+.destinations-carousel__top h2{color:var(--cover-ink)!important}
+.destinations-carousel__intro,.destinations-carousel__hint{color:var(--cover-ink)!important;opacity:1!important}
+.destination-slide__label,.destination-slide__label strong,.destination-slide__label>span{color:#fff!important;opacity:1!important}
+.destination-slide__label small{color:var(--foil)!important;opacity:1!important}
