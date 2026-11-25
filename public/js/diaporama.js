@@ -1,5 +1,6 @@
 // Diaporama de l'accueil : une grande photo par destination, qui change toute seule.
-// Pause au survol, quand le clavier y entre, avec le bouton, ou si l'on préfère moins d'animations.
+// Une barre de progression et deux petites flèches (au survol) ; pause au survol, quand le clavier
+// y entre, hors de l'écran ; rien ne défile si l'on préfère moins d'animations.
 // Les photos se chargent une à une, juste avant d'être montrées.
 (function () {
   'use strict';
@@ -9,9 +10,7 @@
   var n = vues.length;
   if (n < 2) return;
   var piste = diapo.querySelector('[data-diapo-piste]');
-  var compteur = diapo.querySelector('[data-diapo-compteur]');
   var barre = diapo.querySelector('.diapo__barre span');
-  var boutonPause = diapo.querySelector('[data-diapo-pause]');
   var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
   var DUREE = 6500;
   var courant = Math.max(0, vues.findIndex(function (v) { return v.classList.contains('is-active'); }));
@@ -62,22 +61,16 @@
     courant = k;
     vues[courant].classList.add('is-active');
     piste.setAttribute('aria-live', manuel ? 'polite' : 'off');
-    if (compteur) compteur.textContent = String(courant + 1).padStart(2, '0');
     volets(vues[courant]);
     relancer();
   }
 
   diapo.querySelector('[data-diapo-prec]').addEventListener('click', function () { aller(courant - 1, true); });
   diapo.querySelector('[data-diapo-suiv]').addEventListener('click', function () { aller(courant + 1, true); });
-  boutonPause.addEventListener('click', function () {
-    arret = boutonPause.getAttribute('aria-pressed') !== 'true';
-    boutonPause.setAttribute('aria-pressed', String(arret));
-    relancer();
-  });
-  if (reduce) boutonPause.setAttribute('aria-pressed', 'true');
 
-  diapo.addEventListener('mouseenter', function () { survol = true; relancer(); });
-  diapo.addEventListener('mouseleave', function () { survol = false; relancer(); });
+  // Survol à la souris : pause et petites flèches visibles
+  diapo.addEventListener('mouseenter', function () { survol = true; diapo.classList.add('is-survol'); relancer(); });
+  diapo.addEventListener('mouseleave', function () { survol = false; diapo.classList.remove('is-survol'); relancer(); });
   diapo.addEventListener('focusin', function () { focus = true; relancer(); });
   diapo.addEventListener('focusout', function (e) { if (!diapo.contains(e.relatedTarget)) { focus = false; relancer(); } });
   diapo.addEventListener('keydown', function (e) {
@@ -87,12 +80,14 @@
 
   // Glisser du doigt : au-delà de 40 px, on change de vue et le lien n'est pas suivi
   var depart = null, glisse = false;
-  piste.addEventListener('pointerdown', function (e) { if (e.pointerType !== 'mouse') { depart = { x: e.clientX, y: e.clientY }; glisse = false; } });
+  piste.addEventListener('pointerdown', function (e) { if (e.pointerType !== 'mouse') { depart = { x: e.clientX, y: e.clientY }; glisse = false; survol = true; relancer(); } });
+  piste.addEventListener('pointercancel', function () { depart = null; survol = false; relancer(); });
   piste.addEventListener('pointerup', function (e) {
     if (!depart) return;
     var dx = e.clientX - depart.x, dy = e.clientY - depart.y;
     depart = null;
-    if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) { glisse = true; aller(courant + (dx < 0 ? 1 : -1), true); }
+    survol = false;
+    if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) { glisse = true; aller(courant + (dx < 0 ? 1 : -1), true); } else relancer();
   });
   piste.addEventListener('click', function (e) { if (glisse) { e.preventDefault(); glisse = false; } }, true);
 
