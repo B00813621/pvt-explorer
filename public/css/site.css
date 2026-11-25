@@ -889,3 +889,18 @@ dialog.fiche{width:100%;max-width:min(700px,calc(100vw - 24px));max-height:calc(
 .pvt-finder__again{margin-top:18px;border:1px solid var(--cover-ink-2);border-radius:8px;padding:9px 14px;background:transparent;color:var(--cover-ink);font:700 .88rem var(--font);cursor:pointer}
 @media(max-width:760px){.pvt-finder{grid-template-columns:1fr;gap:22px}.pvt-finder__intro{position:static}.pvt-finder__result-list{grid-template-columns:1fr 1fr}}
 @media(max-width:480px){.pvt-finder__basics{grid-template-columns:1fr}.pvt-finder__result-list{grid-template-columns:1fr}.pvt-finder__form{padding:17px}}
+
+/* Questionnaire dédié et accroche compacte sur l'accueil */
+.pvt-finder--teaser{display:block;padding-block:clamp(28px,4vw,46px);border-top:1px solid var(--rule-soft);border-bottom:1px solid var(--rule-soft)}
+.pvt-finder--teaser .pvt-finder__intro{position:static;max-width:850px;margin-inline:auto;text-align:center}
+.pvt-finder--teaser .pvt-finder__intro h2{font-size:clamp(1.55rem,1.2rem + 1.3vw,2.25rem)}
+.pvt-finder--teaser .pvt-finder__intro>p:not(.pvt-finder__eyebrow){max-width:62ch;margin:10px auto 14px}
+.pvt-finder__cta{display:flex;width:max-content;max-width:100%;margin:18px auto 0;align-items:center;gap:12px;text-decoration:none}
+.pvt-finder__breadcrumb{padding-top:24px;color:var(--ink-3);font-size:.84rem}
+.pvt-finder__breadcrumb a{color:var(--cover);font-weight:700}
+.pvt-finder__pagehead{max-width:800px;margin:24px auto 8px;text-align:center}
+.pvt-finder__pagehead h1{margin:0 0 12px}
+.pvt-finder__pagehead>p:last-child{color:var(--ink-2)}
+.pvt-finder--page{padding-block:32px 64px}
+.pvt-finder--page .pvt-finder__intro{position:static}
+@media(max-width:760px){.pvt-finder--teaser{padding-block:28px}.pvt-finder__cta{width:100%;justify-content:center}.pvt-finder--page{padding-block:22px 44px}}
