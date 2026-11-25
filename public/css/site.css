@@ -1040,3 +1040,18 @@ dialog.fiche{width:100%;max-width:min(700px,calc(100vw - 24px));max-height:calc(
   .departs-more span{font-size:1.05rem;transition:transform .2s}
   .departs-more[aria-expanded="true"] span{transform:rotate(180deg)}
 }
+
+
+/* Bouton « Voir plus » du tableau : fond blanc sur mobile */
+@media(max-width:600px){
+  .departs-more{
+    background:#fff;
+    color:var(--ink, #17212b);
+    border-color:rgba(20,30,40,.16);
+  }
+  .departs-more:hover,
+  .departs-more:focus-visible{
+    background:#fff;
+    color:var(--ink, #17212b);
+  }
+}
