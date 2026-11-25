@@ -801,60 +801,6 @@ dialog.fiche{width:100%;max-width:min(700px,calc(100vw - 24px));max-height:calc(
 }
 
 
-/* Carrousel des destinations — accueil */
-.hero{grid-template-columns:minmax(0,1fr);grid-template-areas:"head" "gallery" "form" "foot";row-gap:clamp(24px,3vw,38px);padding-block:clamp(28px,4vw,52px) clamp(36px,5vw,64px)}
-.hero__text{grid-area:head;max-width:900px;width:100%;justify-self:center;text-align:center;align-self:auto}
-.hero__text .lead{max-width:760px;justify-self:center}
-.hero .destinations-carousel{grid-area:gallery;min-width:0;width:100%;max-width:1180px;justify-self:center}
-.hero .elig{grid-area:form;justify-self:center;max-width:760px}
-.hero__foot{grid-area:foot;max-width:1180px;width:100%;justify-self:center;grid-template-columns:1fr auto;align-items:center}
-.destinations-carousel{--slide-gap:16px;color:var(--ink)}
-.destinations-carousel__top{display:flex;align-items:end;justify-content:space-between;gap:1rem;margin-bottom:16px}
-.destinations-carousel__eyebrow{margin:0 0 .35rem;color:var(--cover);font:700 .7rem/1 var(--mono);letter-spacing:.12em;text-transform:uppercase}
-.destinations-carousel__top h2{margin:0;font:800 clamp(1.35rem,1.1rem + 1vw,1.9rem)/1.08 var(--font);font-stretch:112%;letter-spacing:-.025em}
-.destinations-carousel__intro{margin:.45rem 0 0;color:var(--ink-3);font-size:.94rem}
-.destinations-carousel__controls{display:flex;gap:8px;flex:none}
-.destinations-carousel__arrow{display:grid;place-items:center;width:42px;height:42px;border:1px solid var(--rule);border-radius:50%;background:var(--paper-hi);color:var(--ink);font:600 1.25rem/1 var(--font);cursor:pointer;transition:background .18s,border-color .18s,transform .18s}
-.destinations-carousel__arrow:hover{background:var(--cover);border-color:var(--cover);color:var(--cover-ink);transform:translateY(-2px)}
-.destinations-carousel__arrow:focus-visible,.destinations-carousel__viewport:focus-visible{outline:3px solid var(--violet);outline-offset:3px}
-.destinations-carousel__viewport{display:grid;grid-auto-flow:column;grid-auto-columns:calc((100% - 3 * var(--slide-gap))/4);gap:var(--slide-gap);overflow-x:auto;overscroll-behavior-inline:contain;scroll-snap-type:x mandatory;scrollbar-width:thin;scrollbar-color:var(--rule) transparent;padding:2px 2px 12px;scroll-padding-inline:2px;-webkit-overflow-scrolling:touch}
-.destination-slide{position:relative;isolation:isolate;display:block;min-width:0;aspect-ratio:1.48/1;overflow:hidden;border-radius:16px;background:var(--cover-deep);color:#fff;text-decoration:none;scroll-snap-align:start;box-shadow:0 8px 22px -16px color-mix(in srgb,var(--ink) 65%,transparent)}
-.destination-slide img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .45s cubic-bezier(.2,.7,.2,1)}
-.destination-slide__shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(8,18,25,.04) 20%,rgba(8,18,25,.78) 100%);z-index:1}
-.destination-slide__label{position:absolute;z-index:2;inset:auto 18px 17px;display:grid;gap:5px;color:#fff}
-.destination-slide__label small{font:600 .66rem/1.2 var(--mono);letter-spacing:.13em;text-transform:uppercase;opacity:.85}
-.destination-slide__label strong{font:800 clamp(1.05rem,1rem + .4vw,1.45rem)/1.05 var(--font);font-stretch:112%;letter-spacing:-.02em}
-.destination-slide__label>span{font-size:.78rem;opacity:.9}
-.destinations-carousel__hint{margin:3px 0 0;color:var(--ink-3);font-size:.76rem;text-align:right}
-@media (hover:hover){.destination-slide:hover img{transform:scale(1.06)}}
-@media (max-width:900px){.destinations-carousel__viewport{grid-auto-columns:calc((100% - 2 * var(--slide-gap))/3)}.hero__foot{grid-template-columns:1fr}}
-@media (max-width:600px){.hero{row-gap:24px;padding-block:26px 38px}.hero__text{gap:14px}.destinations-carousel{--slide-gap:12px}.destinations-carousel__top{align-items:center}.destinations-carousel__intro{font-size:.83rem}.destinations-carousel__controls{gap:6px}.destinations-carousel__arrow{width:36px;height:36px}.destinations-carousel__viewport{grid-auto-columns:82%;padding-bottom:10px}.destination-slide{aspect-ratio:1.38/1;border-radius:13px}.destination-slide__label{inset:auto 15px 14px}.destinations-carousel__hint{font-size:.7rem}.elig{max-width:100%}}
-@media (prefers-reduced-motion:reduce){.destination-slide img,.destinations-carousel__arrow{transition:none}}
-
-
-/* Contraste renforcé et finition du carrousel des 15 destinations */
-.destinations-carousel__eyebrow{color:var(--cover)!important}
-.destinations-carousel__top h2{color:var(--ink)!important}
-.destinations-carousel__intro,.destinations-carousel__hint{color:var(--ink-2)!important}
-.destination-slide{background:#073f3b;color:#fff!important;border:1px solid rgba(5,90,86,.16);box-shadow:0 10px 26px -14px rgba(9,42,39,.42)}
-.destination-slide img{filter:saturate(1.12) contrast(1.04)}
-.destination-slide__shade{background:linear-gradient(180deg,rgba(3,22,21,.02) 8%,rgba(3,22,21,.24) 38%,rgba(3,22,21,.94) 100%)!important}
-.destination-slide__label,.destination-slide__label strong,.destination-slide__label>span{color:#fff!important;text-shadow:0 2px 10px rgba(0,0,0,.4)}
-.destination-slide__label small{color:#f2d99b!important;opacity:1!important;text-shadow:0 1px 5px rgba(0,0,0,.55)}
-.destination-slide__label strong{font-size:clamp(1.08rem,1rem + .55vw,1.5rem)!important;line-height:1.12!important}
-.destination-slide__label>span{font-weight:600;opacity:1!important}
-.destination-slide:focus-visible{outline:3px solid var(--cover);outline-offset:4px}
-@media(max-width:900px){.destinations-carousel__viewport{grid-auto-columns:calc((100% - 2 * var(--slide-gap))/3)}}
-@media(max-width:600px){.destinations-carousel__viewport{grid-auto-columns:82%}}
-
-
-/* Lisibilité des textes du carrousel sur le fond vert */
-.destinations-carousel__eyebrow{color:var(--foil)!important}
-.destinations-carousel__top h2{color:var(--cover-ink)!important}
-.destinations-carousel__intro,.destinations-carousel__hint{color:var(--cover-ink)!important;opacity:1!important}
-.destination-slide__label,.destination-slide__label strong,.destination-slide__label>span{color:#fff!important;opacity:1!important}
-.destination-slide__label small{color:var(--foil)!important;opacity:1!important}
-
 /* Questionnaire de recommandation PVT */
 .pvt-finder{display:grid;grid-template-columns:minmax(240px,.72fr) minmax(0,1.28fr);gap:clamp(24px,4vw,54px);padding-block:clamp(42px,6vw,76px);align-items:start}
 .pvt-finder__intro{position:sticky;top:28px}
@@ -920,58 +866,6 @@ dialog.fiche{width:100%;max-width:min(700px,calc(100vw - 24px));max-height:calc(
     box-shadow:0 5px 16px rgba(0,0,0,.16),inset 0 1px 0 rgba(255,255,255,.38);
   }
   .cover__chercher{width:42px;height:42px;margin-left:4px}
-
-  .hero .destinations-carousel{max-width:1240px}
-  .destinations-carousel{--slide-gap:20px}
-  .destinations-carousel__top{margin-bottom:22px}
-  .destinations-carousel__top h2{font-size:2rem}
-  .destinations-carousel__intro{font-size:1rem}
-  .destinations-carousel__viewport{
-    grid-auto-columns:calc((100% - 3 * var(--slide-gap))/4);
-    padding:4px 4px 18px;
-  }
-  .destination-slide{
-    aspect-ratio:1.32/1;
-    border-radius:19px;
-    box-shadow:0 14px 30px -17px rgba(9,42,39,.58);
-  }
-  .destination-slide__label{inset:auto 22px 21px;gap:7px}
-  .destination-slide__label small{font-size:.72rem}
-  .destination-slide__label>span{font-size:.86rem}
-  .destinations-carousel__hint{margin-top:7px;font-size:.82rem}
-
-  .pvt-finder--teaser{
-    max-width:var(--wrap);
-    margin:34px auto;
-    padding:34px 46px;
-    border:1px solid var(--rule);
-    border-radius:22px;
-    background:linear-gradient(115deg,var(--paper-hi),color-mix(in srgb,var(--foil) 10%,var(--paper-hi)));
-    box-shadow:0 16px 42px -32px rgba(15,40,45,.5);
-  }
-  .pvt-finder--teaser .pvt-finder__intro{
-    display:grid;
-    grid-template-columns:minmax(0,1fr) auto;
-    grid-template-areas:"eyebrow duration" "heading cta" "description cta";
-    align-items:center;
-    column-gap:34px;
-    row-gap:9px;
-    max-width:100%;
-    text-align:left;
-  }
-  .pvt-finder--teaser .pvt-finder__eyebrow{grid-area:eyebrow;margin:0}
-  .pvt-finder--teaser .pvt-finder__intro h2{grid-area:heading;max-width:26ch;font-size:2.15rem}
-  .pvt-finder--teaser .pvt-finder__intro>p:not(.pvt-finder__eyebrow){grid-area:description;max-width:62ch;margin:0}
-  .pvt-finder--teaser .pvt-finder__duration{grid-area:duration;justify-self:end;white-space:nowrap}
-  .pvt-finder--teaser .pvt-finder__cta{
-    grid-area:cta;
-    justify-self:end;
-    align-self:center;
-    min-width:220px;
-    margin:0;
-    padding-inline:1.5rem;
-    box-shadow:0 8px 18px -12px rgba(0,0,0,.5);
-  }
 
   .pvt-finder__breadcrumb,.pvt-finder__pagehead,.pvt-finder--page{max-width:1180px;margin-inline:auto}
   .pvt-finder__breadcrumb{padding-top:34px}
@@ -1085,4 +979,70 @@ dialog.fiche{width:100%;max-width:min(700px,calc(100vw - 24px));max-height:calc(
   #guides .etape .guides .guide--mobile-extra{display:none!important}
   #guides .etape .guides .guide--mobile-extra[hidden]{display:none!important}
   #guides .etape .etape__more[hidden]{display:none!important}
+}
+
+/* ---------- Accueil : diaporama des 15 destinations ----------
+   Le titre à gauche, une grande photo à droite qui change toute seule. Chaque vue mène au guide
+   (ou à la fiche) du pays ; le code ISO reprend les volets du tableau des départs. */
+.hero{grid-template-columns:minmax(0,.92fr) minmax(0,1.08fr);grid-template-areas:"head galerie" "foot galerie";align-items:center}
+.hero .diapo{grid-area:galerie}
+.diapo{position:relative;isolation:isolate;aspect-ratio:1.08;min-height:380px;overflow:hidden;border-radius:var(--r-vignette);background:var(--cover-deep);color:var(--cover-ink);box-shadow:0 0 0 6px color-mix(in srgb,var(--cover-ink) 12%,transparent),0 34px 70px -34px color-mix(in srgb,var(--ink) 90%,transparent)}
+.diapo__piste{position:absolute;inset:0}
+.diapo__vue{position:absolute;inset:0;margin:0;opacity:0;visibility:hidden;transition:opacity .9s var(--ease-out),visibility 0s linear .9s}
+.diapo__vue.is-active{opacity:1;visibility:visible;transition:opacity .9s var(--ease-out),visibility 0s}
+.diapo__lien{position:absolute;inset:0;display:block;color:inherit;text-decoration:none}
+.diapo__lien img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:var(--cover-deep)}
+.diapo__lien::after{content:"";position:absolute;inset:0;background:linear-gradient(to top,color-mix(in srgb,var(--cover-deep) 94%,transparent) 0%,color-mix(in srgb,var(--cover-deep) 62%,transparent) 30%,transparent 62%),linear-gradient(to bottom,color-mix(in srgb,var(--cover-deep) 45%,transparent),transparent 22%)}
+.diapo__lien:focus-visible{outline:3px solid var(--foil);outline-offset:-6px}
+.diapo__code{position:absolute;z-index:2;top:clamp(.9rem,2vw,1.3rem);left:clamp(1rem,2.6vw,1.7rem)}
+.diapo__legende{position:absolute;z-index:2;left:clamp(1rem,2.6vw,1.7rem);right:clamp(1rem,2.6vw,1.7rem);bottom:4.4rem;display:grid;justify-items:start;gap:.4rem}
+.diapo__region{font:700 .74rem/1 var(--font);font-stretch:108%;letter-spacing:.12em;text-transform:uppercase;color:var(--foil)}
+.diapo__pays{font:800 clamp(2.1rem,1.4rem + 2.4vw,3.4rem)/.98 var(--font);font-stretch:116%;letter-spacing:-.02em;color:var(--paper-hi);text-wrap:balance}
+.diapo__accroche{max-width:34ch;font:500 1rem/1.45 var(--font);color:var(--cover-ink)}
+.diapo__cta{display:inline-flex;align-items:center;gap:.45rem;margin-top:.35rem;padding:.55rem .95rem;border-radius:var(--r-control);background:var(--foil);color:var(--cover-deep);font:700 .92rem/1 var(--font);transition:gap .2s var(--ease-out),background-color .2s}
+.diapo__cta svg{width:16px;height:16px}
+@media (hover:hover){.diapo__lien:hover .diapo__cta{gap:.7rem;background:color-mix(in srgb,var(--foil) 80%,var(--paper-hi))}}
+.diapo__credit{position:absolute;z-index:3;top:clamp(.9rem,2vw,1.3rem);right:clamp(.8rem,2vw,1.2rem);max-width:55%;padding:.3rem .55rem;border-radius:4px;background:color-mix(in srgb,var(--cover-deep) 62%,transparent);font:500 .7rem/1.3 var(--font);text-align:right}
+.diapo__credit a{color:var(--cover-ink-2);text-decoration:none}
+.diapo__credit a:hover{color:var(--paper-hi);text-decoration:underline}
+.diapo__commandes{position:absolute;z-index:3;left:0;right:0;bottom:0;display:flex;align-items:center;gap:.45rem;padding:.8rem clamp(1rem,2.6vw,1.7rem) 1rem}
+.diapo:not(.is-pret) .diapo__commandes{display:none}
+.diapo:not(.is-pret) .diapo__legende{bottom:clamp(1rem,2.6vw,1.6rem)}
+.diapo__bouton{display:grid;place-items:center;flex:none;width:40px;height:40px;padding:0;border:1px solid color-mix(in srgb,var(--cover-ink) 45%,transparent);border-radius:50%;background:color-mix(in srgb,var(--cover-deep) 55%,transparent);color:var(--cover-ink);cursor:pointer;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);transition:background-color .15s,color .15s,border-color .15s,transform .12s var(--ease-press)}
+.diapo__bouton svg{width:16px;height:16px}
+.diapo__bouton:hover{background:var(--foil);border-color:var(--foil);color:var(--cover-deep)}
+.diapo__bouton:active{transform:scale(.94)}
+.diapo__bouton:focus-visible{outline:2px solid var(--foil);outline-offset:2px}
+.diapo__ico-lecture,.diapo__bouton[aria-pressed=true] .diapo__ico-pause{display:none}
+.diapo__bouton[aria-pressed=true] .diapo__ico-lecture{display:block}
+.diapo__compteur{margin-left:.35rem;font:600 .85rem/1 var(--mono);color:var(--cover-ink-2)}
+.diapo__compteur b{font-weight:600;color:var(--foil)}
+.diapo__barre{flex:1;height:3px;margin-left:.6rem;overflow:hidden;border-radius:2px;background:color-mix(in srgb,var(--cover-ink) 25%,transparent)}
+.diapo__barre span{display:block;width:100%;height:100%;background:var(--foil);transform:scaleX(0);transform-origin:left}
+.diapo.is-lecture .diapo__barre span{animation:diapo-barre var(--duree,6.5s) linear forwards}
+@keyframes diapo-barre{to{transform:scaleX(1)}}
+@media (prefers-reduced-motion:no-preference){
+  .diapo__vue.is-active .diapo__lien img{animation:diapo-zoom 8s ease-out both}
+  @keyframes diapo-zoom{from{transform:scale(1.07)}to{transform:scale(1)}}
+}
+
+/* « Quels PVT vous sont ouverts ? » à côté du titre des 15 destinations */
+.section__head--elig{grid-template-columns:minmax(0,1fr) minmax(0,460px);align-items:end;column-gap:clamp(24px,5vw,72px);max-width:none}
+.section__head--elig .section__intro{display:grid;gap:.9rem;max-width:62ch}
+.section__head--elig .elig{justify-self:end}
+
+@media (max-width:900px){
+  .hero{grid-template-columns:minmax(0,1fr);grid-template-areas:"head" "galerie" "foot"}
+  .diapo{aspect-ratio:4/3.9;min-height:0}
+  .section__head--elig{grid-template-columns:minmax(0,1fr);row-gap:1.6rem}
+  .section__head--elig .elig{justify-self:stretch}
+}
+@media (max-width:560px){
+  .diapo{aspect-ratio:4/4.6}
+  .diapo__legende{bottom:4rem;gap:.3rem}
+  .diapo__accroche{font-size:.92rem}
+  .diapo__cta{font-size:.86rem;padding:.5rem .8rem}
+  .diapo__credit{max-width:62%;font-size:.7rem}
+  .diapo__bouton{width:38px;height:38px}
+  .diapo__code .volets span,.diapo__code span{font-size:.95rem}
 }
