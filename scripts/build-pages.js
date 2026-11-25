@@ -1,5 +1,6 @@
 'use strict';
 // Génère les pages statiques de texte (À propos, mentions légales, confidentialité, confirmation, 404)
+// et l'habillage du questionnaire « Trouver mon PVT »
 // avec le même habillage que les articles (api/blog-render.js). Lancer : npm run build:pages
 const fs = require('node:fs');
 const path = require('node:path');
@@ -164,6 +165,35 @@ doc({
 <p><a class="btn" href="/#eligibilite">Vérifier mes destinations</a> <a class="btn btn--line" href="/nos-astuces">Tous les guides</a></p>
 `
 });
+
+// Questionnaire « Trouver mon PVT » : son contenu (<main>) s'édite dans public/trouver-mon-pvt.html ;
+// l'en-tête, le pied de page et les scripts communs sont régénérés ici, comme pour les autres pages.
+{
+  const fichier = path.join(PUB, 'trouver-mon-pvt.html');
+  const actuel = fs.readFileSync(fichier, 'utf8');
+  const main = actuel.match(/<main[\s\S]*?<\/main>/);
+  if (!main) throw new Error('trouver-mon-pvt.html : <main> introuvable');
+  const ld = {
+    '@context': 'https://schema.org', '@type': 'WebPage', url: SITE + '/trouver-mon-pvt', name: 'Quel PVT choisir ? Le questionnaire', inLanguage: 'fr-FR',
+    isPartOf: { '@id': SITE + '/#website' }
+  };
+  const html = `<!doctype html>
+<html lang="fr">
+<head>
+${headCommon({ title: 'Quel PVT choisir ? Trouvez votre destination idéale | PVT Explorer', desc: 'Répondez à 7 questions pour trouver les destinations PVT qui correspondent à votre âge, votre budget et vos envies. Questionnaire gratuit et sans inscription.', url: SITE + '/trouver-mon-pvt' })}
+<script type="application/ld+json">${JSON.stringify(ld).replace(/</g, '\\u003c')}</script>
+</head>
+<body class="page-doc">
+${siteHeader('questionnaire')}
+${main[0]}
+${siteFooter()}
+${pageScripts('\n<script src="/js/pvt-finder.js" defer></script>')}
+</body>
+</html>
+`;
+  fs.writeFileSync(fichier, typoFr(html));
+  console.log('écrit trouver-mon-pvt.html');
+}
 
 fs.writeFileSync(path.join(PUB, '404.html'), renderNotFound());
 console.log('écrit 404.html');

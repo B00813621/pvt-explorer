@@ -105,7 +105,7 @@ const server = http.createServer(async (req, res) => {
       return res.end('Méthode non autorisée');
     }
 
-    const routes = { '/': '/index.html', '/admin': '/admin.html', '/a-propos': '/a-propos.html', '/a-propos/': '/a-propos.html' };
+    const routes = { '/': '/index.html', '/admin': '/admin.html', '/a-propos': '/a-propos.html', '/a-propos/': '/a-propos.html', '/trouver-mon-pvt': '/trouver-mon-pvt.html', '/trouver-mon-pvt/': '/trouver-mon-pvt.html' };
     let rel = routes[p] || decodeURIComponent(p);
     const file = path.resolve(PUBLIC, '.' + rel);
     if (!file.startsWith(PUBLIC + path.sep)) {
