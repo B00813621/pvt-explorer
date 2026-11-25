@@ -1004,3 +1004,24 @@ dialog.fiche{width:100%;max-width:min(700px,calc(100vw - 24px));max-height:calc(
   .pvt-finder--page .pvt-finder__question{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:14px}
   .pvt-finder--page .pvt-finder__question legend{grid-column:1/-1}
 }
+
+
+/* Sur mobile, alléger la liste des destinations et laisser l'utilisateur déplier */
+.vignette--mobile-extra{display:block}
+.destinations-more-wrap{display:none}
+@media(max-width:600px){
+  .vignette--mobile-extra{display:none!important}
+  .region--mobile-empty{display:none}
+  .destinations-more-wrap{display:flex;justify-content:center;margin:22px auto 6px}
+  .destinations-more-wrap [hidden]{display:none}
+  .destinations-more{
+    min-height:46px;
+    padding:.72rem 1.25rem;
+    border-radius:999px;
+    gap:12px;
+    font-size:.92rem;
+    box-shadow:0 6px 18px -14px rgba(0,0,0,.45);
+  }
+  .destinations-more span{font-size:1.05rem;transition:transform .2s}
+  .destinations-more[aria-expanded="true"] span{transform:rotate(180deg)}
+}
