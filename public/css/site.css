@@ -904,3 +904,103 @@ dialog.fiche{width:100%;max-width:min(700px,calc(100vw - 24px));max-height:calc(
 .pvt-finder--page{padding-block:32px 64px}
 .pvt-finder--page .pvt-finder__intro{position:static}
 @media(max-width:760px){.pvt-finder--teaser{padding-block:28px}.pvt-finder__cta{width:100%;justify-content:center}.pvt-finder--page{padding-block:22px 44px}}
+
+
+/* Finitions grand écran pour les nouveaux éléments PVT Explorer.
+   Les règles sont limitées au desktop : l'expérience mobile reste inchangée. */
+@media (min-width:1100px){
+  .cover__bar{min-height:76px;gap:clamp(24px,3vw,48px)}
+  .cover__links{align-items:center;gap:clamp(18px,1.8vw,28px)}
+  .cover__links>li{display:flex;align-items:center}
+  .cover__links>li>a:not(.cover__questionnaire){padding-block:.7rem}
+  .cover__links a.cover__questionnaire{
+    min-height:42px;
+    padding:.78rem 1.15rem;
+    font-size:.9rem;
+    box-shadow:0 5px 16px rgba(0,0,0,.16),inset 0 1px 0 rgba(255,255,255,.38);
+  }
+  .cover__chercher{width:42px;height:42px;margin-left:4px}
+
+  .hero .destinations-carousel{max-width:1240px}
+  .destinations-carousel{--slide-gap:20px}
+  .destinations-carousel__top{margin-bottom:22px}
+  .destinations-carousel__top h2{font-size:2rem}
+  .destinations-carousel__intro{font-size:1rem}
+  .destinations-carousel__viewport{
+    grid-auto-columns:calc((100% - 3 * var(--slide-gap))/4);
+    padding:4px 4px 18px;
+  }
+  .destination-slide{
+    aspect-ratio:1.32/1;
+    border-radius:19px;
+    box-shadow:0 14px 30px -17px rgba(9,42,39,.58);
+  }
+  .destination-slide__label{inset:auto 22px 21px;gap:7px}
+  .destination-slide__label small{font-size:.72rem}
+  .destination-slide__label>span{font-size:.86rem}
+  .destinations-carousel__hint{margin-top:7px;font-size:.82rem}
+
+  .pvt-finder--teaser{
+    max-width:var(--wrap);
+    margin:34px auto;
+    padding:34px 46px;
+    border:1px solid var(--rule);
+    border-radius:22px;
+    background:linear-gradient(115deg,var(--paper-hi),color-mix(in srgb,var(--foil) 10%,var(--paper-hi)));
+    box-shadow:0 16px 42px -32px rgba(15,40,45,.5);
+  }
+  .pvt-finder--teaser .pvt-finder__intro{
+    display:grid;
+    grid-template-columns:minmax(0,1fr) auto;
+    grid-template-areas:"eyebrow duration" "heading cta" "description cta";
+    align-items:center;
+    column-gap:34px;
+    row-gap:9px;
+    max-width:100%;
+    text-align:left;
+  }
+  .pvt-finder--teaser .pvt-finder__eyebrow{grid-area:eyebrow;margin:0}
+  .pvt-finder--teaser .pvt-finder__intro h2{grid-area:heading;max-width:26ch;font-size:2.15rem}
+  .pvt-finder--teaser .pvt-finder__intro>p:not(.pvt-finder__eyebrow){grid-area:description;max-width:62ch;margin:0}
+  .pvt-finder--teaser .pvt-finder__duration{grid-area:duration;justify-self:end;white-space:nowrap}
+  .pvt-finder--teaser .pvt-finder__cta{
+    grid-area:cta;
+    justify-self:end;
+    align-self:center;
+    min-width:220px;
+    margin:0;
+    padding-inline:1.5rem;
+    box-shadow:0 8px 18px -12px rgba(0,0,0,.5);
+  }
+
+  .pvt-finder__breadcrumb,.pvt-finder__pagehead,.pvt-finder--page{max-width:1180px;margin-inline:auto}
+  .pvt-finder__breadcrumb{padding-top:34px}
+  .pvt-finder__pagehead{margin-top:34px;margin-bottom:20px}
+  .pvt-finder__pagehead h1{font-size:clamp(2.5rem,3.2vw,3.5rem)}
+  .pvt-finder--page{
+    grid-template-columns:minmax(250px,.68fr) minmax(0,1.32fr);
+    gap:clamp(38px,5vw,72px);
+    padding-block:30px 88px;
+  }
+  .pvt-finder--page .pvt-finder__intro{position:sticky;top:112px;padding:28px 24px;border:1px solid var(--rule);border-radius:18px;background:var(--paper-hi)}
+  .pvt-finder--page .pvt-finder__intro h2{font-size:2rem}
+  .pvt-finder--page .pvt-finder__form{padding:34px 38px;border-radius:20px;box-shadow:0 18px 48px -34px rgba(15,40,45,.55)}
+  .pvt-finder--page .pvt-finder__question{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:24px;align-items:start}
+  .pvt-finder--page .pvt-finder__question legend{grid-column:1/-1;margin-bottom:15px}
+  .pvt-finder--page .pvt-finder__choice{min-height:38px;margin:4px 0;padding:9px 11px;border:1px solid transparent;border-radius:9px;transition:background .15s,border-color .15s}
+  .pvt-finder--page .pvt-finder__choice:hover{background:color-mix(in srgb,var(--cover) 5%,var(--paper-hi));border-color:var(--rule)}
+  .pvt-finder--page .pvt-finder__choice:has(input:checked){background:color-mix(in srgb,var(--cover) 8%,var(--paper-hi));border-color:color-mix(in srgb,var(--cover) 30%,var(--rule))}
+  .pvt-finder--page .pvt-finder__submit{max-width:360px;margin-left:auto;margin-right:auto}
+  .pvt-finder__results{border-radius:20px;box-shadow:0 16px 38px -24px rgba(0,0,0,.38)}
+  .pvt-finder__result-list{gap:18px}
+  .pvt-finder__card{padding:22px;border-radius:16px;transition:transform .2s,border-color .2s,background .2s}
+  .pvt-finder__card:hover{transform:translateY(-3px);border-color:color-mix(in srgb,var(--foil) 55%,transparent);background:rgba(255,255,255,.1)}
+}
+@media (min-width:861px) and (max-width:1099px){
+  .cover__links{gap:14px}
+  .cover__links a{font-size:.86rem}
+  .cover__links a.cover__questionnaire{padding:.65rem .8rem}
+  .pvt-finder--page{grid-template-columns:minmax(210px,.7fr) minmax(0,1.3fr);gap:24px}
+  .pvt-finder--page .pvt-finder__question{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:14px}
+  .pvt-finder--page .pvt-finder__question legend{grid-column:1/-1}
+}
