@@ -585,8 +585,6 @@ dialog.fiche{width:100%;max-width:min(700px,calc(100vw - 24px));max-height:calc(
 .credits{margin-top:1.2rem;font-size:.84rem;line-height:1.55;color:var(--ink-3);max-width:60ch}
 .credits a{color:inherit}
 
-}
-
 /* En-tête de groupe avec ses flèches */
 .bagage__tete{display:flex;align-items:flex-end;justify-content:space-between;gap:1rem;padding-bottom:.6rem;border-bottom:2px solid var(--ink)}
 .bagage__tete .h-sub{padding-bottom:0;border-bottom:0}
@@ -798,57 +796,6 @@ dialog.fiche{width:100%;max-width:min(700px,calc(100vw - 24px));max-height:calc(
 }
 
 
-/* Questionnaire de recommandation PVT */
-.pvt-finder{display:grid;grid-template-columns:minmax(240px,.72fr) minmax(0,1.28fr);gap:clamp(24px,4vw,54px);padding-block:clamp(42px,6vw,76px);align-items:start}
-.pvt-finder__intro{position:sticky;top:28px}
-.pvt-finder__eyebrow{margin:0 0 .6rem;color:var(--cover);font:700 .72rem/1.2 var(--mono);letter-spacing:.12em;text-transform:uppercase}
-.pvt-finder__intro h2{margin:0;color:var(--ink);font:800 clamp(1.8rem,1.4rem + 1.5vw,2.6rem)/1.05 var(--font);font-stretch:112%;letter-spacing:-.035em}
-.pvt-finder__intro>p:not(.pvt-finder__eyebrow){color:var(--ink-2);line-height:1.65}
-.pvt-finder__duration{display:inline-block;padding:.45rem .7rem;border:1px solid var(--rule);border-radius:99px;color:var(--cover);font:600 .72rem/1.2 var(--mono)}
-.pvt-finder__form{min-width:0;padding:clamp(18px,3vw,30px);border:1px solid var(--rule);border-radius:18px;background:var(--paper-hi);box-shadow:0 12px 36px -28px rgba(15,40,45,.45)}
-.pvt-finder__basics{display:grid;grid-template-columns:1fr 1fr;gap:18px;padding-bottom:22px;border-bottom:1px solid var(--rule-soft)}
-.pvt-finder__field,.pvt-finder__question{min-width:0;margin:0;padding:0;border:0}
-.pvt-finder__field>label,.pvt-finder__field legend{display:block;margin-bottom:10px;color:var(--ink);font-weight:750}
-.pvt-finder__field input[type=number]{width:100%;min-height:44px;padding:10px 12px;border:1px solid var(--rule);border-radius:9px;background:#fff;color:var(--ink);font:inherit}
-.pvt-finder__questions{display:grid;gap:0}
-.pvt-finder__question{padding:21px 0;border-bottom:1px solid var(--rule-soft)}
-.pvt-finder__question legend{display:flex;align-items:flex-start;gap:11px;margin-bottom:13px;color:var(--ink);font-weight:800;line-height:1.4}
-.pvt-finder__question legend span{flex:none;color:var(--cover);font:700 .75rem/1.6 var(--mono)}
-.pvt-finder__choice{display:flex;align-items:flex-start;gap:10px;margin:8px 0;color:var(--ink-2);font-size:.92rem;line-height:1.4;cursor:pointer}
-.pvt-finder__choice input{flex:none;width:17px;height:17px;margin:1px 0 0;accent-color:var(--cover)}
-.pvt-finder__choice:has(input:checked){color:var(--cover);font-weight:700}
-.pvt-finder__submit{display:flex;justify-content:center;gap:12px;width:100%;margin-top:22px;cursor:pointer}
-.pvt-finder__privacy{margin:12px 0 0;color:var(--ink-3);font-size:.75rem;line-height:1.5;text-align:center}
-.pvt-finder__results{grid-column:1/-1;padding:clamp(20px,4vw,34px);border-radius:18px;background:var(--cover);color:var(--cover-ink)}
-.pvt-finder__results h3{margin:0 0 8px;color:var(--cover-ink);font:800 clamp(1.5rem,1.2rem + 1vw,2rem)/1.1 var(--font)}
-.pvt-finder__results-intro{max-width:70ch;color:var(--cover-ink-2);line-height:1.6}
-.pvt-finder__result-list{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:22px}
-.pvt-finder__card{padding:17px;border:1px solid rgba(247,248,244,.22);border-radius:13px;background:rgba(255,255,255,.07)}
-.pvt-finder__card h4{margin:0 0 7px;color:var(--cover-ink);font-size:1.1rem}
-.pvt-finder__card p{margin:0 0 12px;color:var(--cover-ink-2);font-size:.88rem;line-height:1.5}
-.pvt-finder__card a{display:inline-flex;gap:7px;color:var(--foil);font-weight:750;text-decoration:underline;text-underline-offset:3px}
-.pvt-finder__match{display:inline-block;margin-bottom:9px;color:var(--foil);font:700 .68rem/1.3 var(--mono);letter-spacing:.08em;text-transform:uppercase}
-.pvt-finder__note{margin:18px 0 0;color:var(--cover-ink-2);font-size:.78rem;line-height:1.55}
-.pvt-finder__again{margin-top:18px;border:1px solid var(--cover-ink-2);border-radius:8px;padding:9px 14px;background:transparent;color:var(--cover-ink);font:700 .88rem var(--font);cursor:pointer}
-@media(max-width:760px){.pvt-finder{grid-template-columns:1fr;gap:22px}.pvt-finder__intro{position:static}.pvt-finder__result-list{grid-template-columns:1fr 1fr}}
-@media(max-width:480px){.pvt-finder__basics{grid-template-columns:1fr}.pvt-finder__result-list{grid-template-columns:1fr}.pvt-finder__form{padding:17px}}
-
-/* Questionnaire dédié et accroche compacte sur l'accueil */
-.pvt-finder--teaser{display:block;padding-block:clamp(28px,4vw,46px);border-top:1px solid var(--rule-soft);border-bottom:1px solid var(--rule-soft)}
-.pvt-finder--teaser .pvt-finder__intro{position:static;max-width:850px;margin-inline:auto;text-align:center}
-.pvt-finder--teaser .pvt-finder__intro h2{font-size:clamp(1.55rem,1.2rem + 1.3vw,2.25rem)}
-.pvt-finder--teaser .pvt-finder__intro>p:not(.pvt-finder__eyebrow){max-width:62ch;margin:10px auto 14px}
-.pvt-finder__cta{display:flex;width:max-content;max-width:100%;margin:18px auto 0;align-items:center;gap:12px;text-decoration:none}
-.pvt-finder__breadcrumb{padding-top:24px;color:var(--ink-3);font-size:.84rem}
-.pvt-finder__breadcrumb a{color:var(--cover);font-weight:700}
-.pvt-finder__pagehead{max-width:800px;margin:24px auto 8px;text-align:center}
-.pvt-finder__pagehead h1{margin:0 0 12px}
-.pvt-finder__pagehead>p:last-child{color:var(--ink-2)}
-.pvt-finder--page{padding-block:32px 64px}
-.pvt-finder--page .pvt-finder__intro{position:static}
-@media(max-width:760px){.pvt-finder--teaser{padding-block:28px}.pvt-finder__cta{width:100%;justify-content:center}.pvt-finder--page{padding-block:22px 44px}}
-
-
 /* Finitions grand écran pour les nouveaux éléments PVT Explorer.
    Les règles sont limitées au desktop : l'expérience mobile reste inchangée. */
 @media (min-width:1100px){
@@ -857,36 +804,10 @@ dialog.fiche{width:100%;max-width:min(700px,calc(100vw - 24px));max-height:calc(
   .cover__links>li{display:flex;align-items:center}
   .cover__links>li>a{padding-block:.7rem}
   .cover__chercher{width:42px;height:42px;margin-left:4px}
-
-  .pvt-finder__breadcrumb,.pvt-finder__pagehead,.pvt-finder--page{max-width:1180px;margin-inline:auto}
-  .pvt-finder__breadcrumb{padding-top:34px}
-  .pvt-finder__pagehead{margin-top:34px;margin-bottom:20px}
-  .pvt-finder__pagehead h1{font-size:clamp(2.5rem,3.2vw,3.5rem)}
-  .pvt-finder--page{
-    grid-template-columns:minmax(250px,.68fr) minmax(0,1.32fr);
-    gap:clamp(38px,5vw,72px);
-    padding-block:30px 88px;
-  }
-  .pvt-finder--page .pvt-finder__intro{position:sticky;top:112px;padding:28px 24px;border:1px solid var(--rule);border-radius:18px;background:var(--paper-hi)}
-  .pvt-finder--page .pvt-finder__intro h2{font-size:2rem}
-  .pvt-finder--page .pvt-finder__form{padding:34px 38px;border-radius:20px;box-shadow:0 18px 48px -34px rgba(15,40,45,.55)}
-  .pvt-finder--page .pvt-finder__question{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:24px;align-items:start}
-  .pvt-finder--page .pvt-finder__question legend{grid-column:1/-1;margin-bottom:15px}
-  .pvt-finder--page .pvt-finder__choice{min-height:38px;margin:4px 0;padding:9px 11px;border:1px solid transparent;border-radius:9px;transition:background .15s,border-color .15s}
-  .pvt-finder--page .pvt-finder__choice:hover{background:color-mix(in srgb,var(--cover) 5%,var(--paper-hi));border-color:var(--rule)}
-  .pvt-finder--page .pvt-finder__choice:has(input:checked){background:color-mix(in srgb,var(--cover) 8%,var(--paper-hi));border-color:color-mix(in srgb,var(--cover) 30%,var(--rule))}
-  .pvt-finder--page .pvt-finder__submit{max-width:360px;margin-left:auto;margin-right:auto}
-  .pvt-finder__results{border-radius:20px;box-shadow:0 16px 38px -24px rgba(0,0,0,.38)}
-  .pvt-finder__result-list{gap:18px}
-  .pvt-finder__card{padding:22px;border-radius:16px;transition:transform .2s,border-color .2s,background .2s}
-  .pvt-finder__card:hover{transform:translateY(-3px);border-color:color-mix(in srgb,var(--foil) 55%,transparent);background:rgba(255,255,255,.1)}
 }
 @media (min-width:861px) and (max-width:1099px){
   .cover__links{gap:14px}
   .cover__links a{font-size:.86rem}
-  .pvt-finder--page{grid-template-columns:minmax(210px,.7fr) minmax(0,1.3fr);gap:24px}
-  .pvt-finder--page .pvt-finder__question{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:14px}
-  .pvt-finder--page .pvt-finder__question legend{grid-column:1/-1}
 }
 
 
@@ -977,7 +898,7 @@ dialog.fiche{width:100%;max-width:min(700px,calc(100vw - 24px));max-height:calc(
    du tableau des départs. Seules une barre de progression et deux petites flèches (au survol) la pilotent. */
 .hero{grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-areas:"head ." "foot .";align-content:center;min-height:clamp(540px,74vh,800px)}
 .hero .diapo{grid-area:galerie}
-.diapo{position:absolute;isolation:isolate;top:0;right:0;bottom:10px;left:calc(50% + clamp(8px,1.4vw,20px));overflow:hidden;background:var(--cover-deep);color:var(--cover-ink)}
+.diapo{--volet:color-mix(in srgb,var(--ink) 70%,var(--cover-deep));position:absolute;isolation:isolate;top:0;right:0;bottom:10px;left:calc(50% + clamp(8px,1.4vw,20px));overflow:hidden;background:var(--cover-deep);color:var(--cover-ink)}
 .diapo__piste{position:absolute;inset:0}
 .diapo__vue{position:absolute;inset:0;margin:0;opacity:0;visibility:hidden;transition:opacity .9s var(--ease-out),visibility 0s linear .9s}
 .diapo__vue.is-active{opacity:1;visibility:visible;transition:opacity .9s var(--ease-out),visibility 0s}
@@ -1035,6 +956,87 @@ dialog.fiche{width:100%;max-width:min(700px,calc(100vw - 24px));max-height:calc(
   .diapo__code .volets span,.diapo__code span{font-size:.95rem}
 }
 
-/* Questionnaire : sur grand écran, la carte d'intro reste à gauche pendant le défilement,
-   donc les résultats s'affichent dans la colonne de droite, sous le formulaire, sans être recouverts. */
-@media (min-width:1100px){.pvt-finder--page .pvt-finder__results{grid-column:2}}
+/* ---------- Trouver mon PVT : une question à la fois ----------
+   Couverture verte guillochée comme l'accueil, puis une vignette en papier qui la chevauche.
+   Chaque réponse est un grand bouton marqué d'une lettre en volet ; un clic passe à la question suivante.
+   Les résultats s'affichent sur l'écran sombre du tableau des départs. */
+.trouver__couverture{padding:clamp(24px,4vw,44px) 0 clamp(120px,14vw,170px)}
+.trouver__tete{display:grid;gap:clamp(12px,1.8vw,20px)}
+.trouver__couverture .crumbs ol{color:var(--cover-ink-2)}
+.trouver__couverture .crumbs a{color:var(--cover-ink)}
+.trouver__couverture .crumbs a:hover{color:var(--foil)}
+.trouver__titre{max-width:17ch;margin-top:.4rem;font:800 clamp(2.4rem,1.5rem + 3.6vw,4.6rem)/.96 var(--font);font-stretch:116%;letter-spacing:-.02em;color:var(--cover-ink);text-wrap:balance}
+.trouver__lead{max-width:58ch;font-size:clamp(1.02rem,.96rem + .3vw,1.18rem);line-height:1.6;color:var(--cover-ink)}
+.trouver__corps{position:relative;z-index:2;margin-top:calc(-1 * clamp(84px,10vw,124px));padding-bottom:clamp(56px,8vw,104px)}
+.trouver__methode{display:grid;gap:.8rem;max-width:62ch;margin:clamp(40px,6vw,72px) auto 0}
+.trouver__methode p{color:var(--ink-2)}
+.trouver__methode a{color:var(--cover)}
+
+.quiz{--pad:clamp(1.15rem,3.2vw,2.4rem);display:block;max-width:880px;margin-inline:auto;padding:var(--pad) var(--pad) 0;overflow:hidden;box-shadow:0 30px 60px -30px color-mix(in srgb,var(--ink) 75%,transparent)}
+.quiz__sans-js{padding-bottom:var(--pad)}
+.quiz__haut{display:flex;align-items:center;justify-content:space-between;gap:1rem;min-height:36px}
+.quiz__retour{display:inline-flex;align-items:center;gap:.45rem;min-height:36px;padding:.2rem .1rem;border:0;background:none;color:var(--ink-2);font:650 .92rem/1 var(--font);cursor:pointer;transition:color .15s,gap .2s var(--ease-out)}
+.quiz__retour svg{width:16px;height:16px}
+.quiz__retour:hover{color:var(--cover);gap:.65rem}
+.quiz__etape{margin-left:auto;font-size:.8rem;color:var(--ink-3)}
+.quiz__progres{display:grid;grid-template-columns:repeat(9,minmax(0,1fr));gap:4px;margin:.75rem 0 clamp(1.4rem,3vw,2rem)}
+.quiz__progres span{height:6px;border-radius:999px;background:var(--rule-soft);transition:background-color .35s var(--ease-out)}
+.quiz__progres .is-fait{background:var(--cover)}
+.quiz__progres .is-courant{background:var(--foil)}
+.quiz__question{font:780 clamp(1.55rem,1.15rem + 1.6vw,2.35rem)/1.12 var(--font);font-stretch:110%;letter-spacing:-.012em;color:var(--ink);text-wrap:balance;outline:none}
+.quiz__aide{max-width:60ch;margin-top:.55rem;color:var(--ink-2)}
+.quiz__choix{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.75rem;margin-top:clamp(1.2rem,2.6vw,1.8rem)}
+.quiz__option{display:flex;align-items:center;gap:.95rem;min-height:72px;padding:.85rem 1.1rem;border:1.5px solid var(--rule);border-radius:var(--r-vignette);background:var(--paper-hi);color:var(--ink);font:600 1.04rem/1.35 var(--font);text-align:left;cursor:pointer;transition:border-color .15s,background-color .2s,color .2s,box-shadow .2s var(--ease-out),transform .12s var(--ease-press)}
+.quiz__option:hover{border-color:var(--cover);background:color-mix(in srgb,var(--cover) 4%,var(--paper-hi));box-shadow:0 10px 22px -18px color-mix(in srgb,var(--cover) 80%,transparent)}
+.quiz__option:active{transform:scale(.98)}
+.quiz__option:focus-visible{outline:2px solid var(--violet);outline-offset:2px}
+.quiz__lettre{position:relative;display:grid;place-items:center;flex:none;width:2.1rem;height:2.5rem;border:1px solid var(--rule);border-radius:4px;background:linear-gradient(to bottom,var(--paper-hi) 0 50%,var(--paper-lo) 50%);font-size:.95rem;font-weight:600;color:var(--ink-2);transition:background .2s,color .2s,border-color .2s}
+.quiz__lettre::after{content:"";position:absolute;left:0;right:0;top:50%;height:1px;background:color-mix(in srgb,var(--ink) 18%,transparent)}
+.quiz__option[aria-pressed=true]{border-color:var(--cover);background:var(--cover);color:var(--cover-ink)}
+.quiz__option[aria-pressed=true] .quiz__lettre{border-color:var(--foil);background:var(--foil);color:var(--cover-deep)}
+.quiz__option.is-choisi{animation:quiz-choix .3s var(--ease-press)}
+@keyframes quiz-choix{40%{transform:scale(.97)}}
+@media (prefers-reduced-motion:no-preference){
+  .quiz__corps.is-avant{animation:quiz-avant .38s var(--ease-out) both}
+  .quiz__corps.is-arriere{animation:quiz-arriere .38s var(--ease-out) both}
+  @keyframes quiz-avant{from{opacity:0;transform:translateX(28px)}}
+  @keyframes quiz-arriere{from{opacity:0;transform:translateX(-28px)}}
+}
+.quiz__recap{display:flex;flex-wrap:wrap;align-items:center;gap:.45rem .7rem;margin-top:clamp(1.4rem,3vw,2rem);padding-top:1rem;border-top:1px dashed var(--rule)}
+.quiz__recap ul{display:flex;flex-wrap:wrap;gap:.4rem;margin:0;padding:0;list-style:none}
+.quiz__recap button{min-height:32px;padding:.3rem .7rem;border:1px solid var(--rule);border-radius:99px;background:var(--paper);color:var(--ink-2);font:600 .82rem/1.2 var(--font);cursor:pointer;transition:border-color .15s,color .15s,background-color .15s}
+.quiz__recap button:hover{border-color:var(--cover);color:var(--cover);background:var(--paper-hi)}
+.quiz__mrz{margin:clamp(1.2rem,2.6vw,1.6rem) calc(-1 * var(--pad)) 0;padding-inline:var(--pad)}
+.quiz__note{max-width:64ch;margin-top:1.2rem;font-size:.88rem;color:var(--ink-3)}
+.quiz__fin{display:flex;flex-wrap:wrap;gap:.7rem;margin-top:1.2rem}
+
+.quiz__tableau{margin-top:clamp(1.2rem,2.6vw,1.8rem)}
+.quiz__autres{margin-top:1rem;color:var(--ink-2)}
+.quiz__autres a{color:var(--cover);font-weight:600}
+.trouver__couverture .crumbs [aria-current]{color:var(--cover-ink-2)}
+.choix-departs{margin:0;padding:0;list-style:none}
+.choix-depart{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:.6rem clamp(1rem,2.4vw,1.6rem);padding:1rem clamp(1rem,2.4vw,1.5rem)}
+.choix-depart + .choix-depart{border-top:1px solid color-mix(in srgb,var(--cover-ink) 10%,transparent)}
+.choix-depart.is-top{background:color-mix(in srgb,var(--foil) 7%,var(--tableau))}
+.choix-depart__texte{display:grid;gap:.25rem;min-width:0}
+.choix-depart__rang{font:700 .7rem/1 var(--font);font-stretch:108%;letter-spacing:.1em;text-transform:uppercase;color:var(--foil)}
+.choix-depart:not(.is-top) .choix-depart__rang{color:var(--cover-ink-2)}
+.choix-depart__nom{font:700 1.22rem/1.2 var(--font);font-stretch:104%;color:var(--cover-ink)}
+.choix-depart__texte p{font-size:.9rem;line-height:1.45;color:var(--cover-ink-2)}
+.choix-depart__texte .choix-depart__note{color:var(--foil)}
+.choix-depart__infos{display:grid;justify-items:end;gap:.45rem}
+.choix-depart__infos .porte{font-size:.84rem}
+.choix-depart__budget{font-size:.84rem;color:var(--cover-ink)}
+.choix-depart__lien{display:inline-flex;align-items:center;gap:.4rem;color:var(--foil);font:700 .92rem/1.2 var(--font);text-decoration:none;white-space:nowrap}
+.choix-depart__lien svg{width:15px;height:15px;transition:transform .2s var(--ease-out)}
+.choix-depart__lien:hover{text-decoration:underline;text-underline-offset:3px}
+.choix-depart__lien:hover svg{transform:translateX(3px)}
+
+@media (max-width:640px){
+  .quiz__choix{grid-template-columns:minmax(0,1fr)}
+  .quiz__option{min-height:60px;font-size:1rem}
+  .choix-depart{grid-template-columns:auto minmax(0,1fr)}
+  .choix-depart__infos{grid-column:1 / -1;display:flex;flex-wrap:wrap;align-items:center;justify-items:start;gap:.5rem .8rem}
+  .choix-depart__lien{margin-left:auto}
+  .choix-depart .volets span{font-size:.95rem}
+}

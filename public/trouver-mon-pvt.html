@@ -49,88 +49,24 @@
     </div>
   </div>
 </header>
-<main id="contenu" class="wrap">
-  <nav class="pvt-finder__breadcrumb" aria-label="Fil d’Ariane"><a href="/">Accueil</a><span aria-hidden="true"> / </span><span>Questionnaire PVT</span></nav>
-  <header class="pvt-finder__pagehead">
-    <p class="pvt-finder__eyebrow">Votre projet commence ici</p>
-    <h1 class="h-section">Quelle destination PVT vous correspond ?</h1>
-    <p>Répondez à ces 7 questions pour découvrir les pays qui correspondent le mieux à votre profil. C’est gratuit, rapide et sans inscription.</p>
-  </header>
-  <section class="pvt-finder pvt-finder--page" aria-labelledby="pvt-finder-title">
-    <div class="pvt-finder__intro">
-      <p class="pvt-finder__eyebrow">Le bon départ commence ici</p>
-      <h2 id="pvt-finder-title">Votre prochaine aventure, en 7 questions</h2>
-      <p>Indiquez votre âge, votre budget et vos envies : je vous propose ensuite plusieurs destinations à explorer, pas une seule.</p>
-      <span class="pvt-finder__duration">7 questions · environ 2 minutes</span>
+<main id="contenu" class="trouver">
+  <section class="frontispice trouver__couverture" aria-labelledby="trouver-titre">
+    <div class="wrap trouver__tete">
+      <nav class="crumbs" aria-label="Fil d'Ariane"><ol><li><a href="/">Accueil</a></li><li aria-current="page">Trouver mon PVT</li></ol></nav>
+      <h1 class="trouver__titre" id="trouver-titre">Quel PVT est fait pour vous ?</h1>
+      <p class="trouver__lead">Neuf questions, une à la fois : un clic sur une réponse et l'on passe à la suivante. À la fin, je vous propose les destinations qui vous correspondent le mieux, avec leur guide.</p>
     </div>
-    <form class="pvt-finder__form" id="pvt-finder-form">
-      <div class="pvt-finder__basics">
-        <div class="pvt-finder__field">
-          <label for="pvt-finder-age">Quel âge avez-vous ?</label>
-          <input id="pvt-finder-age" name="age" type="number" min="18" max="99" required inputmode="numeric" placeholder="Ex. 24">
-        </div>
-        <fieldset class="pvt-finder__field">
-          <legend>Quelle est votre nationalité ?</legend>
-          <label class="pvt-finder__choice"><input type="radio" name="nationality" value="fr" checked> Française</label>
-          <label class="pvt-finder__choice"><input type="radio" name="nationality" value="other"> Autre nationalité</label>
-        </fieldset>
-      </div>
-      <div class="pvt-finder__questions">
-        <fieldset class="pvt-finder__question">
-          <legend><span>01</span> Quel budget pouvez-vous prévoir avant le départ ?</legend>
-          <label class="pvt-finder__choice"><input type="radio" name="budget" value="low" required> Moins de 2 500 €</label>
-          <label class="pvt-finder__choice"><input type="radio" name="budget" value="medium"> Entre 2 500 et 4 000 €</label>
-          <label class="pvt-finder__choice"><input type="radio" name="budget" value="comfortable"> Entre 4 000 et 6 000 €</label>
-          <label class="pvt-finder__choice"><input type="radio" name="budget" value="high"> Plus de 6 000 €</label>
-        </fieldset>
-        <fieldset class="pvt-finder__question">
-          <legend><span>02</span> Quel est votre objectif principal ?</legend>
-          <label class="pvt-finder__choice"><input type="radio" name="goal" value="earn" required> Travailler et économiser un maximum</label>
-          <label class="pvt-finder__choice"><input type="radio" name="goal" value="travel"> Travailler pour financer mes voyages</label>
-          <label class="pvt-finder__choice"><input type="radio" name="goal" value="culture"> Découvrir une nouvelle culture</label>
-          <label class="pvt-finder__choice"><input type="radio" name="goal" value="social"> Rencontrer du monde et vivre une aventure</label>
-        </fieldset>
-        <fieldset class="pvt-finder__question">
-          <legend><span>03</span> Quelle langue souhaitez-vous pratiquer ?</legend>
-          <label class="pvt-finder__choice"><input type="radio" name="language" value="english" required> Anglais</label>
-          <label class="pvt-finder__choice"><input type="radio" name="language" value="spanish"> Espagnol</label>
-          <label class="pvt-finder__choice"><input type="radio" name="language" value="portuguese"> Portugais</label>
-          <label class="pvt-finder__choice"><input type="radio" name="language" value="asian"> Japonais, coréen ou mandarin</label>
-          <label class="pvt-finder__choice"><input type="radio" name="language" value="open"> Peu importe, je suis prêt à apprendre</label>
-        </fieldset>
-        <fieldset class="pvt-finder__question">
-          <legend><span>04</span> Quel climat vous attire le plus ?</legend>
-          <label class="pvt-finder__choice"><input type="radio" name="climate" value="warm" required> Chaleur, soleil et plages</label>
-          <label class="pvt-finder__choice"><input type="radio" name="climate" value="four"> Des saisons bien marquées</label>
-          <label class="pvt-finder__choice"><input type="radio" name="climate" value="any"> Peu importe, je m’adapte</label>
-        </fieldset>
-        <fieldset class="pvt-finder__question">
-          <legend><span>05</span> Quel environnement vous correspond ?</legend>
-          <label class="pvt-finder__choice"><input type="radio" name="environment" value="city" required> Grandes villes, sorties et vie urbaine</label>
-          <label class="pvt-finder__choice"><input type="radio" name="environment" value="nature"> Nature, randonnées et grands espaces</label>
-          <label class="pvt-finder__choice"><input type="radio" name="environment" value="beach"> Plages, océan et ambiance détendue</label>
-          <label class="pvt-finder__choice"><input type="radio" name="environment" value="mix"> Un mélange de tout</label>
-        </fieldset>
-        <fieldset class="pvt-finder__question">
-          <legend><span>06</span> Quel type de travail recherchez-vous ?</legend>
-          <label class="pvt-finder__choice"><input type="radio" name="work" value="seasonal" required> Saisonnier, agriculture, chantier ou tourisme</label>
-          <label class="pvt-finder__choice"><input type="radio" name="work" value="hospitality"> Hôtellerie, restauration et services</label>
-          <label class="pvt-finder__choice"><input type="radio" name="work" value="flexible"> Je suis ouvert à tous les petits boulots</label>
-          <label class="pvt-finder__choice"><input type="radio" name="work" value="notpriority"> Le travail n’est pas ma priorité</label>
-        </fieldset>
-        <fieldset class="pvt-finder__question">
-          <legend><span>07</span> Quelle expérience vous fait le plus rêver ?</legend>
-          <label class="pvt-finder__choice"><input type="radio" name="dream" value="roadtrip" required> Un road trip et des paysages incroyables</label>
-          <label class="pvt-finder__choice"><input type="radio" name="dream" value="culture"> Une immersion culturelle dépaysante</label>
-          <label class="pvt-finder__choice"><input type="radio" name="dream" value="festive"> Une vie sociale animée et festive</label>
-          <label class="pvt-finder__choice"><input type="radio" name="dream" value="career"> Une expérience professionnelle à l’étranger</label>
-        </fieldset>
-      </div>
-      <button class="btn pvt-finder__submit" type="submit">Découvrir mes destinations <span aria-hidden="true">→</span></button>
-      <p class="pvt-finder__privacy">Vos réponses sont utilisées uniquement dans votre navigateur pour établir les recommandations. Aucun compte n’est nécessaire.</p>
-    </form>
-    <div class="pvt-finder__results" id="pvt-finder-results" aria-live="polite" hidden></div>
   </section>
+  <div class="wrap trouver__corps">
+    <section class="vignette quiz" data-quiz aria-labelledby="quiz-question">
+      <noscript><p class="quiz__sans-js">Le questionnaire a besoin de JavaScript. En attendant, <a href="/#comparer">comparez les 15 PVT sur un seul tableau</a>.</p></noscript>
+    </section>
+    <section class="trouver__methode" aria-labelledby="methode-titre">
+      <h2 class="h-sub" id="methode-titre">Comment je fais le tri</h2>
+      <p>Je garde d'abord les pays ouverts à votre âge : 30 ou 35 ans au plus selon l'accord. Je compare ensuite votre budget au budget de départ indicatif de chaque pays, puis vos envies (langue, climat, cadre de vie, travail) à ce que chaque destination offre le plus. Rien n'est envoyé : tout se calcule dans votre navigateur.</p>
+      <p>Les conditions changent : vérifiez-les toujours sur le site officiel du pays avant toute démarche, ou dans <a href="/#comparer">le comparateur des 15 PVT</a>.</p>
+    </section>
+  </div>
 </main>
 <footer class="backcover">
   <div class="wrap">
