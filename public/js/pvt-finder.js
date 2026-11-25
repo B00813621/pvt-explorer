@@ -31,7 +31,7 @@
     var budgetCeiling={low:2500,medium:4000,comfortable:6000,high:10000}[budget];
     var ranked=countries.filter(function(c){return age>=18&&age<=c.max;}).map(function(c){
       var score=0,matched=0;
-      prefs.forEach(function(p){if(c.tags.indexOf(p)!==-1){score+=2;matched++;}});
+      prefs.forEach(function(p){if(p==='open'||p==='any'||p==='flexible'||p==='notpriority')return;if(c.tags.indexOf(p)!==-1){score+=2;matched++;}});
       if(c.tags.indexOf('mix')!==-1&&selected('environment')==='mix')score+=1;
       if(budgetCeiling>=c.min)score+=2;else score-=1;
       return Object.assign({},c,{score:score,matched:matched,budgetOk:budgetCeiling>=c.min});
