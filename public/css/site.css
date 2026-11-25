@@ -1055,3 +1055,19 @@ dialog.fiche{width:100%;max-width:min(700px,calc(100vw - 24px));max-height:calc(
     color:var(--ink, #17212b);
   }
 }
+
+
+/* Étapes des guides : petits boutons de dépliage sur mobile */
+.etape__more{display:none}
+@media(max-width:600px){
+  .etape__more{
+    display:inline-flex;align-items:center;gap:6px;margin:9px 0 0 42px;
+    padding:5px 10px;border:1px solid rgba(20,30,40,.15);border-radius:999px;
+    background:#fff;color:var(--ink, #17212b);font:inherit;font-size:.78rem;
+    line-height:1.2;cursor:pointer;
+  }
+  .etape__more span{transition:transform .2s}
+  .etape__more[aria-expanded="true"] span{transform:rotate(180deg)}
+  .etape .guides{display:none}
+  .etape.is-expanded .guides{display:grid}
+}
